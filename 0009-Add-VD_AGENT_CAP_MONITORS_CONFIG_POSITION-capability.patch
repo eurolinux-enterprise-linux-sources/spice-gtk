@@ -1,0 +1,31 @@
+From 10161c9fc4dd0d31e4f9460a195e9e36c378397a Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Fabiano=20Fid=C3=AAncio?= <fidencio@redhat.com>
+Date: Tue, 8 Dec 2015 22:50:25 +0100
+Subject: [PATCH] Add VD_AGENT_CAP_MONITORS_CONFIG_POSITION capability to
+ client.
+
+This indicates the client's ability to handle multi-monitor
+configurations that are not multi-head/
+
+This commit addresses:
+https://bugzilla.redhat.com/show_bug.cgi?id=1248196
+https://bugzilla.redhat.com/show_bug.cgi?id=1248189
+---
+ spice-common/spice-protocol/spice/vd_agent.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/spice-common/spice-protocol/spice/vd_agent.h b/spice-common/spice-protocol/spice/vd_agent.h
+index 7464661..a4cf73c 100644
+--- a/spice-common/spice-protocol/spice/vd_agent.h
++++ b/spice-common/spice-protocol/spice/vd_agent.h
+@@ -218,6 +218,7 @@ enum {
+     VD_AGENT_CAP_GUEST_LINEEND_LF,
+     VD_AGENT_CAP_GUEST_LINEEND_CRLF,
+     VD_AGENT_CAP_MAX_CLIPBOARD,
++    VD_AGENT_CAP_MONITORS_CONFIG_POSITION,
+     VD_AGENT_END_CAP,
+ };
+ 
+-- 
+2.5.0
+

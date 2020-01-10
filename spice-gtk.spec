@@ -8,7 +8,7 @@
 
 Name:           spice-gtk
 Version:        0.26
-Release:        4%{?dist}
+Release:        7%{?dist}
 Summary:        A GTK+ widget for SPICE clients
 
 Group:          System Environment/Libraries
@@ -19,12 +19,21 @@ Source0:        http://www.spice-space.org/download/gtk/%{name}-%{version}%{?_ve
 Patch0001:      0001-smartcard-connect-object-signal-handlers-with-spice-.patch
 Patch0002:      0002-smartcard-add-reader-and-cards-on-channel-up.patch
 Patch0003:      0003-channel-smartcard-Add-missing-USE_SMARTCARD-checks.patch
+Patch0004:      0004-spice-widget-Do-not-update-display-when-resize-guest.patch
+Patch0005:      0005-Send-monitor-config-if-at-least-one-monitor-has-dime.patch
+Patch0006:      0006-Notify-about-existence-of-monitor-for-all-display-ch.patch
+Patch0007:      0007-Handle-single-headed-monitors-that-have-a-non-zero-x.patch
+Patch0008:      0008-Add-monitors-config-position-capability.patch
+Patch0009:      0009-Add-VD_AGENT_CAP_MONITORS_CONFIG_POSITION-capability.patch
+Patch0010:      0010-This-adds-reference-counting-to-cached-images.patch
+Patch0011:      0011-channel-usbredir-drop-isoc-packets-on-low-bandwidth.patch
+Patch0012:      0012-Use-g_return_val_if_fail-instead-of-wrong-g_return_i.patch
 
 BuildRequires: intltool
 #New enough glib is needed for proxy support
 BuildRequires: glib2-devel >= 2.28
 BuildRequires: gtk2-devel >= 2.20.0
-BuildRequires: usbredir-devel >= 0.5
+BuildRequires: usbredir-devel >= 0.5.1-3
 BuildRequires: libusb1-devel >= 1.0.9
 BuildRequires: libgudev1-devel
 BuildRequires: pixman-devel openssl-devel libjpeg-devel
@@ -42,6 +51,8 @@ BuildRequires: libtool
 Requires: spice-glib%{?_isa} = %{version}-%{release}
 Requires: gtk2 >= 2.20.0
 Requires: glib2 >= 2.28
+# needed for rhbz#1291159
+Requires: usbredir >= 0.5.1-3
 
 ExclusiveArch: %{ix86} x86_64
 
@@ -115,6 +126,15 @@ pushd spice-gtk-%{version}
 %patch0001 -p1
 %patch0002 -p1
 %patch0003 -p1
+%patch0004 -p1
+%patch0005 -p1
+%patch0006 -p1
+%patch0007 -p1
+%patch0008 -p1
+%patch0009 -p1
+%patch0010 -p1
+%patch0011 -p1
+%patch0012 -p1
 
 find . -name '*.stamp' | xargs touch
 popd
@@ -186,6 +206,29 @@ cd ..
 %{_bindir}/spicy-stats
 
 %changelog
+* Fri Dec 18 2015 Fabiano Fidêncio <fidencio@redhat.com> 0.26-7
+- Bump usbredir dep to 0.5.1-3
+  Resolves: rhbz#1291159
+  Related: rhbz#1276707
+
+* Fri Dec 11 2015 Fabiano Fidêncio <fidencio@redhat.com> 0.26-6
+- Fix coverity warning
+  Related: rhbz#1242605
+
+* Tue Dec  8 2015 Fabiano Fidêncio <fidencio@redhat.com> 0.26-5
+- Connecting to VM changes its resolution
+  Resolves: rhbz#1242605
+- Cannot enable display 1 when it was disabled in previous session
+  Resolves: rhbz#1247920
+- Windows needs to send complete monitors_config message to client
+  Resolves: rhbz#1265361
+- Add Client capability for windows monitor_config messsage
+  Resolves: rhbz#1265359
+- High Resolution Multi-Monitor Windows Guest freeze
+  Resolves: rhbz#1247749
+- Drop isoc packages on low bandwith
+  Resolves: rhbz#1276707
+
 * Fri Apr 10 2015 Christophe Fergeau <cfergeau@redhat.com> 0.26-4
 - Fix smartcard issues after VM restart (virsh destroy/virsh start)
   Resolves: rhbz#1205171

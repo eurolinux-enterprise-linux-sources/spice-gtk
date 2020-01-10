@@ -1,0 +1,28 @@
+From 9e4c430db92851b11cd45ca869d7ecbc210050a1 Mon Sep 17 00:00:00 2001
+From: Pavel Grunt <pgrunt@redhat.com>
+Date: Mon, 13 Jul 2015 19:48:12 +0200
+Subject: [PATCH] Use g_return_val_if_fail instead of wrong g_return_if_fail
+
+The commit 4b5e6ec2114e1250c81027ebeac9cfe8d059153f introduced a function
+returning gboolean, g_return_val_if_fail() should be used instead of
+g_return_if_fail().
+---
+ gtk/channel-main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/gtk/channel-main.c b/gtk/channel-main.c
+index e18ba42..0591015 100644
+--- a/gtk/channel-main.c
++++ b/gtk/channel-main.c
+@@ -1289,7 +1289,7 @@ static gboolean any_display_has_dimensions(SpiceMainChannel *channel)
+     SpiceMainChannelPrivate *c;
+     guint i;
+ 
+-    g_return_if_fail(SPICE_IS_MAIN_CHANNEL(channel));
++    g_return_val_if_fail(SPICE_IS_MAIN_CHANNEL(channel), FALSE);
+     c = channel->priv;
+ 
+     for (i = 0; i < MAX_DISPLAY; i++) {
+-- 
+2.5.0
+

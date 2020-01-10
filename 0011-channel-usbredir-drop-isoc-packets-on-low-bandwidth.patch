@@ -1,0 +1,131 @@
+From 1feb6b57acb963a91b10e494b1fb84af50bc949f Mon Sep 17 00:00:00 2001
+From: Victor Toso <victortoso@redhat.com>
+Date: Wed, 9 Dec 2015 12:30:59 +0100
+Subject: [PATCH] channel-usbredir: drop isoc packets on low bandwidth
+
+downstream patch of: 36c7db9a38cc5335727c2abbe7968112eb6667e0
+---
+ gtk/channel-usbredir.c   | 15 +++++++++++++++
+ gtk/spice-channel-priv.h |  2 ++
+ gtk/spice-channel.c      | 19 ++++++++++++++++++-
+ 3 files changed, 35 insertions(+), 1 deletion(-)
+
+diff --git a/gtk/channel-usbredir.c b/gtk/channel-usbredir.c
+index a52476a..e77f09f 100644
+--- a/gtk/channel-usbredir.c
++++ b/gtk/channel-usbredir.c
+@@ -91,6 +91,9 @@ static void usbredir_log(void *user_data, int level, const char *msg);
+ static int usbredir_read_callback(void *user_data, uint8_t *data, int count);
+ static int usbredir_write_callback(void *user_data, uint8_t *data, int count);
+ static void usbredir_write_flush_callback(void *user_data);
++#if USBREDIR_VERSION >= 0x000503
++static uint64_t usbredir_buffered_output_size_callback(void *user_data);
++#endif
+ 
+ static void *usbredir_alloc_lock(void);
+ static void usbredir_lock_lock(void *user_data);
+@@ -224,6 +227,10 @@ void spice_usbredir_channel_set_context(SpiceUsbredirChannel *channel,
+                                    usbredirhost_fl_write_cb_owns_buffer);
+     if (!priv->host)
+         g_error("Out of memory allocating usbredirhost");
++
++#if USBREDIR_VERSION >= 0x000503
++    usbredirhost_set_buffered_output_size_cb(priv->host, usbredir_buffered_output_size_callback);
++#endif
+ }
+ 
+ static gboolean spice_usbredir_channel_open_device(
+@@ -455,6 +462,14 @@ void spice_usbredir_channel_get_guest_filter(
+ /* ------------------------------------------------------------------ */
+ /* callbacks (any context)                                            */
+ 
++#if USBREDIR_VERSION >= 0x000503
++static uint64_t usbredir_buffered_output_size_callback(void *user_data)
++{
++    g_return_val_if_fail(SPICE_IS_USBREDIR_CHANNEL(user_data), 0);
++    return spice_channel_get_queue_size(SPICE_CHANNEL(user_data));
++}
++#endif
++
+ /* Note that this function must be re-entrant safe, as it can get called
+    from both the main thread as well as from the usb event handling thread */
+ static void usbredir_write_flush_callback(void *user_data)
+diff --git a/gtk/spice-channel-priv.h b/gtk/spice-channel-priv.h
+index 6067abc..c9b81a5 100644
+--- a/gtk/spice-channel-priv.h
++++ b/gtk/spice-channel-priv.h
+@@ -107,6 +107,7 @@ struct _SpiceChannelPrivate {
+     gboolean                    xmit_queue_blocked;
+     STATIC_MUTEX                xmit_queue_lock;
+     guint                       xmit_queue_wakeup_id;
++    guint64                     xmit_queue_size;
+ 
+     char                        name[16];
+     enum spice_channel_state    state;
+@@ -165,6 +166,7 @@ void spice_channel_wakeup(SpiceChannel *channel, gboolean cancel);
+ 
+ SpiceSession* spice_channel_get_session(SpiceChannel *channel);
+ enum spice_channel_state spice_channel_get_state(SpiceChannel *channel);
++guint64 spice_channel_get_queue_size (SpiceChannel *channel);
+ 
+ /* coroutine context */
+ typedef void (*handler_msg_in)(SpiceChannel *channel, SpiceMsgIn *msg, gpointer data);
+diff --git a/gtk/spice-channel.c b/gtk/spice-channel.c
+index cd031e4..985919e 100644
+--- a/gtk/spice-channel.c
++++ b/gtk/spice-channel.c
+@@ -700,10 +700,12 @@ void spice_msg_out_send(SpiceMsgOut *out)
+ {
+     SpiceChannelPrivate *c;
+     gboolean was_empty;
++    guint32 size;
+ 
+     g_return_if_fail(out != NULL);
+     g_return_if_fail(out->channel != NULL);
+     c = out->channel->priv;
++    size = spice_marshaller_get_total_size(out->marshaller);
+ 
+     STATIC_MUTEX_LOCK(c->xmit_queue_lock);
+     if (c->xmit_queue_blocked) {
+@@ -713,6 +715,7 @@ void spice_msg_out_send(SpiceMsgOut *out)
+ 
+     was_empty = g_queue_is_empty(&c->xmit_queue);
+     g_queue_push_tail(&c->xmit_queue, out);
++    c->xmit_queue_size = (was_empty) ? size : c->xmit_queue_size + size;
+ 
+     /* One wakeup is enough to empty the entire queue -> only do a wakeup
+        if the queue was empty, and there isn't one pending already. */
+@@ -2088,8 +2091,11 @@ static void spice_channel_iterate_write(SpiceChannel *channel)
+         STATIC_MUTEX_LOCK(c->xmit_queue_lock);
+         out = g_queue_pop_head(&c->xmit_queue);
+         STATIC_MUTEX_UNLOCK(c->xmit_queue_lock);
+-        if (out)
++        if (out) {
++            guint32 size = spice_marshaller_get_total_size(out->marshaller);
++            c->xmit_queue_size = (c->xmit_queue_size < size) ? 0 : c->xmit_queue_size - size;
+             spice_channel_write_msg(channel, out);
++        }
+     } while (out);
+ 
+     spice_channel_flushed(channel, TRUE);
+@@ -2797,6 +2803,17 @@ enum spice_channel_state spice_channel_get_state(SpiceChannel *channel)
+ }
+ 
+ G_GNUC_INTERNAL
++guint64 spice_channel_get_queue_size (SpiceChannel *channel)
++{
++    guint64 size;
++    SpiceChannelPrivate *c = channel->priv;
++    STATIC_MUTEX_LOCK(c->xmit_queue_lock);
++    size = c->xmit_queue_size;
++    STATIC_MUTEX_UNLOCK(c->xmit_queue_lock);
++    return size;
++}
++
++G_GNUC_INTERNAL
+ void spice_channel_swap(SpiceChannel *channel, SpiceChannel *swap, gboolean swap_msgs)
+ {
+     SpiceChannelPrivate *c = channel->priv;
+-- 
+2.5.0
+

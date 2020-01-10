@@ -1,0 +1,35 @@
+From 53bd843aae32f9c45ec7f3de5310ccb3585ac060 Mon Sep 17 00:00:00 2001
+From: Pavel Grunt <pgrunt@redhat.com>
+Date: Thu, 30 Jul 2015 13:51:44 +0200
+Subject: [PATCH 6/8] Notify about existence of monitor for all display
+ channels
+
+Windows guest can have disabled display on the display chanel #0, in
+that case it will not be listed in virt-viewer's "View->Displays" menu
+
+Resolves:
+https://bugs.freedesktop.org/show_bug.cgi?id=91489
+---
+ gtk/channel-display.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/gtk/channel-display.c b/gtk/channel-display.c
+index 1e1312c..aca7118 100644
+--- a/gtk/channel-display.c
++++ b/gtk/channel-display.c
+@@ -805,10 +805,8 @@ static void spice_display_channel_up(SpiceChannel *channel)
+     out->marshallers->msgc_display_init(out->marshaller, &init);
+     spice_msg_out_send_internal(out);
+ 
+-    /* if we are not using monitors config, notify of existence of
+-       this monitor */
+-    if (channel->priv->channel_id != 0)
+-        g_coroutine_object_notify(G_OBJECT(channel), "monitors");
++    /* notify of existence of this monitor */
++    g_coroutine_object_notify(G_OBJECT(channel), "monitors");
+ }
+ 
+ #define DRAW(type) {                                                    \
+-- 
+2.5.0
+

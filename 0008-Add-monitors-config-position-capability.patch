@@ -1,0 +1,40 @@
+From 11bf8cfb605ec33b2af89adc614fb80a165700a3 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Fabiano=20Fid=C3=AAncio?= <fidencio@redhat.com>
+Date: Tue, 8 Dec 2015 15:45:44 +0100
+Subject: [PATCH 9/9] Add "monitors config position" capability.
+
+This will allow Windows guests to determine if the client supports a
+monitors_config message from a multi-monitor guest that is not
+multi-headed, i.e., that has one monitor per driver.
+
+It keeps commit:8b0cd321d5a4d08ccba5845c5f2206e6f8032c1d
+from breaking if an updated win-qxl driver is paired with an older client.
+
+This resolves: https://bugzilla.redhat.com/show_bug.cgi?id=1248189
+---
+ gtk/channel-main.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/gtk/channel-main.c b/gtk/channel-main.c
+index 7ab3407..e18ba42 100644
+--- a/gtk/channel-main.c
++++ b/gtk/channel-main.c
+@@ -201,6 +201,7 @@ static const char *agent_caps[] = {
+     [ VD_AGENT_CAP_GUEST_LINEEND_LF    ] = "line-end lf",
+     [ VD_AGENT_CAP_GUEST_LINEEND_CRLF  ] = "line-end crlf",
+     [ VD_AGENT_CAP_MAX_CLIPBOARD       ] = "max-clipboard",
++    [ VD_AGENT_CAP_MONITORS_CONFIG_POSITION ] = "monitors config position",
+ };
+ #define NAME(_a, _i) ((_i) < SPICE_N_ELEMENTS(_a) ? (_a[(_i)] ?: "?") : "?")
+ 
+@@ -1142,6 +1143,7 @@ static void agent_announce_caps(SpiceMainChannel *channel)
+     VD_AGENT_SET_CAPABILITY(caps->caps, VD_AGENT_CAP_DISPLAY_CONFIG);
+     VD_AGENT_SET_CAPABILITY(caps->caps, VD_AGENT_CAP_CLIPBOARD_BY_DEMAND);
+     VD_AGENT_SET_CAPABILITY(caps->caps, VD_AGENT_CAP_CLIPBOARD_SELECTION);
++    VD_AGENT_SET_CAPABILITY(caps->caps, VD_AGENT_CAP_MONITORS_CONFIG_POSITION);
+ 
+     agent_msg_queue(channel, VD_AGENT_ANNOUNCE_CAPABILITIES, size, caps);
+     g_free(caps);
+-- 
+2.5.0
+

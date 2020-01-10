@@ -1,0 +1,38 @@
+From fccb38843dcc4f8e5969652ae3f4e76a58190272 Mon Sep 17 00:00:00 2001
+From: Sandy Stutsman <sstutsma@redhat.com>
+Date: Wed, 24 Jun 2015 14:46:59 -0400
+Subject: [PATCH 7/8] Handle single headed monitors that have a non-zero x, y
+ config
+
+Each monitor on a Windows guest is represented as a separate, single-headed
+device with its own framebuffer.  When there are multiple monitors, all
+monitors but one will have a non-zero xy config position.  But even in
+these cases the whole area (frame-buffer) of each monitor should be
+updated.
+
+Addresses: https://bugzilla.redhat.com/show_bug.cgi?id=1202419
+---
+ gtk/spice-widget.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/gtk/spice-widget.c b/gtk/spice-widget.c
+index be1e936..37e0caf 100644
+--- a/gtk/spice-widget.c
++++ b/gtk/spice-widget.c
+@@ -293,7 +293,12 @@ static void update_monitor_area(SpiceDisplay *display)
+         goto whole;
+     }
+ 
+-    update_area(display, c->x, c->y, c->width, c->height);
++    /* If only one head on this monitor, update the whole area */
++    if(monitors->len == 1) {
++        update_area(display, 0, 0, c->width, c->height);
++    } else {
++        update_area(display, c->x, c->y, c->width, c->height);
++    }
+     g_clear_pointer(&monitors, g_array_unref);
+     return;
+ 
+-- 
+2.5.0
+

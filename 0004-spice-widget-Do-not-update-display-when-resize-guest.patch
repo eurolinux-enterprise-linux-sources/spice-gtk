@@ -1,0 +1,35 @@
+From 61c4f4ca0537e0fce794e1cb389e222f9c240425 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Fabiano=20Fid=C3=AAncio?= <fidencio@redhat.com>
+Date: Wed, 3 Jun 2015 22:16:36 +0200
+Subject: [PATCH 4/8] spice-widget: Do not update display when resize-guest is
+ disabled
+
+Updating the display causes weird behaviors in virt-viewer, like
+re-resizing to a previous monitor config when, after changing the
+display resolution (through System > PReferences > Displays). the agent
+reconnects.
+It is not perfect yet, because when the agent reconnects the guest
+resizes to the previous config and switch to the proper one, but this
+seems more like an agent bug than a spice-gtk one.
+---
+ gtk/spice-widget.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/gtk/spice-widget.c b/gtk/spice-widget.c
+index 62a98dc..be1e936 100644
+--- a/gtk/spice-widget.c
++++ b/gtk/spice-widget.c
+@@ -293,10 +293,6 @@ static void update_monitor_area(SpiceDisplay *display)
+         goto whole;
+     }
+ 
+-    if (!d->resize_guest_enable)
+-        spice_main_update_display(d->main, get_display_id(display),
+-                                  c->x, c->y, c->width, c->height, FALSE);
+-
+     update_area(display, c->x, c->y, c->width, c->height);
+     g_clear_pointer(&monitors, g_array_unref);
+     return;
+-- 
+2.5.0
+
