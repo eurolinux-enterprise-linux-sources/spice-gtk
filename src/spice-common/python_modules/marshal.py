@@ -4,7 +4,7 @@ import codegen
 
 def write_includes(writer):
     writer.header.writeln("#include <spice/protocol.h>")
-    writer.header.writeln('#include "marshaller.h"')
+    writer.header.writeln('#include "common/marshaller.h"')
     writer.header.newline()
     writer.header.writeln("#ifndef _GENERATED_HEADERS_H")
     writer.header.writeln("#define _GENERATED_HEADERS_H")
@@ -15,7 +15,7 @@ def write_includes(writer):
     writer.writeln("#include <stdio.h>")
     writer.writeln("#include <spice/protocol.h>")
     writer.writeln("#include <spice/macros.h>")
-    writer.writeln('#include "marshaller.h"')
+    writer.writeln('#include "common/marshaller.h"')
     writer.newline()
     writer.writeln("#ifdef _MSC_VER")
     writer.writeln("#pragma warning(disable:4101)")
@@ -162,11 +162,11 @@ def get_array_size(array, container_src):
         rows_v = container_src.get_ref(rows)
         # TODO: Handle multiplication overflow
         if bpp == 8:
-            return "(%s * %s)" % (width_v, rows_v)
+            return "(unsigned) (%s * %s)" % (width_v, rows_v)
         elif bpp == 1:
-            return "(((%s + 7) / 8 ) * %s)" % (width_v, rows_v)
+            return "(unsigned) (((%s + 7) / 8 ) * %s)" % (width_v, rows_v)
         else:
-            return "(((%s * %s + 7) / 8 ) * %s)" % (bpp, width_v, rows_v)
+            return "(unsigned) (((%s * %s + 7) / 8 ) * %s)" % (bpp, width_v, rows_v)
     elif array.is_bytes_length():
         return container_src.get_ref(array.size[2])
     else:
@@ -353,7 +353,7 @@ def write_message_marshaller(writer, message, is_server, private):
 
     scope = writer.function(function_name,
                             "static void" if private else "void",
-                            "SpiceMarshaller *m, %s *msg" % message.c_type() + names_args)
+                            "SPICE_GNUC_UNUSED SpiceMarshaller *m, SPICE_GNUC_UNUSED %s *msg" % message.c_type() + names_args)
     scope.variable_def("SPICE_GNUC_UNUSED SpiceMarshaller *", "m2")
 
     for n in names:

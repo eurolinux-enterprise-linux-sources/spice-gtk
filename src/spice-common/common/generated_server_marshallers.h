@@ -16,9 +16,9 @@
   License along with this library; if not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "messages.h"
+#include <common/messages.h>
 #include <spice/protocol.h>
-#include "marshaller.h"
+#include "common/marshaller.h"
 
 #ifndef _GENERATED_HEADERS_H
 #define _GENERATED_HEADERS_H

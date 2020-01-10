@@ -94,13 +94,13 @@ void send_value (uint32_t id, uint32_t value)
 void send_data (uint32_t id, uint8_t* data, size_t data_size)
 {
     size_t size = sizeof (ControllerData) + data_size;
-    ControllerData* msg = (ControllerData*)malloc (size);
+    ControllerData* msg = (ControllerData*)g_malloc0 (size);
 
     msg->base.id = id;
     msg->base.size = (uint32_t)size;
     memcpy (msg->data, data, data_size);
     write_to_pipe (msg, size);
-    free (msg);
+    g_free (msg);
 }
 
 ssize_t read_from_pipe (void* data, size_t size)
@@ -205,14 +205,18 @@ void connect_signals (gpointer obj)
 
 int main (int argc, char *argv[])
 {
+#ifdef WIN32
     int spicec_pid = (argc > 1 ? atoi (argv[1]) : 0);
+#endif
     char* host = (argc > 2 ? argv[2] : (char*)HOST);
     int port = (argc > 3 ? atoi (argv[3]) : PORT);
     char pipe_name[PIPE_NAME_MAX_LEN];
     ControllerValue msg;
     ssize_t read;
 
+#if !GLIB_CHECK_VERSION(2,36,0)
     g_type_init ();
+#endif
     ctrl = spice_ctrl_controller_new ();
     loop = g_main_loop_new (NULL, FALSE);
     g_signal_connect (ctrl, "notify", G_CALLBACK (notified), NULL);
@@ -254,15 +258,15 @@ int main (int argc, char *argv[])
     send_data (CONTROLLER_HOST, (uint8_t*)host, strlen(host) + 1);
     send_value (CONTROLLER_PORT, port);
     send_value (CONTROLLER_SPORT, SPORT);
-    send_data (CONTROLLER_PASSWORD, (uint8_t*)PWD, sizeof(PWD) + 1);
-    send_data (CONTROLLER_SECURE_CHANNELS, (uint8_t*)SECURE_CHANNELS, sizeof(SECURE_CHANNELS) + 1);
-    send_data (CONTROLLER_DISABLE_CHANNELS, (uint8_t*)DISABLED_CHANNELS, sizeof(DISABLED_CHANNELS) + 1);
+    send_data (CONTROLLER_PASSWORD, (uint8_t*)PWD, strlen(PWD) + 1);
+    send_data (CONTROLLER_SECURE_CHANNELS, (uint8_t*)SECURE_CHANNELS, strlen(SECURE_CHANNELS) + 1);
+    send_data (CONTROLLER_DISABLE_CHANNELS, (uint8_t*)DISABLED_CHANNELS, strlen(DISABLED_CHANNELS) + 1);
     send_data (CONTROLLER_TLS_CIPHERS, (uint8_t*)TLS_CIPHERS, sizeof(TLS_CIPHERS) + 1);
-    send_data (CONTROLLER_CA_FILE, (uint8_t*)CA_FILE, sizeof(CA_FILE) + 1);
-    send_data (CONTROLLER_HOST_SUBJECT, (uint8_t*)HOST_SUBJECT, sizeof(HOST_SUBJECT) + 1);
-    send_data (CONTROLLER_SET_TITLE, (uint8_t*)TITLE, sizeof(TITLE) + 1);
-    send_data (CONTROLLER_HOTKEYS, (uint8_t*)HOTKEYS, sizeof(HOTKEYS) + 1);
-    send_data (CONTROLLER_CREATE_MENU, (uint8_t*)MENU, sizeof(MENU));
+    send_data (CONTROLLER_CA_FILE, (uint8_t*)CA_FILE, strlen(CA_FILE) + 1);
+    send_data (CONTROLLER_HOST_SUBJECT, (uint8_t*)HOST_SUBJECT, strlen(HOST_SUBJECT) + 1);
+    send_data (CONTROLLER_SET_TITLE, (uint8_t*)TITLE, strlen(TITLE) + 1);
+    send_data (CONTROLLER_HOTKEYS, (uint8_t*)HOTKEYS, strlen(HOTKEYS) + 1);
+    send_data (CONTROLLER_CREATE_MENU, (uint8_t*)MENU, strlen(MENU));
 
     send_value (CONTROLLER_FULL_SCREEN, /*CONTROLLER_SET_FULL_SCREEN |*/ CONTROLLER_AUTO_DISPLAY_RES);
 

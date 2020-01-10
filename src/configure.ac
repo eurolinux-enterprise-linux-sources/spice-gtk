@@ -75,6 +75,15 @@ AC_CONFIG_SUBDIRS([spice-common])
 COMMON_CFLAGS='-I ${top_srcdir}/spice-common/ -I ${top_srcdir}/spice-common/spice-protocol/'
 AC_SUBST(COMMON_CFLAGS)
 
+SPICE_GTK_MAJOR_VERSION=`echo $PACKAGE_VERSION | cut -d. -f1`
+SPICE_GTK_MINOR_VERSION=`echo $PACKAGE_VERSION | cut -d. -f2`
+SPICE_GTK_MICRO_VERSION=`echo $PACKAGE_VERSION | cut -d. -f3 | cut -d- -f1`
+AS_IF([test "x$SPICE_GTK_MICRO_VERSION" = "x"], [SPICE_GTK_MICRO_VERSION=0])
+
+AC_SUBST(SPICE_GTK_MAJOR_VERSION)
+AC_SUBST(SPICE_GTK_MINOR_VERSION)
+AC_SUBST(SPICE_GTK_MICRO_VERSION)
+
 dnl =========================================================================
 dnl Chek optional features
 
@@ -96,12 +105,6 @@ PKG_CHECK_MODULES(PIXMAN, pixman-1 >= 0.17.7)
 AC_SUBST(PIXMAN_CFLAGS)
 AC_SUBST(PIXMAN_LIBS)
 SPICE_GLIB_REQUIRES="${SPICE_GLIB_REQUIRES} pixman-1 >= 0.17.7"
-
-PKG_CHECK_MODULES(CELT051, celt051 >= 0.5.1.1)
-AC_SUBST(CELT051_CFLAGS)
-AC_SUBST(CELT051_LIBS)
-AC_SUBST(CELT051_LIBDIR)
-SPICE_GLIB_REQUIRES="${SPICE_GLIB_REQUIRES} celt051 >= 0.5.1.1"
 
 PKG_CHECK_MODULES(SSL, openssl)
 AC_SUBST(SSL_CFLAGS)
@@ -239,7 +242,7 @@ else
         EXTERNAL_PNP_IDS="$with_pnp_ids_path"
 fi
 
-AC_CHECK_FUNCS(clearenv)
+AC_CHECK_FUNCS(clearenv strtok_r)
 
 PKG_CHECK_MODULES(GLIB2, glib-2.0 >= 2.22)
 AC_SUBST(GLIB2_CFLAGS)
@@ -253,8 +256,8 @@ PKG_CHECK_MODULES(GIO, gio-2.0 >= 2.10.0 $gio_os)
 AC_SUBST(GIO_CFLAGS)
 AC_SUBST(GIO_LIBS)
 
-PKG_CHECK_EXISTS([gio-2.0 >= 2.26], [have_gproxy=yes])
-AM_CONDITIONAL([WITH_GPROXY], [test "x$have_gproxy" = "xyes"])
+PKG_CHECK_EXISTS([gio-2.0 >= 2.26], [have_gio26=yes])
+AM_CONDITIONAL([WITH_GPROXY], [test "x$have_gio26" = "xyes"])
 
 PKG_CHECK_MODULES(CAIRO, cairo >= 1.2.0)
 AC_SUBST(CAIRO_CFLAGS)
@@ -263,6 +266,26 @@ AC_SUBST(CAIRO_LIBS)
 PKG_CHECK_MODULES(GTHREAD, gthread-2.0 > 2.0.0)
 AC_SUBST(GTHREAD_CFLAGS)
 AC_SUBST(GTHREAD_LIBS)
+
+AC_ARG_ENABLE([webdav],
+  AS_HELP_STRING([--enable-webdav=@<:@auto/yes/no@:>@],
+                 [Enable webdav support @<:@default=auto@:>@]),
+  [],
+  [enable_webdav="auto"])
+
+if test "x$enable_webdav" = "xno"; then
+  have_phodav="no"
+else
+  PKG_CHECK_MODULES(PHODAV, [libphodav-1.0], [have_phodav=yes], [have_phodav=no])
+  AC_SUBST(PHODAV_CFLAGS)
+  AC_SUBST(PHODAV_LIBS)
+
+  if test "x$have_phodav" = "xno" && test "x$enable_webdav" = "xyes"; then
+    AC_MSG_ERROR([webdav support explicitly requested, but some required packages are not available])
+  fi
+fi
+AS_IF([test "x$have_phodav" = "xyes"],
+       AC_DEFINE(USE_PHODAV, [1], [Define if supporting phodav]))
 
 AC_ARG_WITH([audio],
   AS_HELP_STRING([--with-audio=@<:@gstreamer/pulse/auto/no@:>@], [Select audio backend @<:@default=auto@:>@]),
@@ -654,16 +677,20 @@ AC_ARG_ENABLE([dbus],
   [],
   [enable_dbus="auto"])
 
+have_dbus=no
 if test "x$enable_dbus" != "xno"; then
-  PKG_CHECK_MODULES([DBUS_GLIB], [dbus-glib-1],
-                                 [have_dbus=yes],
-                                 [have_dbus=no])
-  if test "x$enable_dbus" = "xyes" && test "x$have_dbus" = "xno"; then
-    AC_MSG_ERROR([D-Bus support explicitly requested, but some required packages are not available])
+  if test "x$have_gio26" = "xyes"; then
+    AC_DEFINE(USE_GDBUS, [1], [Define if supporting gdbus])
+    have_dbus=gdbus
+  else
+    PKG_CHECK_EXISTS([DBUS_GLIB], [dbus-glib-1], [
+      AC_DEFINE(USE_DBUS_GLIB, [1], [Define if supporting dbus-glib])
+      have_dbus=dbus-glib
+    ])
   fi
 
-  if test "x$have_dbus" = "xyes"; then
-    AC_DEFINE(USE_DBUS, [1], [Define if supporting dbus])
+  if test "x$enable_dbus" = "xyes" && test "x$have_dbus" = "xno"; then
+    AC_MSG_ERROR([D-Bus support explicitly requested, but some required packages are not available])
   fi
 fi
 
@@ -687,7 +714,7 @@ SPICE_CFLAGS="$SPICE_CFLAGS $WARN_CFLAGS"
 
 AC_SUBST(SPICE_CFLAGS)
 
-SPICE_GLIB_CFLAGS="$PROTOCOL_CFLAGS $PIXMAN_CFLAGS $CELT051_CFLAGS $PULSE_CFLAGS $GST_CFLAGS $GLIB2_CFLAGS $GIO_CFLAGS $GOBJECT2_CFLAGS $SSL_CFLAGS $SASL_CFLAGS"
+SPICE_GLIB_CFLAGS="$PROTOCOL_CFLAGS $PIXMAN_CFLAGS $PULSE_CFLAGS $GST_CFLAGS $GLIB2_CFLAGS $GIO_CFLAGS $GOBJECT2_CFLAGS $SSL_CFLAGS $SASL_CFLAGS"
 SPICE_GTK_CFLAGS="$SPICE_GLIB_CFLAGS $GTK_CFLAGS "
 
 AC_SUBST(SPICE_GLIB_CFLAGS)
@@ -697,6 +724,8 @@ AC_SUBST(SPICE_GLIB_REQUIRES)
 AC_SUBST(SPICE_GTK_REQUIRES)
 
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
+
+AM_CONDITIONAL([BUILD_TESTS], [test x"$enable_static" = xyes])
 
 AC_OUTPUT([
 Makefile
@@ -709,9 +738,11 @@ data/spicy.desktop.in
 data/spicy.nsis
 po/Makefile.in
 gtk/Makefile
+gtk/spice-version.h
 gtk/controller/Makefile
 doc/Makefile
 doc/reference/Makefile
+man/Makefile
 vapi/Makefile
 tests/Makefile
 ])
@@ -724,15 +755,20 @@ AC_MSG_NOTICE([
 
         prefix:                   ${prefix}
         c compiler:               ${CC}
+        Target:                   ${red_target}
+        Gtk:                      $GTK_API_VERSION
 
         Coroutine:                ${with_coroutine}
         Audio:                    ${with_audio}
-        Target:                   ${red_target}
         SASL support:             ${enable_sasl}
         Smartcard support:        ${have_smartcard}
         USB redirection support:  ${have_usbredir} ${with_usbredir_hotplug}
-        Gtk:                      $GTK_API_VERSION
+        DBus:                     ${have_dbus}
+        WebDAV support:           ${have_phodav}
 
         Now type 'make' to build $PACKAGE
 
 ])
+if test "x$have_dbus" = "xno"; then
+  AC_MSG_WARN([No D-Bus support, desktop integration and USB redirection may not work properly])
+fi

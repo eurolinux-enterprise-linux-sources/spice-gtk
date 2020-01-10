@@ -18,11 +18,19 @@
 #ifndef __SPICE_CLIENT_SESSION_PRIV_H__
 #define __SPICE_CLIENT_SESSION_PRIV_H__
 
+#include "config.h"
+
 #include <glib.h>
 #include <gio/gio.h>
+
+#ifdef USE_PHODAV
+#include <libphodav/phodav.h>
+#else
+typedef struct _PhodavServer PhodavServer;
+#endif
+
 #include "desktop-integration.h"
 #include "spice-session.h"
-#include "spice-proxy.h"
 #include "spice-gtk-session.h"
 #include "spice-channel-cache.h"
 #include "decode.h"
@@ -37,6 +45,7 @@ struct _SpiceSessionPrivate {
     char              *host;
     char              *port;
     char              *tls_port;
+    char              *username;
     char              *password;
     char              *ca_file;
     char              *ciphers;
@@ -45,7 +54,8 @@ struct _SpiceSessionPrivate {
     char              *cert_subject;
     guint             verify;
     gboolean          read_only;
-    SpiceProxy        *proxy;
+    SpiceURI          *proxy;
+    gchar             *shared_dir;
 
     /* whether to enable audio */
     gboolean          audio;
@@ -108,6 +118,8 @@ struct _SpiceSessionPrivate {
     SpiceGtkSession   *gtk_session;
     SpiceUsbDeviceManager *usb_manager;
     SpicePlaybackChannel *playback_channel;
+    PhodavServer      *webdav;
+    guint8             webdav_magic[16];
 };
 
 SpiceSession *spice_session_new_from_session(SpiceSession *session);
@@ -117,7 +129,7 @@ int spice_session_get_connection_id(SpiceSession *session);
 gboolean spice_session_get_client_provided_socket(SpiceSession *session);
 
 GSocketConnection* spice_session_channel_open_host(SpiceSession *session, SpiceChannel *channel,
-                                                   gboolean *use_tls);
+                                                   gboolean *use_tls, GError **error);
 void spice_session_channel_new(SpiceSession *session, SpiceChannel *channel);
 void spice_session_channel_destroy(SpiceSession *session, SpiceChannel *channel);
 void spice_session_channel_migrate(SpiceSession *session, SpiceChannel *channel);
@@ -135,6 +147,7 @@ void spice_session_set_migration_state(SpiceSession *session, SpiceSessionMigrat
 void spice_session_set_port(SpiceSession *session, int port, gboolean tls);
 void spice_session_get_pubkey(SpiceSession *session, guint8 **pubkey, guint *size);
 guint spice_session_get_verify(SpiceSession *session);
+const gchar* spice_session_get_username(SpiceSession *session);
 const gchar* spice_session_get_password(SpiceSession *session);
 const gchar* spice_session_get_host(SpiceSession *session);
 const gchar* spice_session_get_cert_subject(SpiceSession *session);
@@ -158,6 +171,8 @@ void spice_session_set_name(SpiceSession *session, const gchar *name);
 gboolean spice_session_is_playback_active(SpiceSession *session);
 guint32 spice_session_get_playback_latency(SpiceSession *session);
 void spice_session_sync_playback_latency(SpiceSession *session);
+const gchar* spice_session_get_shared_dir(SpiceSession *session);
+void spice_session_set_shared_dir(SpiceSession *session, const gchar *dir);
 
 G_END_DECLS
 

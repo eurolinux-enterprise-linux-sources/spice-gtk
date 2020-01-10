@@ -19,14 +19,14 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include "messages.h"
+#include <common/messages.h>
 #include <string.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <spice/protocol.h>
 #include <spice/macros.h>
-#include "mem.h"
+#include <common/mem.h>
 
 #ifdef _MSC_VER
 #pragma warning(disable:4101)
@@ -147,7 +147,7 @@ struct PointerInfo {
     uint32_t nelements;
 };
 
-static uint8_t * parse_msgc_ack_sync(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_ack_sync(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -191,7 +191,7 @@ static uint8_t * parse_msgc_ack_sync(uint8_t *message_start, uint8_t *message_en
     return NULL;
 }
 
-static uint8_t * parse_SpiceMsgEmpty(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_SpiceMsgEmpty(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -231,7 +231,7 @@ static uint8_t * parse_SpiceMsgEmpty(uint8_t *message_start, uint8_t *message_en
     return NULL;
 }
 
-static uint8_t * parse_msgc_pong(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_pong(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -276,11 +276,11 @@ static uint8_t * parse_msgc_pong(uint8_t *message_start, uint8_t *message_end, i
     return NULL;
 }
 
-static void nofree(uint8_t *data)
+static void nofree(SPICE_GNUC_UNUSED uint8_t *data)
 {
 }
 
-static uint8_t * parse_SpiceMsgData(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_SpiceMsgData(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -310,7 +310,7 @@ static uint8_t * parse_SpiceMsgData(uint8_t *message_start, uint8_t *message_end
 
 }
 
-static uint8_t * parse_msgc_disconnecting(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_disconnecting(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -355,7 +355,7 @@ static uint8_t * parse_msgc_disconnecting(uint8_t *message_start, uint8_t *messa
     return NULL;
 }
 
-static uint8_t * parse_msgc_main_client_info(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_main_client_info(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -399,7 +399,7 @@ static uint8_t * parse_msgc_main_client_info(uint8_t *message_start, uint8_t *me
     return NULL;
 }
 
-static uint8_t * parse_msgc_main_mouse_mode_request(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_main_mouse_mode_request(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -443,7 +443,7 @@ static uint8_t * parse_msgc_main_mouse_mode_request(uint8_t *message_start, uint
     return NULL;
 }
 
-static uint8_t * parse_msgc_main_agent_start(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_main_agent_start(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -487,7 +487,7 @@ static uint8_t * parse_msgc_main_agent_start(uint8_t *message_start, uint8_t *me
     return NULL;
 }
 
-static uint8_t * parse_msgc_main_agent_token(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_main_agent_token(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -531,7 +531,7 @@ static uint8_t * parse_msgc_main_agent_token(uint8_t *message_start, uint8_t *me
     return NULL;
 }
 
-static uint8_t * parse_msgc_main_migrate_dst_do_seamless(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_main_migrate_dst_do_seamless(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -575,7 +575,7 @@ static uint8_t * parse_msgc_main_migrate_dst_do_seamless(uint8_t *message_start,
     return NULL;
 }
 
-static uint8_t * parse_MainChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, int minor, size_t *size_out, message_destructor_t *free_message)
+static uint8_t * parse_MainChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, SPICE_GNUC_UNUSED int minor, size_t *size_out, message_destructor_t *free_message)
 {
     static parse_msg_func_t funcs1[6] =  {
         parse_msgc_ack_sync,
@@ -608,7 +608,7 @@ static uint8_t * parse_MainChannel_msgc(uint8_t *message_start, uint8_t *message
 
 
 
-static uint8_t * parse_msgc_display_init(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_display_init(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -655,7 +655,7 @@ static uint8_t * parse_msgc_display_init(uint8_t *message_start, uint8_t *messag
     return NULL;
 }
 
-static uint8_t * parse_msgc_display_stream_report(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_display_stream_report(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -706,7 +706,7 @@ static uint8_t * parse_msgc_display_stream_report(uint8_t *message_start, uint8_
     return NULL;
 }
 
-static uint8_t * parse_DisplayChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, int minor, size_t *size_out, message_destructor_t *free_message)
+static uint8_t * parse_DisplayChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, SPICE_GNUC_UNUSED int minor, size_t *size_out, message_destructor_t *free_message)
 {
     static parse_msg_func_t funcs1[6] =  {
         parse_msgc_ack_sync,
@@ -730,7 +730,7 @@ static uint8_t * parse_DisplayChannel_msgc(uint8_t *message_start, uint8_t *mess
 
 
 
-static uint8_t * parse_msgc_inputs_key_down(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_inputs_key_down(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -774,7 +774,7 @@ static uint8_t * parse_msgc_inputs_key_down(uint8_t *message_start, uint8_t *mes
     return NULL;
 }
 
-static uint8_t * parse_msgc_inputs_key_up(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_inputs_key_up(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -818,7 +818,7 @@ static uint8_t * parse_msgc_inputs_key_up(uint8_t *message_start, uint8_t *messa
     return NULL;
 }
 
-static uint8_t * parse_msgc_inputs_key_modifiers(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_inputs_key_modifiers(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -862,7 +862,7 @@ static uint8_t * parse_msgc_inputs_key_modifiers(uint8_t *message_start, uint8_t
     return NULL;
 }
 
-static uint8_t * parse_msgc_inputs_mouse_motion(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_inputs_mouse_motion(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -908,7 +908,7 @@ static uint8_t * parse_msgc_inputs_mouse_motion(uint8_t *message_start, uint8_t 
     return NULL;
 }
 
-static uint8_t * parse_msgc_inputs_mouse_position(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_inputs_mouse_position(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -955,7 +955,7 @@ static uint8_t * parse_msgc_inputs_mouse_position(uint8_t *message_start, uint8_
     return NULL;
 }
 
-static uint8_t * parse_msgc_inputs_mouse_press(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_inputs_mouse_press(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -1000,7 +1000,7 @@ static uint8_t * parse_msgc_inputs_mouse_press(uint8_t *message_start, uint8_t *
     return NULL;
 }
 
-static uint8_t * parse_msgc_inputs_mouse_release(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_inputs_mouse_release(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -1045,7 +1045,7 @@ static uint8_t * parse_msgc_inputs_mouse_release(uint8_t *message_start, uint8_t
     return NULL;
 }
 
-static uint8_t * parse_InputsChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, int minor, size_t *size_out, message_destructor_t *free_message)
+static uint8_t * parse_InputsChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, SPICE_GNUC_UNUSED int minor, size_t *size_out, message_destructor_t *free_message)
 {
     static parse_msg_func_t funcs1[6] =  {
         parse_msgc_ack_sync,
@@ -1079,7 +1079,7 @@ static uint8_t * parse_InputsChannel_msgc(uint8_t *message_start, uint8_t *messa
 
 
 
-static uint8_t * parse_CursorChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, int minor, size_t *size_out, message_destructor_t *free_message)
+static uint8_t * parse_CursorChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, SPICE_GNUC_UNUSED int minor, size_t *size_out, message_destructor_t *free_message)
 {
     static parse_msg_func_t funcs1[6] =  {
         parse_msgc_ack_sync,
@@ -1097,7 +1097,7 @@ static uint8_t * parse_CursorChannel_msgc(uint8_t *message_start, uint8_t *messa
 
 
 
-static uint8_t * parse_PlaybackChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, int minor, size_t *size_out, message_destructor_t *free_message)
+static uint8_t * parse_PlaybackChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, SPICE_GNUC_UNUSED int minor, size_t *size_out, message_destructor_t *free_message)
 {
     static parse_msg_func_t funcs1[6] =  {
         parse_msgc_ack_sync,
@@ -1115,7 +1115,7 @@ static uint8_t * parse_PlaybackChannel_msgc(uint8_t *message_start, uint8_t *mes
 
 
 
-static uint8_t * parse_msgc_record_data(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_record_data(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -1171,7 +1171,7 @@ static uint8_t * parse_msgc_record_data(uint8_t *message_start, uint8_t *message
     return NULL;
 }
 
-static uint8_t * parse_msgc_record_mode(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_record_mode(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -1228,7 +1228,7 @@ static uint8_t * parse_msgc_record_mode(uint8_t *message_start, uint8_t *message
     return NULL;
 }
 
-static uint8_t * parse_msgc_record_start_mark(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_record_start_mark(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -1272,7 +1272,7 @@ static uint8_t * parse_msgc_record_start_mark(uint8_t *message_start, uint8_t *m
     return NULL;
 }
 
-static uint8_t * parse_RecordChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, int minor, size_t *size_out, message_destructor_t *free_message)
+static uint8_t * parse_RecordChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, SPICE_GNUC_UNUSED int minor, size_t *size_out, message_destructor_t *free_message)
 {
     static parse_msg_func_t funcs1[6] =  {
         parse_msgc_ack_sync,
@@ -1297,7 +1297,7 @@ static uint8_t * parse_RecordChannel_msgc(uint8_t *message_start, uint8_t *messa
 
 
 
-static uint8_t * parse_msgc_tunnel_service_add(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_tunnel_service_add(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -1361,26 +1361,26 @@ static uint8_t * parse_msgc_tunnel_service_add(uint8_t *message_start, uint8_t *
         type__value = read_uint16(pos);
         if (type__value == SPICE_TUNNEL_SERVICE_TYPE_IPP) {
             SPICE_GNUC_UNUSED uint8_t *start2 = (start + 22);
-            size_t u__nw_size;
+            size_t u_u__nw_size;
             uint16_t type__value;
             { /* u */
-                uint32_t u__nelements;
+                uint32_t u_u__nelements;
                 pos = start2 + 0;
                 if (SPICE_UNLIKELY(pos + 2 > message_end)) {
                     goto error;
                 }
                 type__value = read_uint16(pos);
                 if (type__value == SPICE_TUNNEL_IP_TYPE_IPv4) {
-                    u__nelements = 4;
+                    u_u__nelements = 4;
 
-                    u__nw_size = u__nelements;
+                    u_u__nw_size = u_u__nelements;
                 } else {
-                    u__nw_size = 0;
+                    u_u__nw_size = 0;
                 }
 
             }
 
-            u__nw_size = 2 + u__nw_size;
+            u__nw_size = 2 + u_u__nw_size;
         } else {
             u__nw_size = 0;
         }
@@ -1452,7 +1452,7 @@ static uint8_t * parse_msgc_tunnel_service_add(uint8_t *message_start, uint8_t *
     return NULL;
 }
 
-static uint8_t * parse_msgc_tunnel_service_remove(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_tunnel_service_remove(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -1496,7 +1496,7 @@ static uint8_t * parse_msgc_tunnel_service_remove(uint8_t *message_start, uint8_
     return NULL;
 }
 
-static uint8_t * parse_msgc_tunnel_socket_open_ack(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_tunnel_socket_open_ack(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -1541,7 +1541,7 @@ static uint8_t * parse_msgc_tunnel_socket_open_ack(uint8_t *message_start, uint8
     return NULL;
 }
 
-static uint8_t * parse_msgc_tunnel_socket_open_nack(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_tunnel_socket_open_nack(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -1585,7 +1585,7 @@ static uint8_t * parse_msgc_tunnel_socket_open_nack(uint8_t *message_start, uint
     return NULL;
 }
 
-static uint8_t * parse_msgc_tunnel_socket_fin(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_tunnel_socket_fin(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -1629,7 +1629,7 @@ static uint8_t * parse_msgc_tunnel_socket_fin(uint8_t *message_start, uint8_t *m
     return NULL;
 }
 
-static uint8_t * parse_msgc_tunnel_socket_closed(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_tunnel_socket_closed(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -1673,7 +1673,7 @@ static uint8_t * parse_msgc_tunnel_socket_closed(uint8_t *message_start, uint8_t
     return NULL;
 }
 
-static uint8_t * parse_msgc_tunnel_socket_closed_ack(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_tunnel_socket_closed_ack(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -1717,7 +1717,7 @@ static uint8_t * parse_msgc_tunnel_socket_closed_ack(uint8_t *message_start, uin
     return NULL;
 }
 
-static uint8_t * parse_msgc_tunnel_socket_data(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_tunnel_socket_data(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -1773,7 +1773,7 @@ static uint8_t * parse_msgc_tunnel_socket_data(uint8_t *message_start, uint8_t *
     return NULL;
 }
 
-static uint8_t * parse_msgc_tunnel_socket_token(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_tunnel_socket_token(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -1818,7 +1818,7 @@ static uint8_t * parse_msgc_tunnel_socket_token(uint8_t *message_start, uint8_t 
     return NULL;
 }
 
-static uint8_t * parse_TunnelChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, int minor, size_t *size_out, message_destructor_t *free_message)
+static uint8_t * parse_TunnelChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, SPICE_GNUC_UNUSED int minor, size_t *size_out, message_destructor_t *free_message)
 {
     static parse_msg_func_t funcs1[6] =  {
         parse_msgc_ack_sync,
@@ -1850,7 +1850,7 @@ static uint8_t * parse_TunnelChannel_msgc(uint8_t *message_start, uint8_t *messa
 
 #ifdef USE_SMARTCARD
 
-static uint8_t * parse_msgc_smartcard_reader_add(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_smartcard_reader_add(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -1901,7 +1901,7 @@ static uint8_t * parse_msgc_smartcard_reader_add(uint8_t *message_start, uint8_t
     return NULL;
 }
 
-static uint8_t * parse_SmartcardChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, int minor, size_t *size_out, message_destructor_t *free_message)
+static uint8_t * parse_SmartcardChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, SPICE_GNUC_UNUSED int minor, size_t *size_out, message_destructor_t *free_message)
 {
     static parse_msg_func_t funcs1[6] =  {
         parse_msgc_ack_sync,
@@ -1925,7 +1925,7 @@ static uint8_t * parse_SmartcardChannel_msgc(uint8_t *message_start, uint8_t *me
 
 
 
-static uint8_t * parse_UsbredirChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, int minor, size_t *size_out, message_destructor_t *free_message)
+static uint8_t * parse_UsbredirChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, SPICE_GNUC_UNUSED int minor, size_t *size_out, message_destructor_t *free_message)
 {
     static parse_msg_func_t funcs1[6] =  {
         parse_msgc_ack_sync,
@@ -1948,7 +1948,7 @@ static uint8_t * parse_UsbredirChannel_msgc(uint8_t *message_start, uint8_t *mes
 
 
 
-static uint8_t * parse_msgc_port_event(uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_port_event(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
@@ -1992,7 +1992,35 @@ static uint8_t * parse_msgc_port_event(uint8_t *message_start, uint8_t *message_
     return NULL;
 }
 
-static uint8_t * parse_PortChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, int minor, size_t *size_out, message_destructor_t *free_message)
+static uint8_t * parse_PortChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, SPICE_GNUC_UNUSED int minor, size_t *size_out, message_destructor_t *free_message)
+{
+    static parse_msg_func_t funcs1[6] =  {
+        parse_msgc_ack_sync,
+        parse_SpiceMsgEmpty,
+        parse_msgc_pong,
+        parse_SpiceMsgEmpty,
+        parse_SpiceMsgData,
+        parse_msgc_disconnecting
+    };
+    static parse_msg_func_t funcs2[1] =  {
+        parse_SpiceMsgData
+    };
+    static parse_msg_func_t funcs3[1] =  {
+        parse_msgc_port_event
+    };
+    if (message_type >= 1 && message_type < 7) {
+        return funcs1[message_type-1](message_start, message_end, minor, size_out, free_message);
+    } else if (message_type >= 101 && message_type < 102) {
+        return funcs2[message_type-101](message_start, message_end, minor, size_out, free_message);
+    } else if (message_type >= 201 && message_type < 202) {
+        return funcs3[message_type-201](message_start, message_end, minor, size_out, free_message);
+    }
+    return NULL;
+}
+
+
+
+static uint8_t * parse_WebDAVChannel_msgc(uint8_t *message_start, uint8_t *message_end, uint16_t message_type, SPICE_GNUC_UNUSED int minor, size_t *size_out, message_destructor_t *free_message)
 {
     static parse_msg_func_t funcs1[6] =  {
         parse_msgc_ack_sync,
@@ -2020,7 +2048,7 @@ static uint8_t * parse_PortChannel_msgc(uint8_t *message_start, uint8_t *message
 
 spice_parse_channel_func_t spice_get_client_channel_parser(uint32_t channel, unsigned int *max_message_type)
 {
-    static struct {spice_parse_channel_func_t func; unsigned int max_messages; } channels[11] =  {
+    static struct {spice_parse_channel_func_t func; unsigned int max_messages; } channels[12] =  {
         { NULL, 0 },
         { parse_MainChannel_msgc, 111},
         { parse_DisplayChannel_msgc, 102},
@@ -2035,9 +2063,10 @@ spice_parse_channel_func_t spice_get_client_channel_parser(uint32_t channel, uns
         { NULL, 0 },
 #endif /* USE_SMARTCARD */
         { parse_UsbredirChannel_msgc, 101},
-        { parse_PortChannel_msgc, 201}
+        { parse_PortChannel_msgc, 201},
+        { parse_WebDAVChannel_msgc, 201}
     };
-    if (channel < 11) {
+    if (channel < 12) {
         if (max_message_type != NULL) {
             *max_message_type = channels[channel].max_messages;
         }
@@ -2046,7 +2075,7 @@ spice_parse_channel_func_t spice_get_client_channel_parser(uint32_t channel, uns
     return NULL;
 }
 
-uint8_t * spice_parse_reply(uint8_t *message_start, uint8_t *message_end, uint32_t channel, uint16_t message_type, int minor, size_t *size_out, message_destructor_t *free_message)
+uint8_t * spice_parse_reply(uint8_t *message_start, uint8_t *message_end, uint32_t channel, uint16_t message_type, SPICE_GNUC_UNUSED int minor, size_t *size_out, message_destructor_t *free_message)
 {
     spice_parse_channel_func_t func;
     func = spice_get_client_channel_parser(channel, NULL);

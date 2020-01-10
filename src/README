@@ -40,7 +40,7 @@ Build dependencies:
 
 . On Fedora: (gtk2-devel if building with --with-gtk=2.0)
 
-gtk3-devel spice-protocol intltool celt051-devel
+gtk3-devel spice-protocol intltool
 openssl-devel pulseaudio-libs-devel pixman-devel
 gobject-introspection-devel libjpeg-turbo-devel zlib-devel
 cyrus-sasl-devel gtk-doc
@@ -55,4 +55,4 @@ gstreamer-devel gstreamer-plugins-base-devel
 
 . If you build from git, you'll also need:
 
-libtool automake vala perl-Text-CSV
+libtool automake vala vala-tools perl-Text-CSV

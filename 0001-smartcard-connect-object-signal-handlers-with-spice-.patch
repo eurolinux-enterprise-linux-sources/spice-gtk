@@ -1,0 +1,43 @@
+From b9b9a6913a7322610869307442e82eaee41cbefa Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marc-Andr=C3=A9=20Lureau?= <marcandre.lureau@redhat.com>
+Date: Tue, 24 Mar 2015 18:57:53 +0100
+Subject: [PATCH] smartcard: connect object signal handlers with spice helper
+
+The smartcard manager may outlive the smartcard channels. Make sure the
+channel handlers are disconnected when the channel is free by using
+spice_g_signal_connect_object() helper. This fixes crashes when
+dispatching smartcard events on deleted channels.
+
+Related bug:
+https://bugzilla.redhat.com/show_bug.cgi?id=1205171
+---
+ gtk/channel-smartcard.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/gtk/channel-smartcard.c b/gtk/channel-smartcard.c
+index d27360c..627b9aa 100644
+--- a/gtk/channel-smartcard.c
++++ b/gtk/channel-smartcard.c
+@@ -140,14 +140,14 @@ static void spice_smartcard_channel_constructed(GObject *object)
+         SpiceSmartcardChannel *channel = SPICE_SMARTCARD_CHANNEL(object);
+         SpiceSmartcardManager *manager = spice_smartcard_manager_get();
+ 
+-        g_signal_connect(G_OBJECT(manager), "reader-added",
+-                         (GCallback)reader_added_cb, channel);
+-        g_signal_connect(G_OBJECT(manager), "reader-removed",
+-                         (GCallback)reader_removed_cb, channel);
+-        g_signal_connect(G_OBJECT(manager), "card-inserted",
+-                         (GCallback)card_inserted_cb, channel);
+-        g_signal_connect(G_OBJECT(manager), "card-removed",
+-                         (GCallback)card_removed_cb, channel);
++        spice_g_signal_connect_object(G_OBJECT(manager), "reader-added",
++                                      (GCallback)reader_added_cb, channel, 0);
++        spice_g_signal_connect_object(G_OBJECT(manager), "reader-removed",
++                                      (GCallback)reader_removed_cb, channel, 0);
++        spice_g_signal_connect_object(G_OBJECT(manager), "card-inserted",
++                                      (GCallback)card_inserted_cb, channel, 0);
++        spice_g_signal_connect_object(G_OBJECT(manager), "card-removed",
++                                      (GCallback)card_removed_cb, channel, 0);
+     }
+ #endif
+ 

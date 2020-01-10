@@ -1,5 +1,4 @@
 NULL =
-
 SUBDIRS =
 
 if WITH_CONTROLLER
@@ -41,7 +40,10 @@ EXTRA_DIST =					\
 	spice-client-gtk-manual.defs		\
 	spice-client-gtk.override		\
 	spice-marshal.txt			\
+	spice-version.h.in			\
 	$(NULL)
+
+DISTCLEANFILES = spice-version.h
 
 bin_PROGRAMS = spicy spicy-stats spicy-screenshot
 if WITH_POLKIT
@@ -58,11 +60,15 @@ lib_LTLIBRARIES += libspice-client-gtk-3.0.la
 endif
 
 if HAVE_LD_VERSION_SCRIPT
-GLIB_VERSION_LDFLAGS = -Wl,--version-script=${srcdir}/map-file
-GTK_VERSION_LDFLAGS = $(GLIB_VERSION_LDFLAGS)
+GLIB_SYMBOLS_LDFLAGS = -Wl,--version-script=${srcdir}/map-file
+GLIB_SYMBOLS_FILE = map-file
+GTK_SYMBOLS_LDFLAGS = $(GLIB_SYMBOLS_LDFLAGS)
+GTK_SYMBOLS_FILE = $(GLIB_SYMBOLS_FILE)
 else
-GLIB_VERSION_LDFLAGS = -export-symbols ${srcdir}/spice-glib-sym-file
-GTK_VERSION_LDFLAGS = -export-symbols ${srcdir}/spice-gtk-sym-file
+GLIB_SYMBOLS_LDFLAGS = -export-symbols ${srcdir}/spice-glib-sym-file
+GLIB_SYMBOLS_FILE = spice-glib-sym-file
+GTK_SYMBOLS_LDFLAGS = -export-symbols ${srcdir}/spice-gtk-sym-file
+GTK_SYMBOLS_FILE = spice-gtk-sym-file
 endif
 
 KEYMAP_GEN = $(srcdir)/keymap-gen.pl
@@ -70,7 +76,6 @@ KEYMAP_GEN = $(srcdir)/keymap-gen.pl
 SPICE_COMMON_CPPFLAGS =						\
 	-DG_LOG_DOMAIN=\"GSpice\"				\
 	-DSPICE_NO_DEPRECATED					\
-	-DSW_CANVAS_CACHE					\
 	-DSPICE_GTK_LOCALEDIR=\"${SPICE_GTK_LOCALEDIR}\"	\
 	-DPNP_IDS=\""$(PNP_IDS)"\"				\
 	-DUSB_IDS=\""$(USB_IDS)"\"				\
@@ -79,6 +84,7 @@ SPICE_COMMON_CPPFLAGS =						\
 	$(COMMON_CFLAGS)					\
 	$(PIXMAN_CFLAGS)					\
 	$(CELT051_CFLAGS)					\
+	$(OPUS_CFLAGS)  					\
 	$(PULSE_CFLAGS)						\
 	$(GTK_CFLAGS)						\
 	$(CAIRO_CFLAGS)						\
@@ -92,6 +98,8 @@ SPICE_COMMON_CPPFLAGS =						\
 	$(SMARTCARD_CFLAGS)					\
 	$(USBREDIR_CFLAGS)					\
 	$(GUDEV_CFLAGS)						\
+	$(SOUP_CFLAGS)						\
+	$(PHODAV_CFLAGS)					\
 	$(NULL)
 
 AM_CPPFLAGS =					\
@@ -103,7 +111,7 @@ AM_CPPFLAGS =					\
 SPICE_GTK_LDFLAGS_COMMON =		\
 	-version-info 4:0:0		\
 	-no-undefined			\
-	$(GTK_VERSION_LDFLAGS)		\
+	$(GTK_SYMBOLS_LDFLAGS)		\
 	$(NULL)
 
 SPICE_GTK_LIBADD_COMMON =		\
@@ -117,6 +125,7 @@ SPICE_GTK_LIBADD_COMMON =		\
 
 SPICE_GTK_SOURCES_COMMON =		\
 	glib-compat.h			\
+	gtk-compat.h			\
 	spice-util.c			\
 	spice-util-priv.h		\
 	spice-gtk-session.c		\
@@ -148,11 +157,13 @@ SPICE_GTK_SOURCES_COMMON +=		\
 endif
 
 if HAVE_GTK_2
+libspice_client_gtk_2_0_la_DEPEDENCIES = $(GTK_SYMBOLS_FILE)
 libspice_client_gtk_2_0_la_LDFLAGS = $(SPICE_GTK_LDFLAGS_COMMON)
 libspice_client_gtk_2_0_la_LIBADD = $(SPICE_GTK_LIBADD_COMMON)
 libspice_client_gtk_2_0_la_SOURCES = $(SPICE_GTK_SOURCES_COMMON)
 nodist_libspice_client_gtk_2_0_la_SOURCES = $(nodist_SPICE_GTK_SOURCES_COMMON)
 else
+libspice_client_gtk_3_0_la_DEPEDENCIES = $(GTK_SYMBOLS_FILE)
 libspice_client_gtk_3_0_la_LDFLAGS = $(SPICE_GTK_LDFLAGS_COMMON)
 libspice_client_gtk_3_0_la_LIBADD = $(SPICE_GTK_LIBADD_COMMON)
 libspice_client_gtk_3_0_la_SOURCES = $(SPICE_GTK_SOURCES_COMMON)
@@ -172,19 +183,23 @@ nodist_libspice_client_gtkinclude_HEADERS =	\
 	spice-widget-enums.h			\
 	$(NULL)
 
+libspice_client_glib_2_0_la_DEPENDENCIES = $(GLIB_SYMBOLS_FILE)
+
 libspice_client_glib_2_0_la_LDFLAGS =	\
 	-version-info 13:0:5		\
 	-no-undefined			\
-	$(GLIB_VERSION_LDFLAGS)		\
+	$(GLIB_SYMBOLS_LDFLAGS)		\
 	$(NULL)
 
 libspice_client_glib_2_0_la_LIBADD =					\
 	$(top_builddir)/spice-common/common/libspice-common.la		\
 	$(top_builddir)/spice-common/common/libspice-common-client.la	\
 	$(GLIB2_LIBS)							\
+	$(SOUP_LIBS)							\
 	$(GIO_LIBS)							\
 	$(GOBJECT2_LIBS)						\
 	$(CELT051_LIBS)							\
+	$(OPUS_LIBS)							\
 	$(JPEG_LIBS)							\
 	$(Z_LIBS)							\
 	$(PIXMAN_LIBS)							\
@@ -195,6 +210,7 @@ libspice_client_glib_2_0_la_LIBADD =					\
 	$(SMARTCARD_LIBS)						\
 	$(USBREDIR_LIBS)						\
 	$(GUDEV_LIBS)							\
+	$(PHODAV_LIBS)							\
 	$(NULL)
 
 if WITH_POLKIT
@@ -208,8 +224,8 @@ USB_ACL_HELPER_SRCS =
 endif
 
 libspice_client_glib_2_0_la_SOURCES =			\
-	bio-gsocket.c					\
-	bio-gsocket.h					\
+	bio-gio.c					\
+	bio-gio.h					\
 	glib-compat.c					\
 	glib-compat.h					\
 	spice-audio.c					\
@@ -231,6 +247,7 @@ libspice_client_glib_2_0_la_SOURCES =			\
 	gio-coroutine.h					\
 							\
 	channel-base.c					\
+	channel-webdav.c				\
 	channel-cursor.c				\
 	channel-display.c				\
 	channel-display-priv.h				\
@@ -246,21 +263,23 @@ libspice_client_glib_2_0_la_SOURCES =			\
 	channel-usbredir-priv.h				\
 	smartcard-manager.c				\
 	smartcard-manager-priv.h			\
-	spice-proxy.c					\
-	spice-proxy.h					\
+	spice-uri.c					\
+	spice-uri-priv.h				\
 	usb-device-manager.c				\
 	usb-device-manager-priv.h			\
 	usbutil.c					\
 	usbutil.h					\
 	$(USB_ACL_HELPER_SRCS)				\
+	vmcstream.c					\
+	vmcstream.h					\
 							\
 	decode.h					\
 	decode-glz.c					\
 	decode-jpeg.c					\
 	decode-zlib.c					\
 							\
-	$(top_srcdir)/spice-common/common/sw_canvas.c	\
-	$(top_srcdir)/spice-common/common/sw_canvas.h	\
+	client_sw_canvas.c	\
+	client_sw_canvas.h	\
 	$(NULL)
 
 if WITH_GPROXY
@@ -280,11 +299,13 @@ libspice_client_glibincludedir = $(includedir)/spice-client-glib-2.0
 libspice_client_glibinclude_HEADERS =	\
 	spice-audio.h			\
 	spice-client.h			\
+	spice-uri.h			\
 	spice-types.h			\
 	spice-session.h			\
 	spice-channel.h			\
 	spice-util.h			\
 	spice-option.h			\
+	spice-version.h			\
 	channel-cursor.h		\
 	channel-display.h		\
 	channel-inputs.h		\
@@ -294,6 +315,7 @@ libspice_client_glibinclude_HEADERS =	\
 	channel-record.h		\
 	channel-smartcard.h		\
 	channel-usbredir.h		\
+	channel-webdav.h		\
 	usb-device-manager.h		\
 	smartcard-manager.h		\
 	$(NULL)
@@ -441,14 +463,16 @@ spice-glib-enums.c: spice-glib-enums.h
 spice-widget-enums.c: spice-widget-enums.h
 
 spice-marshal.c: spice-marshal.txt
-	$(AM_V_GEN)echo "#include \"spice-marshal.h\"" > $@ && \
+	$(AM_V_GEN)echo "#include \"config.h\"" > $@ && \
+		echo "#include \"spice-marshal.h\"" > $@ && \
 		glib-genmarshal --body $< >> $@ || (rm -f $@ && exit 1)
 
 spice-marshal.h: spice-marshal.txt
 	$(AM_V_GEN)glib-genmarshal --header $< > $@ || (rm -f $@ && exit 1)
 
 spice-glib-enums.c: spice-channel.h channel-inputs.h spice-session.h
-	$(AM_V_GEN)glib-mkenums --fhead "#include <glib-object.h>\n" \
+	$(AM_V_GEN)glib-mkenums --fhead "#include \"config.h\"\n\n" \
+			--fhead "#include <glib-object.h>\n" \
 			--fhead "#include \"spice-glib-enums.h\"\n\n" \
 			--fprod "\n#include \"spice-session.h\"\n" \
 			--fprod "\n#include \"spice-channel.h\"\n" \
@@ -477,7 +501,8 @@ spice-glib-enums.h: spice-channel.h channel-inputs.h spice-session.h
 		$^ >  $@
 
 spice-widget-enums.c: spice-widget.h
-	$(AM_V_GEN)glib-mkenums --fhead "#include <glib-object.h>\n" \
+	$(AM_V_GEN)glib-mkenums --fhead "#include \"config.h\"\n\n" \
+			--fhead "#include <glib-object.h>\n" \
 			--fhead "#include \"spice-widget-enums.h\"\n\n" \
 			--fprod "\n#include \"spice-widget.h\"\n" \
 			--vhead "static const G@Type@Value _@enum_name@_values[] = {" \
@@ -589,6 +614,7 @@ glib_introspection_files =				\
 	spice-glib-enums.c				\
 	spice-option.c					\
 	spice-util.c					\
+	channel-webdav.c				\
 	channel-cursor.c				\
 	channel-display.c				\
 	channel-inputs.c				\
@@ -651,13 +677,13 @@ endif
 update-symbol-files:
 	( echo "SPICEGTK_1 {" ; \
 	  echo "global:" ; \
-	  ctags -f - --c-kinds=p $(libspice_client_gtkinclude_HEADERS) $(nodist_libspice_client_gtkinclude_HEADERS) $(libspice_client_glibinclude_HEADERS) $(nodist_libspice_client_glibinclude_HEADERS) | awk '/^spice_/ { print $$1 ";" }' | sort ; \
+	  ctags -f - -I G_GNUC_CONST --c-kinds=p $(libspice_client_gtkinclude_HEADERS) $(nodist_libspice_client_gtkinclude_HEADERS) $(libspice_client_glibinclude_HEADERS) $(nodist_libspice_client_glibinclude_HEADERS) | awk '/^spice_/ { print $$1 ";" }' | sort ; \
 	  echo "local:" ;  \
 	  echo "*;" ; \
 	  echo "};" ) > $(srcdir)/map-file
-	( ctags -f - --c-kinds=p $(libspice_client_glibinclude_HEADERS) $(nodist_libspice_client_glibinclude_HEADERS) | awk '/^spice_/ { print $$1 }' | sort ; \
+	( ctags -f - -I G_GNUC_CONST --c-kinds=p $(libspice_client_glibinclude_HEADERS) $(nodist_libspice_client_glibinclude_HEADERS) | awk '/^spice_/ { print $$1 }' | sort ; \
 	) > $(srcdir)/spice-glib-sym-file
-	( ctags -f - --c-kinds=p $(libspice_client_gtkinclude_HEADERS) $(nodist_libspice_client_gtkinclude_HEADERS) | awk '/^spice_/ { print $$1 }' | sort ; \
+	( ctags -f - -I G_GNUC_CONST --c-kinds=p $(libspice_client_gtkinclude_HEADERS) $(nodist_libspice_client_gtkinclude_HEADERS) | awk '/^spice_/ { print $$1 }' | sort ; \
 	) > $(srcdir)/spice-gtk-sym-file
 
 -include $(top_srcdir)/git.mk

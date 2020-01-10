@@ -1,0 +1,66 @@
+From 8a4846ae9c155a09c3bb996281fe45967360943e Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marc-Andr=C3=A9=20Lureau?= <marcandre.lureau@redhat.com>
+Date: Wed, 25 Mar 2015 00:06:33 +0100
+Subject: [PATCH] smartcard: add reader and cards on channel up
+
+The smartcard manager reports reader/card events on insertion and
+removal. If a smartcard channel is created after those events, the
+channel state will not be in sync with the current reader/card state.
+Sync the state when the channel is up.
+
+Fixes:
+https://bugzilla.redhat.com/show_bug.cgi?id=1205171
+---
+ gtk/channel-smartcard.c | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
+
+diff --git a/gtk/channel-smartcard.c b/gtk/channel-smartcard.c
+index 627b9aa..fc23626 100644
+--- a/gtk/channel-smartcard.c
++++ b/gtk/channel-smartcard.c
+@@ -400,6 +400,10 @@ static void reader_added_cb(SpiceSmartcardManager *manager, VReader *reader,
+     SpiceSmartcardChannel *channel = SPICE_SMARTCARD_CHANNEL(user_data);
+     const char *reader_name = vreader_get_name(reader);
+ 
++    if (vreader_get_id(reader) != -1 ||
++        g_list_find(channel->priv->pending_reader_additions, reader))
++        return;
++
+     channel->priv->pending_reader_additions =
+         g_list_append(channel->priv->pending_reader_additions, reader);
+ 
+@@ -457,14 +461,33 @@ static void spice_smartcard_channel_up_cb(GObject *source_object,
+     g_return_if_fail(SPICE_IS_SESSION(source_object));
+ 
+     if (!spice_channel_get_session(SPICE_CHANNEL(channel))->priv->migration_copy) {
++        SpiceSmartcardManager *manager = spice_smartcard_manager_get();
++        GList *l, *list = NULL;
+         GError *error = NULL;
+ 
+         spice_smartcard_manager_init_finish(SPICE_SESSION(source_object),
+                                             res, &error);
+-        if (error)
++        if (error) {
+             g_warning("%s", error->message);
++            goto end;
++        }
++
++        list = spice_smartcard_manager_get_readers(manager);
++        for (l = list; l != NULL; l = l->next) {
++            VReader *reader = l->data;
++            gboolean has_card = vreader_card_is_present(reader) == VREADER_OK;
++
++            reader_added_cb(manager, reader, channel);
++            if (has_card)
++                card_inserted_cb(manager, reader, channel);
++
++            g_boxed_free(SPICE_TYPE_SMARTCARD_READER, reader);
++        }
++end:
++        g_list_free(list);
+         g_clear_error(&error);
+     }
++
+ }
+ 
+ static void spice_smartcard_channel_up(SpiceChannel *channel)

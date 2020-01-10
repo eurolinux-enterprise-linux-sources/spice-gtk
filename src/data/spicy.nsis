@@ -9,11 +9,11 @@
 #
 #   makensis spicy.nsis
 #
-# which will generate the output file 'spicy-0.22.exe' which is a Windows
+# which will generate the output file 'spicy-0.26.exe' which is a Windows
 # installer containing your program.
 
 Name "spicy"
-OutFile "spicy-0.22.exe"
+OutFile "spicy-0.26.exe"
 InstallDir "c:\spicy"
 InstallDirRegKey HKLM SOFTWARE\spicy "Install_Dir"
 

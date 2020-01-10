@@ -7,27 +7,18 @@
 #define _version_suffix -f256
 
 Name:           spice-gtk
-Version:        0.22
-Release:        7%{?dist}
+Version:        0.26
+Release:        4%{?dist}
 Summary:        A GTK+ widget for SPICE clients
 
 Group:          System Environment/Libraries
 License:        LGPLv2+
 URL:            http://spice-space.org/page/Spice-Gtk
 Source0:        http://www.spice-space.org/download/gtk/%{name}-%{version}%{?_version_suffix}.tar.bz2
-Patch0001:      0001-Use-TLS-version-1.0-or-better.patch
-Patch0002:      0002-Fix-spice_display_get_pixbuf-with-offset-area.patch
-Patch0003:      0003-clipboard-check-that-clipboard-request-does-not-belo.patch
-patch0004:       0004-display-fix-crash-when-releasing-primary-surface.patch
-patch0005:       0005-display-signal-primary-destroy-when-clearing-all-sur.patch
-patch0006:       0006-Don-t-attempt-to-send-0-scancode-when-releasing-keys.patch
-patch0007:       0007-session-don-t-track-open_host_idle-source-id.patch
-patch0008:       0008-option-check-that-default-ca-file-exists.patch
-patch0009:       0009-Include-glib-compat.h-in-spice-option.c.patch
-patch0010:       0010-sasl-Rework-memory-handling-in-spice_channel_perform.patch
-
-Patch1000:      1000-cairo-disable-scaling-if-SPICE_NOSCALE.patch
-Patch1002:      1002-gtk-Makefile.am-add-PIE-flags-to-libspice-client-gli.patch
+#Patch0001:      patch-name.patch
+Patch0001:      0001-smartcard-connect-object-signal-handlers-with-spice-.patch
+Patch0002:      0002-smartcard-add-reader-and-cards-on-channel-up.patch
+Patch0003:      0003-channel-smartcard-Add-missing-USE_SMARTCARD-checks.patch
 
 BuildRequires: intltool
 #New enough glib is needed for proxy support
@@ -120,19 +111,11 @@ if [ -n '%{?_version_suffix}' ]; then
 fi
 
 pushd spice-gtk-%{version}
+#%patch0001 -p1
 %patch0001 -p1
 %patch0002 -p1
 %patch0003 -p1
-%patch0004 -p1
-%patch0005 -p1
-%patch0006 -p1
-%patch0007 -p1
-%patch0008 -p1
-%patch0009 -p1
-%patch0010 -p1
 
-%patch1000 -p1
-%patch1002 -p1
 find . -name '*.stamp' | xargs touch
 popd
 
@@ -140,12 +123,12 @@ popd
 %build
 cd spice-gtk-%{version}
 %configure --disable-gtk-doc --with-gtk=2.0 --disable-introspection --enable-pie --with-usb-acl-helper-dir=%{_libexecdir}/spice-gtk-%{_arch}/
-make %{?_smp_mflags}
+make %{?_smp_mflags} LDFLAGS="-Wl,-z,relro -Wl,-z,now" V=1
 cd ..
 
 %install
 cd spice-gtk-%{version}
-make install DESTDIR=%{buildroot}
+make install DESTDIR=%{buildroot} V=1
 rm -f %{buildroot}%{_libdir}/*.a
 rm -f %{buildroot}%{_libdir}/*.la
 rm -f %{buildroot}%{_libdir}/python*/site-packages/*.a
@@ -166,6 +149,7 @@ cd ..
 %doc spice-gtk-%{version}/README
 %doc spice-gtk-%{version}/NEWS
 %{_libdir}/libspice-client-gtk-2.0.so.*
+%{_mandir}/man1/spice-client.1*
 
 %files devel
 %defattr(-,root,root,-)
@@ -202,6 +186,32 @@ cd ..
 %{_bindir}/spicy-stats
 
 %changelog
+* Fri Apr 10 2015 Christophe Fergeau <cfergeau@redhat.com> 0.26-4
+- Fix smartcard issues after VM restart (virsh destroy/virsh start)
+  Resolves: rhbz#1205171
+- Remove obsolete patches
+  Related: rhbz#1185434
+
+* Fri Feb 27 2015 Christophe Fergeau <cfergeau@redhat.com> 0.26-3
+- Add -Wl,-z,now as well to the link flags.  This flag was present in
+  1002-gtk-Makefile.am-add-PIE-flags-to-libspice-client-gli.patch, and
+  pkgwrangler still complains about:
+  File /usr/lib/libspice-client-glib-2.0.so.8.5.0 lost GNU_RELRO security
+  protection on i686
+  Related: rhbz#1185434
+
+* Thu Feb 26 2015 Christophe Fergeau <cfergeau@redhat.com> 0.26-2
+- Add -Wl,-z,relro to the linker flags in order to fix a rpmdiff
+  error. These flags used to be provided indirectly by openssl, and after
+  openssl stopped exporting them, they were added by
+  1002-gtk-Makefile.am-add-PIE-flags-to-libspice-client-gli.patch
+  which was dropped during the rebase
+  Related: rhbz#1185434
+
+* Mon Feb 16 2015 Jonathon Jongsma <jjongsma@redhat.com> - 0.26-1
+- Rebase to 0.26 release
+  Resolves: rhbz#1185434
+
 * Thu Jun 19 2014 Christophe Fergeau <cfergeau@redhat.com> 0.22-7
 - Cherry-pick important fixes which were made after spice-gtk 0.22
   Related: rhbz#1097338

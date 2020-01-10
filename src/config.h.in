@@ -76,6 +76,9 @@
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
 
+/* Define to 1 if you have the `strtok_r' function. */
+#undef HAVE_STRTOK_R
+
 /* Define to 1 if you have the <sys/ipc.h> header file. */
 #undef HAVE_SYS_IPC_H
 
@@ -110,9 +113,6 @@
    */
 #undef LT_OBJDIR
 
-/* Define to 1 if your C compiler doesn't accept -c and -o together. */
-#undef NO_MINUS_C_MINUS_O
-
 /* Name of package */
 #undef PACKAGE
 
@@ -137,14 +137,20 @@
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
-/* Define if supporting dbus */
-#undef USE_DBUS
+/* Define if supporting dbus-glib */
+#undef USE_DBUS_GLIB
+
+/* Define if supporting gdbus */
+#undef USE_GDBUS
 
 /* Define if supporting gudev */
 #undef USE_GUDEV
 
 /* Define if libusb has hotplug support */
 #undef USE_LIBUSB_HOTPLUG
+
+/* Define if supporting phodav */
+#undef USE_PHODAV
 
 /* Define if supporting polkit */
 #undef USE_POLKIT

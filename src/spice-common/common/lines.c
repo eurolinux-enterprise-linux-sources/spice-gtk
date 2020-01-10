@@ -806,14 +806,14 @@ miFillUniqueSpanGroup (GCPtr pGC, SpanGroup * spanGroup, Boolean foreground)
                         newwidths = xrealloc (newspans->widths,
                                               ysizes[index] * sizeof (int));
                         if (!newpoints || !newwidths) {
-                            int i;
-
                             for (i = 0; i < ylength; i++) {
                                 xfree (yspans[i].points);
                                 xfree (yspans[i].widths);
                             }
                             xfree (yspans);
                             xfree (ysizes);
+                            xfree (newpoints);
+                            xfree (newwidths);
                             miDisposeSpanGroup (spanGroup);
                             return;
                         }
@@ -836,8 +836,6 @@ miFillUniqueSpanGroup (GCPtr pGC, SpanGroup * spanGroup, Boolean foreground)
         points = (DDXPointRec*)xalloc (count * sizeof (DDXPointRec));
         widths = (int *)xalloc (count * sizeof (int));
         if (!points || !widths) {
-            int i;
-
             for (i = 0; i < ylength; i++) {
                 xfree (yspans[i].points);
                 xfree (yspans[i].widths);
@@ -1826,7 +1824,7 @@ miFillRectPolyHelper (GCPtr pGC, Boolean foreground, SpanDataPtr spanData, int x
 }
 
 static int
-miPolyBuildEdge (double x0, double y0, double k,        /* x0 * dy - y0 * dx */
+miPolyBuildEdge (SPICE_GNUC_UNUSED double x0, double y0, double k, /* x0 * dy - y0 * dx */
                  int dx, int dy, int xi, int yi, int left, PolyEdgePtr edge)
 {
     int x, y, e;
@@ -1837,15 +1835,6 @@ miPolyBuildEdge (double x0, double y0, double k,        /* x0 * dy - y0 * dx */
         dx = -dx;
         k = -k;
     }
-#ifdef NOTDEF
-    {
-        double realk, kerror;
-        realk = x0 * dy - y0 * dx;
-        kerror = Fabs (realk - k);
-        if (kerror > .1)
-            printf ("realk: %g k: %g\n", realk, k);
-    }
-#endif
     y = ICEIL (y0);
     xady = ICEIL (k) + y * dx;
 
@@ -1970,7 +1959,11 @@ miPolyBuildPoly (PolyVertexPtr vertices,
 }
 
 static void
-miLineOnePoint (GCPtr pGC, Boolean foreground, SpanDataPtr spanData, int x, int y)
+miLineOnePoint (GCPtr pGC,
+                Boolean foreground,
+                SPICE_GNUC_UNUSED SpanDataPtr spanData,
+                int x,
+                int y)
 {
     DDXPointRec pt;
     int wid;
@@ -2501,13 +2494,18 @@ miLineArc (GCPtr pGC,
 }
 
 static void
-miLineProjectingCap (GCPtr pGC, Boolean foreground,
-                     SpanDataPtr spanData, LineFacePtr face, Boolean isLeft,
-                     double xorg, double yorg, Boolean isInt)
+miLineProjectingCap (GCPtr pGC,
+                     Boolean foreground,
+                     SpanDataPtr spanData,
+                     LineFacePtr face,
+                     Boolean isLeft,
+                     SPICE_GNUC_UNUSED double xorg,
+                     SPICE_GNUC_UNUSED double yorg,
+                     Boolean isInt)
 {
     int xorgi = 0, yorgi = 0;
     int lw;
-    PolyEdgeRec lefts[2], rights[2];
+    PolyEdgeRec lefts[4], rights[4];
     int lefty, righty, topy, bottomy;
     PolyEdgePtr left, right;
     PolyEdgePtr top, bottom;
@@ -2665,7 +2663,7 @@ miWideSegment (GCPtr pGC,
     PolyEdgePtr top, bottom;
     int lefty, righty, topy, bottomy;
     int signdx;
-    PolyEdgeRec lefts[2], rights[2];
+    PolyEdgeRec lefts[4], rights[4];
     LineFacePtr tface;
     int lw = pGC->lineWidth;
 
@@ -2980,9 +2978,9 @@ miWideDashSegment (GCPtr pGC,
     double L, l;
     double k;
     PolyVertexRec vertices[4];
-    PolyVertexRec saveRight = { 0 }, saveBottom;
+    PolyVertexRec saveRight = { 0, 0 }, saveBottom;
     PolySlopeRec slopes[4];
-    PolyEdgeRec left[2], right[2];
+    PolyEdgeRec left[4], right[4];
     LineFaceRec lcapFace, rcapFace;
     int nleft, nright;
     int h;

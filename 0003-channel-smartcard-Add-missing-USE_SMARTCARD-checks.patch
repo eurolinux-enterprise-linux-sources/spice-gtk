@@ -1,0 +1,45 @@
+From bf584f60cbdc755258f8311a4a4f7f4266d1c421 Mon Sep 17 00:00:00 2001
+From: Christophe Fergeau <cfergeau@redhat.com>
+Date: Fri, 10 Apr 2015 19:34:04 +0200
+Subject: [PATCH] channel-smartcard: Add missing USE_SMARTCARD checks
+
+In order to enable build without smartcard support
+---
+ gtk/channel-smartcard.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/gtk/channel-smartcard.c b/gtk/channel-smartcard.c
+index fc23626..2f40979 100644
+--- a/gtk/channel-smartcard.c
++++ b/gtk/channel-smartcard.c
+@@ -461,8 +461,10 @@ static void spice_smartcard_channel_up_cb(GObject *source_object,
+     g_return_if_fail(SPICE_IS_SESSION(source_object));
+ 
+     if (!spice_channel_get_session(SPICE_CHANNEL(channel))->priv->migration_copy) {
++#ifdef USE_SMARTCARD
+         SpiceSmartcardManager *manager = spice_smartcard_manager_get();
+         GList *l, *list = NULL;
++#endif
+         GError *error = NULL;
+ 
+         spice_smartcard_manager_init_finish(SPICE_SESSION(source_object),
+@@ -472,6 +474,7 @@ static void spice_smartcard_channel_up_cb(GObject *source_object,
+             goto end;
+         }
+ 
++#ifdef USE_SMARTCARD
+         list = spice_smartcard_manager_get_readers(manager);
+         for (l = list; l != NULL; l = l->next) {
+             VReader *reader = l->data;
+@@ -483,8 +486,11 @@ static void spice_smartcard_channel_up_cb(GObject *source_object,
+ 
+             g_boxed_free(SPICE_TYPE_SMARTCARD_READER, reader);
+         }
++#endif
+ end:
++#ifdef USE_SMARTCARD
+         g_list_free(list);
++#endif
+         g_clear_error(&error);
+     }
+ 

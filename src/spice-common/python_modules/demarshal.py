@@ -138,22 +138,25 @@ class ItemInfo:
         return self.position
 
 class MemberItemInfo(ItemInfo):
-    def __init__(self, member, container, start):
+    def __init__(self, member, mprefix, container, start):
         if not member.is_switch():
             self.type = member.member_type
         self.prefix = member.name
+        if mprefix:
+            mprefix = mprefix + "_"
+            self.prefix = mprefix + self.prefix
         self.subprefix = member.name
-        self.position = "(%s + %s)" % (start, container.get_nw_offset(member, "", "__nw_size"))
+        self.position = "(%s + %s)" % (start, container.get_nw_offset(member, mprefix or "", "__nw_size"))
         self.member = member
 
-def write_validate_switch_member(writer, container, switch_member, scope, parent_scope, start,
+def write_validate_switch_member(writer, mprefix, container, switch_member, scope, parent_scope, start,
                                  want_nw_size, want_mem_size, want_extra_size):
     var = container.lookup_member(switch_member.variable)
     var_type = var.member_type
 
     v = write_read_primitive(writer, start, container, switch_member.variable, parent_scope)
 
-    item = MemberItemInfo(switch_member, container, start)
+    item = MemberItemInfo(switch_member, mprefix, container, start)
 
     first = True
     for c in switch_member.cases:
@@ -196,7 +199,7 @@ def write_validate_struct_function(writer, struct):
 
     writer.set_is_generated("validator", validate_function)
     writer = writer.function_helper()
-    scope = writer.function(validate_function, "static intptr_t", "uint8_t *message_start, uint8_t *message_end, uint64_t offset, int minor")
+    scope = writer.function(validate_function, "static intptr_t", "uint8_t *message_start, uint8_t *message_end, uint64_t offset, SPICE_GNUC_UNUSED int minor")
     scope.variable_def("uint8_t *", "start = message_start + offset")
     scope.variable_def("SPICE_GNUC_UNUSED uint8_t *", "pos")
     scope.variable_def("size_t", "mem_size", "nw_size")
@@ -487,7 +490,7 @@ def write_validate_item(writer, container, item, scope, parent_scope, start,
         writer.add_function_variable("uint32_t", saved_size + " = 0")
         writer.assign(saved_size, item.nw_size())
 
-def write_validate_member(writer, container, member, parent_scope, start,
+def write_validate_member(writer, mprefix, container, member, parent_scope, start,
                           want_nw_size, want_mem_size, want_extra_size):
     if member.has_attr("virtual"):
         return
@@ -498,10 +501,10 @@ def write_validate_member(writer, container, member, parent_scope, start,
     else:
         prefix = ""
         newline = True
-    item = MemberItemInfo(member, container, start)
+    item = MemberItemInfo(member, mprefix, container, start)
     with writer.block(prefix, newline=newline, comment=member.name) as scope:
         if member.is_switch():
-            write_validate_switch_member(writer, container, member, scope, parent_scope, start,
+            write_validate_switch_member(writer, mprefix, container, member, scope, parent_scope, start,
                                          want_nw_size, want_mem_size, want_extra_size)
         else:
             write_validate_item(writer, container, item, scope, parent_scope, start,
@@ -526,22 +529,29 @@ def write_validate_member(writer, container, member, parent_scope, start,
             assert not want_extra_size
 
 def write_validate_container(writer, prefix, container, start, parent_scope, want_nw_size, want_mem_size, want_extra_size):
+    def prefix_m(prefix, m):
+        name = m.name
+        if prefix:
+            name = prefix + "_" + name
+        return name
+
     for m in container.members:
         sub_want_nw_size = want_nw_size and not m.is_fixed_nw_size()
         sub_want_mem_size = m.is_extra_size() and want_mem_size
         sub_want_extra_size = not m.is_extra_size() and m.contains_extra_size()
-
         defs = ["size_t"]
+        name = prefix_m(prefix, m)
         if sub_want_nw_size:
-            defs.append (m.name + "__nw_size")
+
+            defs.append (name + "__nw_size")
         if sub_want_mem_size:
-            defs.append (m.name + "__mem_size")
+            defs.append (name + "__mem_size")
         if sub_want_extra_size:
-            defs.append (m.name + "__extra_size")
+            defs.append (name + "__extra_size")
 
         if sub_want_nw_size or sub_want_mem_size or sub_want_extra_size:
             parent_scope.variable_def(*defs)
-            write_validate_member(writer, container, m, parent_scope, start,
+            write_validate_member(writer, prefix, container, m, parent_scope, start,
                                   sub_want_nw_size, sub_want_mem_size, sub_want_extra_size)
             writer.newline()
 
@@ -558,8 +568,9 @@ def write_validate_container(writer, prefix, container, start, parent_scope, wan
 
         nm_sum = str(size)
         for m in container.members:
+            name = prefix_m(prefix, m)
             if not m.is_fixed_nw_size():
-                nm_sum = nm_sum + " + " + m.name + "__nw_size"
+                nm_sum = nm_sum + " + " + name + "__nw_size"
 
         writer.assign(nw_size, nm_sum)
 
@@ -571,10 +582,11 @@ def write_validate_container(writer, prefix, container, start, parent_scope, wan
 
         mem_sum = container.sizeof()
         for m in container.members:
+            name = prefix_m(prefix, m)
             if m.is_extra_size():
-                mem_sum = mem_sum + " + " + m.name + "__mem_size"
+                mem_sum = mem_sum + " + " + name + "__mem_size"
             elif m.contains_extra_size():
-                mem_sum = mem_sum + " + " + m.name + "__extra_size"
+                mem_sum = mem_sum + " + " + name + "__extra_size"
 
         writer.assign(mem_size, mem_sum)
 
@@ -586,10 +598,11 @@ def write_validate_container(writer, prefix, container, start, parent_scope, wan
 
         extra_sum = []
         for m in container.members:
+            name = prefix_m(prefix, m)
             if m.is_extra_size():
-                extra_sum.append(m.name + "__mem_size")
+                extra_sum.append(name + "__mem_size")
             elif m.contains_extra_size():
-                extra_sum.append(m.name + "__extra_size")
+                extra_sum.append(name + "__extra_size")
         writer.assign(extra_size, codegen.sum_array(extra_sum))
 
 class DemarshallingDestination:
@@ -760,7 +773,7 @@ def write_parse_ptr_function(writer, target_type):
     writer.set_is_generated("parser", parse_function)
 
     writer = writer.function_helper()
-    scope = writer.function(parse_function, "static uint8_t *", "uint8_t *message_start, uint8_t *message_end, uint8_t *struct_data, PointerInfo *this_ptr_info, int minor")
+    scope = writer.function(parse_function, "static uint8_t *", "uint8_t *message_start, SPICE_GNUC_UNUSED uint8_t *message_end, uint8_t *struct_data, PointerInfo *this_ptr_info, SPICE_GNUC_UNUSED int minor")
     scope.variable_def("uint8_t *", "in = message_start + this_ptr_info->offset")
     scope.variable_def("uint8_t *", "end")
 
@@ -998,7 +1011,7 @@ def write_nofree(writer):
     if writer.is_generated("helper", "nofree"):
         return
     writer = writer.function_helper()
-    scope = writer.function("nofree", "static void", "uint8_t *data")
+    scope = writer.function("nofree", "static void", "SPICE_GNUC_UNUSED uint8_t *data")
     writer.end_block()
 
 def write_msg_parser(writer, message):
@@ -1019,7 +1032,7 @@ def write_msg_parser(writer, message):
         writer.ifdef(message.attributes["ifdef"][0])
     parent_scope = writer.function(function_name,
                                    "uint8_t *",
-                                   "uint8_t *message_start, uint8_t *message_end, int minor, size_t *size, message_destructor_t *free_message", True)
+                                   "uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message", True)
     parent_scope.variable_def("SPICE_GNUC_UNUSED uint8_t *", "pos")
     parent_scope.variable_def("uint8_t *", "start = message_start")
     parent_scope.variable_def("uint8_t *", "data = NULL")
@@ -1121,7 +1134,7 @@ def write_channel_parser(writer, channel, server):
         writer.ifdef(channel.attributes["ifdef"][0])
     scope = writer.function(function_name,
                             "static uint8_t *",
-                            "uint8_t *message_start, uint8_t *message_end, uint16_t message_type, int minor, size_t *size_out, message_destructor_t *free_message")
+                            "uint8_t *message_start, uint8_t *message_end, uint16_t message_type, SPICE_GNUC_UNUSED int minor, size_t *size_out, message_destructor_t *free_message")
 
     helpers = writer.function_helper()
 
@@ -1217,7 +1230,7 @@ def write_full_protocol_parser(writer, is_server):
         function_name = "spice_parse_reply"
     scope = writer.function(function_name + writer.public_prefix,
                             "uint8_t *",
-                            "uint8_t *message_start, uint8_t *message_end, uint32_t channel, uint16_t message_type, int minor, size_t *size_out, message_destructor_t *free_message")
+                            "uint8_t *message_start, uint8_t *message_end, uint32_t channel, uint16_t message_type, SPICE_GNUC_UNUSED int minor, size_t *size_out, message_destructor_t *free_message")
     scope.variable_def("spice_parse_channel_func_t", "func" )
 
     if is_server:
@@ -1250,7 +1263,7 @@ def write_includes(writer):
     writer.writeln("#include <stdio.h>")
     writer.writeln("#include <spice/protocol.h>")
     writer.writeln("#include <spice/macros.h>")
-    writer.writeln('#include "mem.h"')
+    writer.writeln('#include <common/mem.h>')
     writer.newline()
     writer.writeln("#ifdef _MSC_VER")
     writer.writeln("#pragma warning(disable:4101)")
