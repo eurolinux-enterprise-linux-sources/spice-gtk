@@ -8,13 +8,14 @@
 
 Name:           spice-gtk
 Version:        0.26
-Release:        8%{?dist}
+Release:        8%{?dist}.1
 Summary:        A GTK+ widget for SPICE clients
 
 Group:          System Environment/Libraries
 License:        LGPLv2+
 URL:            http://spice-space.org/page/Spice-Gtk
 Source0:        http://www.spice-space.org/download/gtk/%{name}-%{version}%{?_version_suffix}.tar.bz2
+Source100:      pyparsing.py
 #Patch0001:      patch-name.patch
 Patch0001:      0001-smartcard-connect-object-signal-handlers-with-spice-.patch
 Patch0002:      0002-smartcard-add-reader-and-cards-on-channel-up.patch
@@ -33,6 +34,7 @@ Patch0014:      0014-usb-device-manager-widget-Add-counter-of-free-channe.patch
 Patch0015:      0015-usb-device-manager-widget-Remove-misleading-message-.patch
 Patch0016:      0016-session-disable-default-socket-proxy.patch
 Patch0017:      0017-session-Enable-proxy-when-requested.patch
+Patch0018:      0018-Fix-flexible-array-buffer-overflow.patch
 
 BuildRequires: intltool
 #New enough glib is needed for proxy support
@@ -51,6 +53,8 @@ BuildRequires: polkit-devel
 BuildRequires: usbutils
 # needed for bz 799112
 BuildRequires: spice-protocol
+# needed for bz #1596008
+BuildRequires: python-six
 # Hack because of bz #613466
 BuildRequires: libtool
 Requires: spice-glib%{?_isa} = %{version}-%{release}
@@ -145,12 +149,14 @@ pushd spice-gtk-%{version}
 %patch0015 -p1
 %patch0016 -p1
 %patch0017 -p1
+%patch0018 -p1
 
 find . -name '*.stamp' | xargs touch
 popd
 
 
 %build
+export PYTHONPATH="$(dirname "%{SOURCE100}")"
 cd spice-gtk-%{version}
 %configure --disable-gtk-doc --with-gtk=2.0 --disable-introspection --enable-pie --with-usb-acl-helper-dir=%{_libexecdir}/spice-gtk-%{_arch}/
 make %{?_smp_mflags} LDFLAGS="-Wl,-z,relro -Wl,-z,now" V=1
@@ -216,6 +222,10 @@ cd ..
 %{_bindir}/spicy-stats
 
 %changelog
+* Fri Aug 10 2018 Frediano Ziglio <fziglio@redhat.com> - 0.26-8.1
+- Fix flexible array buffer overflow
+  Resolves: rhbz#1596008
+
 * Tue Sep 06 2016 Pavel Grunt <pgrunt@redhat.com> 0.26-8
 - Make grab session related
   Resolves: rhbz#1330652
