@@ -1,0 +1,27 @@
+From b8d79572a403d2fcc86f1d77ce4c21f54e02bbf4 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marc-Andr=C3=A9=20Lureau?= <marcandre.lureau@redhat.com>
+Date: Thu, 24 Apr 2014 15:45:21 +0200
+Subject: [PATCH] option: check that default ca-file exists
+
+Don't set default ca-file path if the file doesn't exists.
+
+Related: rhbz#1097338
+
+(cherry picked from commit 8c8948597ec2a7f7f50468020bcd37046762813d)
+---
+ gtk/spice-option.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/gtk/spice-option.c b/gtk/spice-option.c
+index 5f7c803..7fa3bb5 100644
+--- a/gtk/spice-option.c
++++ b/gtk/spice-option.c
+@@ -223,6 +223,8 @@ void spice_set_session_option(SpiceSession *session)
+         if (!homedir)
+             homedir = g_get_home_dir();
+         ca_file = g_strdup_printf("%s/.spicec/spice_truststore.pem", homedir);
++        if (!g_file_test(ca_file, G_FILE_TEST_IS_REGULAR))
++            g_clear_pointer(&ca_file, g_free);
+     }
+ 
+     if (disable_effects) {

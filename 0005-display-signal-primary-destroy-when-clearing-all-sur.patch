@@ -1,0 +1,41 @@
+From 52ec7edfe9c4fa99e71cefaa89ab4d25888882ca Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marc-Andr=C3=A9=20Lureau?= <marcandre.lureau@redhat.com>
+Date: Fri, 4 Apr 2014 17:46:33 +0200
+Subject: [PATCH] display: signal primary-destroy when clearing all surfaces
+
+When destroying the primary surface, we need to signal it, since
+listeners might be referencing the data pointer. Currently, this only
+happens during channel finalize().
+
+This could help with rhbz#1082555.
+
+Related: rhbz#1097338
+
+(cherry picked from commit a7e80610e8a7b616b3e502a39052921fb9b51825)
+---
+ gtk/channel-display.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/gtk/channel-display.c b/gtk/channel-display.c
+index 739eb47..80df0f3 100644
+--- a/gtk/channel-display.c
++++ b/gtk/channel-display.c
+@@ -806,12 +806,18 @@ static display_surface *find_surface(SpiceDisplayChannelPrivate *c, guint32 surf
+     return g_hash_table_lookup(c->surfaces, GINT_TO_POINTER(surface_id));
+ }
+ 
++/* main or coroutine context */
+ static void clear_surfaces(SpiceChannel *channel, gboolean keep_primary)
+ {
+     SpiceDisplayChannelPrivate *c = SPICE_DISPLAY_CHANNEL(channel)->priv;
+     GHashTableIter iter;
+     display_surface *surface;
+ 
++    if (!keep_primary) {
++        c->primary = NULL;
++        emit_main_context(channel, SPICE_DISPLAY_PRIMARY_DESTROY);
++    }
++
+     g_hash_table_iter_init(&iter, c->surfaces);
+     while (g_hash_table_iter_next(&iter, NULL, (gpointer*)&surface)) {
+ 

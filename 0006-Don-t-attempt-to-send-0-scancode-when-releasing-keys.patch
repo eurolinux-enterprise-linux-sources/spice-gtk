@@ -1,0 +1,38 @@
+From 0dbcfacf2a2b2cdd77fc028ab1c6902249de594a Mon Sep 17 00:00:00 2001
+From: Christophe Fergeau <cfergeau@redhat.com>
+Date: Fri, 7 Feb 2014 14:36:21 +0100
+Subject: [PATCH] Don't attempt to send 0 scancode when releasing keys
+
+When releasing all keys, we send a key release for scancode in the
+key_state array, including the very first element with scancode 0.
+send_key() complain when the scancode is 0, so make sure we don't call it
+for this first element.
+
+This fixes a
+(remote-viewer:25548): GSpice-CRITICAL **: send_key: assertion 'scancode != 0' failed
+warning when starting remote-viewer windowed, and then switching to another
+desktop client-side using ctrl+alt+arrow.
+
+Related: rhbz#1097338
+
+(cherry picked from commit d28d6e11d20a562a93f23edf1e2a41019ecf6be0)
+---
+ gtk/spice-widget.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/gtk/spice-widget.c b/gtk/spice-widget.c
+index afb6b48..233f36c 100644
+--- a/gtk/spice-widget.c
++++ b/gtk/spice-widget.c
+@@ -1255,7 +1255,10 @@ static void release_keys(SpiceDisplay *display)
+             continue;
+         }
+         for (b = 0; b < 32; b++) {
+-            send_key(display, i * 32 + b, SEND_KEY_RELEASE, FALSE);
++            unsigned int scancode = i * 32 + b;
++            if (scancode != 0) {
++                send_key(display, scancode, SEND_KEY_RELEASE, FALSE);
++            }
+         }
+     }
+ }

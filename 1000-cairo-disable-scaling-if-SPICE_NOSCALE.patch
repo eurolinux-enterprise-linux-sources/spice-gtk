@@ -1,0 +1,35 @@
+From 00ba99ded9a643c8775c4c17d060633d12be7467 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marc-Andr=C3=A9=20Lureau?= <marcandre.lureau@redhat.com>
+Date: Thu, 5 Jun 2014 21:20:20 +0200
+Subject: [PATCH 3/4] cairo: disable scaling if SPICE_NOSCALE
+
+This is a RHEL-only patch for people who really don't want scaling to
+happen.  Caveats: virt-viewer will draw unoptimal black borders (spicy
+seems to work better there), there are no scrollbar to scroll the
+display.
+
+I don't think it's worth integrating this properly in upstream, as 1:1
+guest resize is what should work.
+
+https://bugzilla.redhat.com/show_bug.cgi?id=1054757
+---
+ gtk/spice-widget-cairo.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/gtk/spice-widget-cairo.c b/gtk/spice-widget-cairo.c
+index e0fe1ed..51ba8e2 100644
+--- a/gtk/spice-widget-cairo.c
++++ b/gtk/spice-widget-cairo.c
+@@ -172,5 +172,9 @@ G_GNUC_INTERNAL
+ gboolean spicex_is_scaled(SpiceDisplay *display)
+ {
+     SpiceDisplayPrivate *d = SPICE_DISPLAY_GET_PRIVATE(display);
++
++    if (g_getenv("SPICE_NOSCALE"))
++        return FALSE;
++
+     return d->allow_scaling;
+ }
+-- 
+1.7.1
+
