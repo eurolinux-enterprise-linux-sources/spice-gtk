@@ -8,7 +8,7 @@
 
 Name:           spice-gtk
 Version:        0.26
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        A GTK+ widget for SPICE clients
 
 Group:          System Environment/Libraries
@@ -28,6 +28,11 @@ Patch0009:      0009-Add-VD_AGENT_CAP_MONITORS_CONFIG_POSITION-capability.patch
 Patch0010:      0010-This-adds-reference-counting-to-cached-images.patch
 Patch0011:      0011-channel-usbredir-drop-isoc-packets-on-low-bandwidth.patch
 Patch0012:      0012-Use-g_return_val_if_fail-instead-of-wrong-g_return_i.patch
+Patch0013:      0013-Grab-keyboard-based-on-session-focus.patch
+Patch0014:      0014-usb-device-manager-widget-Add-counter-of-free-channe.patch
+Patch0015:      0015-usb-device-manager-widget-Remove-misleading-message-.patch
+Patch0016:      0016-session-disable-default-socket-proxy.patch
+Patch0017:      0017-session-Enable-proxy-when-requested.patch
 
 BuildRequires: intltool
 #New enough glib is needed for proxy support
@@ -135,6 +140,11 @@ pushd spice-gtk-%{version}
 %patch0010 -p1
 %patch0011 -p1
 %patch0012 -p1
+%patch0013 -p1
+%patch0014 -p1
+%patch0015 -p1
+%patch0016 -p1
+%patch0017 -p1
 
 find . -name '*.stamp' | xargs touch
 popd
@@ -206,6 +216,14 @@ cd ..
 %{_bindir}/spicy-stats
 
 %changelog
+* Tue Sep 06 2016 Pavel Grunt <pgrunt@redhat.com> 0.26-8
+- Make grab session related
+  Resolves: rhbz#1330652
+- Improve messages in usb redirection dialog
+  Resolves: rhbz#1298772
+- Use proxy only when needed
+  Resolves: rhbz#1306311
+
 * Fri Dec 18 2015 Fabiano Fidêncio <fidencio@redhat.com> 0.26-7
 - Bump usbredir dep to 0.5.1-3
   Resolves: rhbz#1291159

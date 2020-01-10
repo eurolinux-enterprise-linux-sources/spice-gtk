@@ -1,0 +1,79 @@
+From 85e98a6b48932446e5801cd67cba5e8199e4732a Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Fabiano=20Fid=C3=AAncio?= <fidencio@redhat.com>
+Date: Thu, 17 Mar 2016 15:15:04 +0100
+Subject: [PATCH 15/17] usb-device-{manager,widget}: Remove misleading message
+ when there are no channels to redirect
+
+The whole code from usb-device-manager is quite a mess as pointed out by
+Jonathon during the first round of code review [0].
+Keeping this in mind and knowing that that code needs a refactor, I'm
+proposing a simple (and messy) fix that can be backported easily before
+actually dig into a code refactoring task.
+The solution is basically adding a new error and using it to filter out
+this specific kind out situation, avoiding to show that misleading
+warning message when the last usb redirection channel is taken.
+
+[0]:
+http://lists.freedesktop.org/archives/spice-devel/2016-January/025864.html
+
+Related: rhbz#1298772
+---
+ gtk/spice-client.h       | 1 +
+ gtk/usb-device-manager.c | 4 +++-
+ gtk/usb-device-widget.c  | 6 ++++++
+ 3 files changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/gtk/spice-client.h b/gtk/spice-client.h
+index c2474d1..e0422c3 100644
+--- a/gtk/spice-client.h
++++ b/gtk/spice-client.h
+@@ -70,6 +70,7 @@ typedef enum
+     SPICE_CLIENT_USB_DEVICE_LOST,
+     SPICE_CLIENT_ERROR_AUTH_NEEDS_PASSWORD,
+     SPICE_CLIENT_ERROR_AUTH_NEEDS_PASSWORD_AND_USERNAME,
++    SPICE_CLIENT_ERROR_NO_USB_CHANNELS_AVAILABLE,
+ } SpiceClientError;
+ 
+ GQuark spice_client_error_quark(void);
+diff --git a/gtk/usb-device-manager.c b/gtk/usb-device-manager.c
+index 8a78b2d..ae9df55 100644
+--- a/gtk/usb-device-manager.c
++++ b/gtk/usb-device-manager.c
+@@ -1684,7 +1684,9 @@ spice_usb_device_manager_can_redirect_device(SpiceUsbDeviceManager  *self,
+             break;
+     }
+     if (i == priv->channels->len) {
+-        g_set_error_literal(err, SPICE_CLIENT_ERROR, SPICE_CLIENT_ERROR_FAILED,
++        g_set_error_literal(err,
++                            SPICE_CLIENT_ERROR,
++                            SPICE_CLIENT_ERROR_NO_USB_CHANNELS_AVAILABLE,
+                             _("There are no free USB channels"));
+         return FALSE;
+     }
+diff --git a/gtk/usb-device-widget.c b/gtk/usb-device-widget.c
+index 75ca1dd..be12f50 100644
+--- a/gtk/usb-device-widget.c
++++ b/gtk/usb-device-widget.c
+@@ -373,6 +373,11 @@ static void check_can_redirect(GtkWidget *widget, gpointer user_data)
+                                                                 device, &err);
+     gtk_widget_set_sensitive(widget, can_redirect);
+ 
++    if (g_error_matches(err,
++                        SPICE_CLIENT_ERROR,
++                        SPICE_CLIENT_ERROR_NO_USB_CHANNELS_AVAILABLE))
++        goto end;
++
+     /* If we can not redirect this device, append the error message to
+        err_msg, but only if it is *not* already there! */
+     if (!can_redirect) {
+@@ -389,6 +394,7 @@ static void check_can_redirect(GtkWidget *widget, gpointer user_data)
+         }
+     }
+ 
++end:
+     g_clear_error(&err);
+ }
+ 
+-- 
+2.10.0
+

@@ -1,0 +1,137 @@
+From db577006abec867d684a154f1215bf49901a38a4 Mon Sep 17 00:00:00 2001
+From: snir sheriber <ssheribe@redhat.com>
+Date: Sun, 20 Dec 2015 12:00:29 +0200
+Subject: [PATCH 13/17] Grab keyboard based on session focus.
+
+When using multiple monitors moving mouse between monitors releases
+keyboard grab.
+
+Reproduce bug
+-Open multiple monitors remote-viewer session
+-Click on one of the monitors to get focus & keyboard-grab
+-Move mouse to another monitor and try keyboard command (do not click)
+At this point all keyboard commands are being executed on the client
+machine instead of the remote machine
+
+I added keyboard_has_focus and mouse_has_pointer variables at the
+session and now these properties are being tested for the session
+instead for the current widget (works also when using alt-tab).
+
+Resolves: rhbz#1275231
+
+Acked-by: Pavel Grunt <pgrunt@redhat.com>
+(cherry picked from commit 143ebfdf275a7743ca4332dc526991f8bd95124a)
+---
+ gtk/spice-gtk-session-priv.h |  4 ++++
+ gtk/spice-gtk-session.c      | 35 +++++++++++++++++++++++++++++++++++
+ gtk/spice-widget.c           |  7 +++++--
+ 3 files changed, 44 insertions(+), 2 deletions(-)
+
+diff --git a/gtk/spice-gtk-session-priv.h b/gtk/spice-gtk-session-priv.h
+index 48482b6..b718f25 100644
+--- a/gtk/spice-gtk-session-priv.h
++++ b/gtk/spice-gtk-session-priv.h
+@@ -26,6 +26,10 @@ void spice_gtk_session_request_auto_usbredir(SpiceGtkSession *self,
+                                              gboolean state);
+ gboolean spice_gtk_session_get_read_only(SpiceGtkSession *self);
+ void spice_gtk_session_sync_keyboard_modifiers(SpiceGtkSession *self);
++void spice_gtk_session_set_keyboard_has_focus(SpiceGtkSession *self, gboolean keyboard_has_focus);
++void spice_gtk_session_set_mouse_has_pointer(SpiceGtkSession *self, gboolean  mouse_has_pointer);
++gboolean spice_gtk_session_get_keyboard_has_focus(SpiceGtkSession *self);
++gboolean spice_gtk_session_get_mouse_has_pointer(SpiceGtkSession *self);
+ 
+ G_END_DECLS
+ 
+diff --git a/gtk/spice-gtk-session.c b/gtk/spice-gtk-session.c
+index 10bd762..e80cc84 100644
+--- a/gtk/spice-gtk-session.c
++++ b/gtk/spice-gtk-session.c
+@@ -63,6 +63,8 @@ struct _SpiceGtkSessionPrivate {
+     /* auto-usbredir related */
+     gboolean                auto_usbredir_enable;
+     int                     auto_usbredir_reqs;
++    gboolean                keyboard_has_focus;
++    gboolean                mouse_has_pointer;
+ };
+ 
+ /**
+@@ -1156,3 +1158,36 @@ void spice_gtk_session_sync_keyboard_modifiers(SpiceGtkSession *self)
+     }
+     g_list_free(channels);
+ }
++
++G_GNUC_INTERNAL
++void spice_gtk_session_set_keyboard_has_focus(SpiceGtkSession *self,
++                                                gboolean keyboard_has_focus)
++{
++    g_return_if_fail(SPICE_IS_GTK_SESSION(self));
++
++    self->priv->keyboard_has_focus = keyboard_has_focus;
++}
++
++G_GNUC_INTERNAL
++void spice_gtk_session_set_mouse_has_pointer(SpiceGtkSession *self,
++                                                gboolean mouse_has_pointer)
++{
++   g_return_if_fail(SPICE_IS_GTK_SESSION(self));
++   self->priv->mouse_has_pointer = mouse_has_pointer;
++}
++
++G_GNUC_INTERNAL
++gboolean spice_gtk_session_get_keyboard_has_focus(SpiceGtkSession *self)
++{
++    g_return_val_if_fail(SPICE_IS_GTK_SESSION(self), FALSE);
++
++    return self->priv->keyboard_has_focus;
++}
++
++G_GNUC_INTERNAL
++gboolean spice_gtk_session_get_mouse_has_pointer(SpiceGtkSession *self)
++{
++    g_return_val_if_fail(SPICE_IS_GTK_SESSION(self), FALSE);
++
++    return self->priv->mouse_has_pointer;
++}
+diff --git a/gtk/spice-widget.c b/gtk/spice-widget.c
+index 37e0caf..41bf02d 100644
+--- a/gtk/spice-widget.c
++++ b/gtk/spice-widget.c
+@@ -208,6 +208,7 @@ static void update_keyboard_focus(SpiceDisplay *display, gboolean state)
+     SpiceDisplayPrivate *d = display->priv;
+ 
+     d->keyboard_have_focus = state;
++    spice_gtk_session_set_keyboard_has_focus(d->gtk_session, state);
+ 
+     /* keyboard grab gets inhibited by usb-device-manager when it is
+        in the process of redirecting a usb-device (as this may show a
+@@ -713,9 +714,9 @@ static void try_keyboard_grab(SpiceDisplay *display)
+         return;
+     if (d->keyboard_grab_active)
+         return;
+-    if (!d->keyboard_have_focus)
++    if (!spice_gtk_session_get_keyboard_has_focus(d->gtk_session))
+         return;
+-    if (!d->mouse_have_pointer)
++    if (!spice_gtk_session_get_mouse_has_pointer(d->gtk_session))
+         return;
+ 
+     g_return_if_fail(gtk_widget_is_focus(widget));
+@@ -1417,6 +1418,7 @@ static gboolean enter_event(GtkWidget *widget, GdkEventCrossing *crossing G_GNUC
+     SPICE_DEBUG("%s", __FUNCTION__);
+ 
+     d->mouse_have_pointer = true;
++    spice_gtk_session_set_mouse_has_pointer(d->gtk_session, true);
+     try_keyboard_grab(display);
+     update_display(display);
+ 
+@@ -1434,6 +1436,7 @@ static gboolean leave_event(GtkWidget *widget, GdkEventCrossing *crossing G_GNUC
+         return true;
+ 
+     d->mouse_have_pointer = false;
++    spice_gtk_session_set_mouse_has_pointer(d->gtk_session, false);
+     try_keyboard_ungrab(display);
+ 
+     return true;
+-- 
+2.10.0
+

@@ -1,0 +1,37 @@
+From 44542015075218dd962b4c183df8b5b5705c0b8f Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marc-Andr=C3=A9=20Lureau?= <marcandre.lureau@redhat.com>
+Date: Wed, 22 Apr 2015 17:55:32 +0200
+Subject: [PATCH 16/17] session: disable default socket proxy
+
+GSocketClient uses the system proxy by default, and it may end up using
+the system HTTP proxy with bad results if CONNECT is not
+supported. spice-gtk uses it's own SPICE_PROXY instead, and doesn't rely
+on GSocketClient default proxy but GProxyAddress instead. Disabling the
+default proxy solve a wrong proxy from being used.
+
+It may be worth to revisit this change if GSocketClient can be told to
+ignore proxies that are not eligible for Spice connections. (HTTP could
+be though, in which case it would be a user configuration issue)
+
+Fixes:
+https://bugzilla.redhat.com/show_bug.cgi?id=1040679
+(cherry picked from commit 3bf5ef7dc32da6349e82c0bc39b7884ce6d517de)
+---
+ gtk/spice-session.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/gtk/spice-session.c b/gtk/spice-session.c
+index 80b4a27..2a53230 100644
+--- a/gtk/spice-session.c
++++ b/gtk/spice-session.c
+@@ -1895,6 +1895,7 @@ GSocketConnection* spice_session_channel_open_host(SpiceSession *session, SpiceC
+ 
+     open_host.client = g_socket_client_new();
+ #if GLIB_CHECK_VERSION(2,26,0)
++    g_socket_client_set_enable_proxy(open_host.client, FALSE);
+     g_socket_client_set_timeout(open_host.client, SOCKET_TIMEOUT);
+ #else
+     open_host.timeout_id =
+-- 
+2.10.0
+

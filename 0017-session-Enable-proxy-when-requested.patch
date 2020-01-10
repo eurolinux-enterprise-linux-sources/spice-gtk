@@ -1,0 +1,29 @@
+From b4da05ef52da60a34b4408f2b2bb37e5702a0b38 Mon Sep 17 00:00:00 2001
+From: Pavel Grunt <pgrunt@redhat.com>
+Date: Tue, 2 Jun 2015 17:49:14 +0200
+Subject: [PATCH 17/17] session: Enable proxy when requested
+
+Disabling the proxy avoids usage of GProxyResolver to determine
+the necessary proxy protocol and to do the proxy negotiation.
+
+(cherry picked from commit 01540664bd0608a02a0be787eb548709f3d68fe1)
+---
+ gtk/spice-session.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/gtk/spice-session.c b/gtk/spice-session.c
+index 2a53230..4e41ced 100644
+--- a/gtk/spice-session.c
++++ b/gtk/spice-session.c
+@@ -1895,7 +1895,7 @@ GSocketConnection* spice_session_channel_open_host(SpiceSession *session, SpiceC
+ 
+     open_host.client = g_socket_client_new();
+ #if GLIB_CHECK_VERSION(2,26,0)
+-    g_socket_client_set_enable_proxy(open_host.client, FALSE);
++    g_socket_client_set_enable_proxy(open_host.client, s->proxy != NULL);
+     g_socket_client_set_timeout(open_host.client, SOCKET_TIMEOUT);
+ #else
+     open_host.timeout_id =
+-- 
+2.10.0
+
