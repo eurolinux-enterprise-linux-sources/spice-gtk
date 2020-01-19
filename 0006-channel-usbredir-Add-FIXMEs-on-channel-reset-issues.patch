@@ -1,0 +1,67 @@
+From 21d6d9921466eb06a8f7120da5f5592f8216fccb Mon Sep 17 00:00:00 2001
+From: Victor Toso <me@victortoso.com>
+Date: Wed, 5 Sep 2018 15:39:56 +0200
+Subject: [PATCH] channel-usbredir: Add FIXMEs on channel-reset issues
+
+This should not change code behavior, only add some comments.
+
+This is a preparatory patch for bug below, introduced with:
+
+    commit 9fbf679453d8dbfe797a738cb536136599d7adab
+    Author: Kirill Moizik <kmoizik@redhat.com>
+    Date:   Tue Mar 8 16:05:57 2016 +0200
+
+        usbredir: Disconnect USB device asynchronously
+
+Related: https://bugzilla.redhat.com/show_bug.cgi?id=1625550
+
+Signed-off-by: Victor Toso <victortoso@redhat.com>
+Acked-by: Frediano Ziglio <fziglio@redhat.com>
+(cherry picked from commit f1aee52b098440273f749042bde23d61b73e4da5)
+---
+ src/channel-usbredir.c | 27 +++++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 8 deletions(-)
+
+diff --git a/src/channel-usbredir.c b/src/channel-usbredir.c
+index 6ffe546..13927cc 100644
+--- a/src/channel-usbredir.c
++++ b/src/channel-usbredir.c
+@@ -158,16 +158,27 @@ static void spice_usbredir_channel_reset(SpiceChannel *c, gboolean migrating)
+     SpiceUsbredirChannel *channel = SPICE_USBREDIR_CHANNEL(c);
+     SpiceUsbredirChannelPrivate *priv = channel->priv;
+ 
+-    if (priv->host) {
+-        if (priv->state == STATE_CONNECTED) {
+-            spice_usbredir_channel_disconnect_device_async(channel, NULL,
+-                _channel_reset_cb, GUINT_TO_POINTER(migrating));
+-        } else {
+-            _channel_reset_finish(channel);
+-        }
+-    } else {
++    /* Host isn't running, just reset */
++    if (!priv->host) {
+         SPICE_CHANNEL_CLASS(spice_usbredir_channel_parent_class)->channel_reset(c, migrating);
++        return;
+     }
++
++    /* Host is running, so we might need to disconnect the usb devices async.
++     * This should not block channel_reset() otherwise we might run in reconnection
++     * problems such as https://bugzilla.redhat.com/show_bug.cgi?id=1625550
++     * No operation from here on should rely on SpiceChannel as its coroutine
++     * might be terminated. */
++    
++    if (priv->state == STATE_CONNECTED) {
++        /* FIXME: We should chain-up parent's channel-reset here */
++        spice_usbredir_channel_disconnect_device_async(channel, NULL,
++            _channel_reset_cb, GUINT_TO_POINTER(migrating));
++        return;
++    }
++
++    /* FIXME: This does not chain-up with parent's channel-reset, which is a must */
++    _channel_reset_finish(channel);
+ }
+ #endif
+ 
+-- 
+2.20.1
+

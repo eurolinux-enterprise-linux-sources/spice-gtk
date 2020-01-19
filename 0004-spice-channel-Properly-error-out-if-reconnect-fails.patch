@@ -1,0 +1,47 @@
+From 1ef54bc33a710162b69aa9d1a9505ae1544dbedd Mon Sep 17 00:00:00 2001
+From: Victor Toso <me@victortoso.com>
+Date: Thu, 6 Sep 2018 14:04:53 +0200
+Subject: [PATCH] spice-channel: Properly error out if reconnect fails
+
+The channel_connect() function could fail leading to a spice-channel
+existing as zombie (its coroutine return soon after).
+
+Check if channel_connect() fails and give a proper error signal to
+user when that happens.
+
+Related: https://bugzilla.redhat.com/show_bug.cgi?id=1625550
+
+Signed-off-by: Victor Toso <victortoso@redhat.com>
+Acked-by: Frediano Ziglio <fziglio@redhat.com>
+(cherry picked from commit 879926622d764a02b43a9147fb2a976765385115)
+---
+ src/spice-channel.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/src/spice-channel.c b/src/spice-channel.c
+index 6f3ca27..2eec4e0 100644
+--- a/src/spice-channel.c
++++ b/src/spice-channel.c
+@@ -2674,11 +2674,15 @@ cleanup:
+     if (c->state == SPICE_CHANNEL_STATE_RECONNECTING ||
+         c->state == SPICE_CHANNEL_STATE_SWITCHING) {
+         g_warn_if_fail(c->event == SPICE_CHANNEL_NONE);
+-        channel_connect(channel, c->tls);
+-        g_object_unref(channel);
+-    } else
+-        g_idle_add(spice_channel_delayed_unref, data);
++        if (channel_connect(channel, c->tls)) {
++            g_object_unref(channel);
++            return NULL;
++        }
++
++        c->event = SPICE_CHANNEL_ERROR_CONNECT;
++    }
+ 
++    g_idle_add(spice_channel_delayed_unref, channel);
+     /* Co-routine exits now - the SpiceChannel object may no longer exist,
+        so don't do anything else now unless you like SEGVs */
+     return NULL;
+-- 
+2.20.1
+

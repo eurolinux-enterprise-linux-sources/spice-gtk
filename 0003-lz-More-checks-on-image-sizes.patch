@@ -1,0 +1,121 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Frediano Ziglio <fziglio@redhat.com>
+Date: Mon, 25 Jun 2018 14:16:10 +0100
+Subject: [PATCH spice-common 2/2] lz: More checks on image sizes
+
+Extend sizes check also to decoding, actually the source data
+decoding images should be less safe than encoding.
+This avoids different integer overflows and buffer overflows.
+To avoid potential issues images are limited to 1GB.
+
+Signed-off-by: Frediano Ziglio <fziglio@redhat.com>
+Acked-by: Christophe Fergeau <cfergeau@redhat.com>
+---
+ common/lz.c | 68 ++++++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 46 insertions(+), 22 deletions(-)
+
+diff --git a/spice-common/common/lz.c b/spice-common/common/lz.c
+index 2c5d5e2..167e118 100644
+--- a/spice-common/common/lz.c
++++ b/spice-common/common/lz.c
+@@ -53,6 +53,8 @@
+ #define HASH_SIZE (1 << HASH_LOG)
+ #define HASH_MASK (HASH_SIZE - 1)
+ 
++/* Maximum image size, mainly to avoid possible integer overflows */
++#define SPICE_MAX_IMAGE_SIZE (1024 * 1024 * 1024 - 1)
+ 
+ typedef struct LzImageSegment LzImageSegment;
+ struct LzImageSegment {
+@@ -481,33 +483,53 @@ typedef uint16_t rgb16_pixel_t;
+ #undef LZ_UNEXPECT_CONDITIONAL
+ #undef LZ_EXPECT_CONDITIONAL
+ 
+-int lz_encode(LzContext *lz, LzImageType type, int width, int height, int top_down,
+-              uint8_t *lines, unsigned int num_lines, int stride,
+-              uint8_t *io_ptr, unsigned int num_io_bytes)
++static void lz_set_sizes(Encoder *encoder, int type, int width, int height, int stride)
+ {
+-    Encoder *encoder = (Encoder *)lz;
+-    uint8_t *io_ptr_end = io_ptr + num_io_bytes;
+-
+-    encoder->type = type;
+-    encoder->width = width;
+-    encoder->height = height;
+-    encoder->stride = stride;
++    if (width < 0) {
++        encoder->usr->error(encoder->usr, "invalid lz width %d\n", width);
++    }
++    if (height < 0) {
++        encoder->usr->error(encoder->usr, "invalid lz height %d\n", height);
++    }
++    if (stride < 0) {
++        encoder->usr->error(encoder->usr, "invalid lz stride %d\n", stride);
++    }
+ 
+-    if (IS_IMAGE_TYPE_PLT[encoder->type]) {
+-        if (encoder->stride > (width / PLT_PIXELS_PER_BYTE[encoder->type])) {
+-            if (((width % PLT_PIXELS_PER_BYTE[encoder->type]) == 0) || (
+-                    (encoder->stride - (width / PLT_PIXELS_PER_BYTE[encoder->type])) > 1)) {
++    if (IS_IMAGE_TYPE_PLT[type]) {
++        if (stride > (width / PLT_PIXELS_PER_BYTE[type])) {
++            if (((width % PLT_PIXELS_PER_BYTE[type]) == 0) || (
++                    (stride - (width / PLT_PIXELS_PER_BYTE[type])) > 1)) {
+                 encoder->usr->error(encoder->usr, "stride overflows (plt)\n");
+             }
+         }
+     } else {
+-        if (encoder->stride != width * RGB_BYTES_PER_PIXEL[encoder->type]) {
++        if (stride != width * RGB_BYTES_PER_PIXEL[type]) {
+             encoder->usr->error(encoder->usr, "stride != width*bytes_per_pixel (rgb) %d != %d * %d (%d)\n",
+-                                encoder->stride, width, RGB_BYTES_PER_PIXEL[encoder->type],
+-                                encoder->type);
++                                stride, width, RGB_BYTES_PER_PIXEL[type],
++                                type);
+         }
+     }
+ 
++    // avoid too big images
++    if ((uint64_t) stride * height > SPICE_MAX_IMAGE_SIZE) {
++        encoder->usr->error(encoder->usr, "image too large\n");
++    }
++
++    encoder->type = type;
++    encoder->width = width;
++    encoder->height = height;
++    encoder->stride = stride;
++}
++
++int lz_encode(LzContext *lz, LzImageType type, int width, int height, int top_down,
++              uint8_t *lines, unsigned int num_lines, int stride,
++              uint8_t *io_ptr, unsigned int num_io_bytes)
++{
++    Encoder *encoder = (Encoder *)lz;
++    uint8_t *io_ptr_end = io_ptr + num_io_bytes;
++
++    lz_set_sizes(encoder, type, width, height, stride);
++
+     // assign the output buffer
+     if (!encoder_reset(encoder, io_ptr, io_ptr_end)) {
+         encoder->usr->error(encoder->usr, "lz encoder io reset failed\n");
+@@ -592,13 +614,15 @@ void lz_decode_begin(LzContext *lz, uint8_t *io_ptr, unsigned int num_io_bytes,
+         encoder->usr->error(encoder->usr, "bad version\n");
+     }
+ 
+-    encoder->type = (LzImageType)decode_32(encoder);
+-    if (encoder->type <= LZ_IMAGE_TYPE_INVALID || encoder->type > LZ_IMAGE_TYPE_A8) {
++    int type = decode_32(encoder);
++    if (type <= LZ_IMAGE_TYPE_INVALID || type > LZ_IMAGE_TYPE_A8) {
+         encoder->usr->error(encoder->usr, "invalid lz type %d\n", encoder->type);
+     }
+-    encoder->width = decode_32(encoder);
+-    encoder->height = decode_32(encoder);
+-    encoder->stride = decode_32(encoder);
++    int width = decode_32(encoder);
++    int height = decode_32(encoder);
++    int stride = decode_32(encoder);
++    lz_set_sizes(encoder, type, width, height, stride);
++
+     *out_top_down = decode_32(encoder);
+ 
+     *out_width = encoder->width;

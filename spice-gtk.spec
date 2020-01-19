@@ -4,7 +4,7 @@
 
 Name:           spice-gtk
 Version:        0.35
-Release:        2%{?dist}
+Release:        4%{?dist}
 Summary:        A GTK+ widget for SPICE clients
 
 Group:          System Environment/Libraries
@@ -13,6 +13,12 @@ URL:            https://www.spice-space.org/
 Source0:        https://www.spice-space.org/download/gtk/%{name}-%{version}%{?_version_suffix}.tar.bz2
 
 Patch0001:      0001-Fix-flexible-array-buffer-overflow.patch
+Patch0002:      0002-lz-Avoid-buffer-reading-overflow-checking-for-image-.patch
+Patch0003:      0003-lz-More-checks-on-image-sizes.patch
+Patch0004:      0004-spice-channel-Properly-error-out-if-reconnect-fails.patch
+Patch0005:      0005-usb-device-manager-Handle-connectionless-channel.patch
+Patch0006:      0006-channel-usbredir-Add-FIXMEs-on-channel-reset-issues.patch
+Patch0007:      0007-channel-usbredir-Chain-up-with-parent-s-channel-rese.patch
 
 BuildRequires: intltool
 BuildRequires: usbredir-devel >= 0.6-8
@@ -115,6 +121,12 @@ spicy-screenshot is a tool to capture screen-shots of a SPICE desktop.
 %setup -q -n spice-gtk-%{version}%{?_version_suffix}
 
 %patch0001 -p1
+%patch0002 -p1
+%patch0003 -p1
+%patch0004 -p1
+%patch0005 -p1
+%patch0006 -p1
+%patch0007 -p1
 
 %build
 %configure \
@@ -187,6 +199,14 @@ rm -f %{buildroot}%{_libdir}/*.la
 %{_bindir}/spicy-stats
 
 %changelog
+* Fri Mar 15 2019 Victor Toso <victortoso@redhat.com> - 0.35-4
+- Fix bad channel-reset on usbredir
+  Resolves: rhbz#1625550
+
+* Wed Oct 10 2018 Frediano Ziglio <fziglio@redhat.com> - 0.35-3
+- Fix insufficient encoding checks for LZ
+  Resolves: rhbz#1598652
+
 * Fri Aug 10 2018 Frediano Ziglio <fziglio@redhat.com> - 0.35-2
 - Fix flexible array buffer overflow
   Resolves: rhbz#1596008
