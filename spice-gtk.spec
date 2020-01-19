@@ -4,7 +4,7 @@
 
 Name:           spice-gtk
 Version:        0.34
-Release:        3%{?dist}
+Release:        3%{?dist}.1
 Summary:        A GTK+ widget for SPICE clients
 
 Group:          System Environment/Libraries
@@ -14,6 +14,8 @@ URL:            https://www.spice-space.org/
 Source0:        https://www.spice-space.org/download/gtk/%{name}-%{version}%{?_version_suffix}.tar.bz2
 
 Patch0001:      0001-canvas-base-Fix-width-computation-for-palette-images.patch
+Patch0002:      0002-Revert-channel-usbredir-Fix-crash-on-channel-up.patch
+Patch0003:      0003-channel-usbredir-Fix-crash-on-channel-up.patch
 Patch1000:      1000-gtk-Makefile.am-add-PIE-flags-to-libspice-client-gli.patch
 
 BuildRequires: intltool
@@ -116,6 +118,8 @@ spicy-screenshot is a tool to capture screen-shots of a SPICE desktop.
 %setup -q -n spice-gtk-%{version}%{?_version_suffix}
 
 %patch0001 -p1
+%patch0002 -p1
+%patch0003 -p1
 %patch1000 -p1
 find . -name '*.stamp' | xargs touch
 
@@ -195,6 +199,10 @@ rm -f %{buildroot}%{_libdir}/*.la
 %{_bindir}/spicy-stats
 
 %changelog
+* Wed Jun 13 2018 Victor Toso <victortoso@redhat.com> - 0.34-3.1
+- Fix migration failure when USB is enabled
+  Resolves: rhbz#1590412
+
 * Thu Dec 21 2017 Frediano Ziglio <fziglio@redhat.com> - 0.34-3
 - Fix stride misalignment
   Resolves: rhbz#1508847
