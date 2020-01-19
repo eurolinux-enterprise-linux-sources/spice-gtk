@@ -1,0 +1,454 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Cursor Channel: Spice-GTK Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Spice-GTK Reference Manual">
+<link rel="up" href="ch02.html" title="Session and Channels Objects, from spice-client-glib">
+<link rel="prev" href="SpiceChannel.html" title="Spice Channel">
+<link rel="next" href="SpiceDisplayChannel.html" title="Display Channel">
+<meta name="generator" content="GTK-Doc V1.25 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#SpiceCursorChannel.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#SpiceCursorChannel.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#SpiceCursorChannel.properties" class="shortcut">Properties</a></span><span id="nav_signals">  <span class="dim">|</span> 
+                  <a href="#SpiceCursorChannel.signals" class="shortcut">Signals</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch02.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="SpiceChannel.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="SpiceDisplayChannel.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="SpiceCursorChannel"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="SpiceCursorChannel.top_of_page"></a>Cursor Channel</span></h2>
+<p>Cursor Channel — update cursor shape and position</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="SpiceCursorChannel.stability-level"></a><h2>Stability Level</h2>
+<acronym title="The intention of a Stable interface is to enable arbitrary third parties to
+develop applications to these interfaces, release them, and have confidence that
+they will run on all minor releases of the product (after the one in which the
+interface was introduced, and within the same major release). Even at a major
+release, incompatible changes are expected to be rare, and to have strong
+justifications.
+"><span class="acronym">Stable</span></acronym>, unless otherwise indicated
+</div>
+<div class="refsect1">
+<a name="SpiceCursorChannel.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody><tr>
+<td class="property_type">
+<a class="link" href="SpiceCursorChannel.html#SpiceCursorShape"><span class="type">SpiceCursorShape</span></a> *</td>
+<td class="property_name"><a class="link" href="SpiceCursorChannel.html#SpiceCursorChannel--cursor" title="The “cursor” property">cursor</a></td>
+<td class="property_flags">Read</td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="SpiceCursorChannel.signals"></a><h2>Signals</h2>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col width="150px" class="signals_return">
+<col width="300px" class="signals_name">
+<col width="200px" class="signals_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="SpiceCursorChannel.html#SpiceCursorChannel-cursor-hide" title="The “cursor-hide” signal">cursor-hide</a></td>
+<td class="signal_flags"><a href="/usr/share/gtk-doc/html/gobjectgobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="SpiceCursorChannel.html#SpiceCursorChannel-cursor-move" title="The “cursor-move” signal">cursor-move</a></td>
+<td class="signal_flags"><a href="/usr/share/gtk-doc/html/gobjectgobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="SpiceCursorChannel.html#SpiceCursorChannel-cursor-reset" title="The “cursor-reset” signal">cursor-reset</a></td>
+<td class="signal_flags"><a href="/usr/share/gtk-doc/html/gobjectgobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="SpiceCursorChannel.html#SpiceCursorChannel-cursor-set" title="The “cursor-set” signal">cursor-set</a></td>
+<td class="signal_flags"><a href="/usr/share/gtk-doc/html/gobjectgobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="SpiceCursorShape"></a><div class="refsect1">
+<a name="SpiceCursorChannel.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="SpiceCursorChannel.html#SpiceCursorChannel-struct" title="struct SpiceCursorChannel">SpiceCursorChannel</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="SpiceCursorChannel.html#SpiceCursorChannelClass" title="struct SpiceCursorChannelClass">SpiceCursorChannelClass</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="SpiceCursorChannel.html#SpiceCursorShape-struct" title="struct SpiceCursorShape">SpiceCursorShape</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="SpiceCursorChannel.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-Boxed-Types.html">GBoxed</a>
+    <span class="lineart">╰──</span> SpiceCursorShape
+    <a href="/usr/share/gtk-doc/html/gobjectgobject-The-Base-Object-Type.html#GObject-struct">GObject</a>
+    <span class="lineart">╰──</span> <a class="link" href="SpiceChannel.html" title="Spice Channel">SpiceChannel</a>
+        <span class="lineart">╰──</span> SpiceCursorChannel
+</pre>
+</div>
+<div class="refsect1">
+<a name="SpiceCursorChannel.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;spice-client.h&gt;
+</pre>
+</div>
+<div class="refsect1">
+<a name="SpiceCursorChannel.description"></a><h2>Description</h2>
+<p>The Spice protocol defines a set of messages for controlling cursor
+shape and position on the remote display area. The cursor changes
+that should be reflected on the display are notified by
+signals. See for example <a class="link" href="SpiceCursorChannel.html#SpiceCursorChannel-cursor-set" title="The “cursor-set” signal"><span class="type">“cursor-set”</span></a> and
+<a class="link" href="SpiceCursorChannel.html#SpiceCursorChannel-cursor-move" title="The “cursor-move” signal"><span class="type">“cursor-move”</span></a> signals and the <a class="link" href="SpiceCursorChannel.html#SpiceCursorChannel--cursor" title="The “cursor” property"><span class="type">“cursor”</span></a>
+property.</p>
+</div>
+<div class="refsect1">
+<a name="SpiceCursorChannel.functions_details"></a><h2>Functions</h2>
+<p></p>
+</div>
+<div class="refsect1">
+<a name="SpiceCursorChannel.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="SpiceCursorChannel-struct"></a><h3>struct SpiceCursorChannel</h3>
+<pre class="programlisting">struct SpiceCursorChannel;</pre>
+<p>The <a class="link" href="SpiceCursorChannel.html" title="Cursor Channel"><span class="type">SpiceCursorChannel</span></a> struct is opaque and should not be accessed directly.</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="SpiceCursorChannelClass"></a><h3>struct SpiceCursorChannelClass</h3>
+<pre class="programlisting">struct SpiceCursorChannelClass {
+    SpiceChannelClass parent_class;
+
+    /* signals */
+    void (*cursor_set)(SpiceCursorChannel *channel, gint width, gint height,
+                       gint hot_x, gint hot_y, gpointer rgba);
+    void (*cursor_move)(SpiceCursorChannel *channel, gint x, gint y);
+    void (*cursor_hide)(SpiceCursorChannel *channel);
+    void (*cursor_reset)(SpiceCursorChannel *channel);
+};
+</pre>
+<p>Class structure for <a class="link" href="SpiceCursorChannel.html" title="Cursor Channel"><span class="type">SpiceCursorChannel</span></a>.</p>
+<div class="refsect3">
+<a name="SpiceCursorChannelClass.members"></a><h4>Members</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="SpiceCursorChannelClass.cursor-set"></a>cursor_set</code></em> ()</p></td>
+<td class="struct_member_description"><p>Signal class handler for the <a class="link" href="SpiceCursorChannel.html#SpiceCursorChannel-cursor-set" title="The “cursor-set” signal"><span class="type">“cursor-set”</span></a> signal.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="SpiceCursorChannelClass.cursor-move"></a>cursor_move</code></em> ()</p></td>
+<td class="struct_member_description"><p>Signal class handler for the <a class="link" href="SpiceCursorChannel.html#SpiceCursorChannel-cursor-move" title="The “cursor-move” signal"><span class="type">“cursor-move”</span></a> signal.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="SpiceCursorChannelClass.cursor-hide"></a>cursor_hide</code></em> ()</p></td>
+<td class="struct_member_description"><p>Signal class handler for the <a class="link" href="SpiceCursorChannel.html#SpiceCursorChannel-cursor-hide" title="The “cursor-hide” signal"><span class="type">“cursor-hide”</span></a> signal.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="SpiceCursorChannelClass.cursor-reset"></a>cursor_reset</code></em> ()</p></td>
+<td class="struct_member_description"><p>Signal class handler for the <a class="link" href="SpiceCursorChannel.html#SpiceCursorChannel-cursor-reset" title="The “cursor-reset” signal"><span class="type">“cursor-reset”</span></a> signal.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="SpiceCursorShape-struct"></a><h3>struct SpiceCursorShape</h3>
+<pre class="programlisting">struct SpiceCursorShape {
+    SpiceCursorType type;
+    guint16 width;
+    guint16 height;
+    guint16 hot_spot_x;
+    guint16 hot_spot_y;
+    gpointer data;
+};
+</pre>
+<p>The <a class="link" href="SpiceCursorChannel.html#SpiceCursorShape"><span class="type">SpiceCursorShape</span></a> structure defines the remote cursor's shape.</p>
+<div class="refsect3">
+<a name="SpiceCursorShape.members"></a><h4>Members</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">SpiceCursorType</span> <em class="structfield"><code><a name="SpiceCursorShape-struct.type"></a>type</code></em>;</p></td>
+<td class="struct_member_description"><p>a <span class="type">SpiceCursorType</span> of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint16"><span class="type">guint16</span></a> <em class="structfield"><code><a name="SpiceCursorShape-struct.width"></a>width</code></em>;</p></td>
+<td class="struct_member_description"><p>a width of the remote cursor</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint16"><span class="type">guint16</span></a> <em class="structfield"><code><a name="SpiceCursorShape-struct.height"></a>height</code></em>;</p></td>
+<td class="struct_member_description"><p>a height of the remote cursor</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint16"><span class="type">guint16</span></a> <em class="structfield"><code><a name="SpiceCursorShape-struct.hot-spot-x"></a>hot_spot_x</code></em>;</p></td>
+<td class="struct_member_description"><p>a 'x' coordinate of the remote cursor</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint16"><span class="type">guint16</span></a> <em class="structfield"><code><a name="SpiceCursorShape-struct.hot-spot-y"></a>hot_spot_y</code></em>;</p></td>
+<td class="struct_member_description"><p>a 'y' coordinate of the remote cursor</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> <em class="structfield"><code><a name="SpiceCursorShape-struct.data"></a>data</code></em>;</p></td>
+<td class="struct_member_description"><p>image data of the remote cursor</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="SpiceCursorChannel.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="SpiceCursorChannel--cursor"></a><h3>The <code class="literal">“cursor”</code> property</h3>
+<pre class="programlisting">  “cursor”                   <a class="link" href="SpiceCursorChannel.html#SpiceCursorShape"><span class="type">SpiceCursorShape</span></a> *</pre>
+<p>The last <a class="link" href="SpiceCursorChannel.html#SpiceCursorShape"><span class="type">SpiceCursorShape</span></a> received.</p>
+<p>Flags: Read</p>
+<p class="since">Since: 0.34</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="SpiceCursorChannel.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2">
+<a name="SpiceCursorChannel-cursor-hide"></a><h3>The <code class="literal">“cursor-hide”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="SpiceCursorChannel.html" title="Cursor Channel"><span class="type">SpiceCursorChannel</span></a> *cursor,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            user_data)</pre>
+<p>The <a class="link" href="SpiceCursorChannel.html#SpiceCursorChannel-cursor-hide" title="The “cursor-hide” signal"><span class="type">“cursor-hide”</span></a> signal is emitted to hide
+the cursor/pointer on the display area.</p>
+<div class="refsect3">
+<a name="SpiceCursorChannel-cursor-hide.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>cursor</p></td>
+<td class="parameter_description"><p>the <a class="link" href="SpiceCursorChannel.html" title="Cursor Channel"><span class="type">SpiceCursorChannel</span></a> that emitted the signal</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: <a href="/usr/share/gtk-doc/html/gobjectgobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="SpiceCursorChannel-cursor-move"></a><h3>The <code class="literal">“cursor-move”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="SpiceCursorChannel.html" title="Cursor Channel"><span class="type">SpiceCursorChannel</span></a> *cursor,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a>                x,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a>                y,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            user_data)</pre>
+<p>The <a class="link" href="SpiceCursorChannel.html#SpiceCursorChannel-cursor-move" title="The “cursor-move” signal"><span class="type">“cursor-move”</span></a> signal is emitted to update
+the cursor position on the display area.</p>
+<div class="refsect3">
+<a name="SpiceCursorChannel-cursor-move.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>cursor</p></td>
+<td class="parameter_description"><p>the <a class="link" href="SpiceCursorChannel.html" title="Cursor Channel"><span class="type">SpiceCursorChannel</span></a> that emitted the signal</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>x position</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>y</p></td>
+<td class="parameter_description"><p>y position</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: <a href="/usr/share/gtk-doc/html/gobjectgobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="SpiceCursorChannel-cursor-reset"></a><h3>The <code class="literal">“cursor-reset”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="SpiceCursorChannel.html" title="Cursor Channel"><span class="type">SpiceCursorChannel</span></a> *cursor,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            user_data)</pre>
+<p>The <a class="link" href="SpiceCursorChannel.html#SpiceCursorChannel-cursor-reset" title="The “cursor-reset” signal"><span class="type">“cursor-reset”</span></a> signal is emitted to
+reset the cursor to its default context.</p>
+<div class="refsect3">
+<a name="SpiceCursorChannel-cursor-reset.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>cursor</p></td>
+<td class="parameter_description"><p>the <a class="link" href="SpiceCursorChannel.html" title="Cursor Channel"><span class="type">SpiceCursorChannel</span></a> that emitted the signal</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: <a href="/usr/share/gtk-doc/html/gobjectgobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="SpiceCursorChannel-cursor-set"></a><h3>The <code class="literal">“cursor-set”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="SpiceCursorChannel.html" title="Cursor Channel"><span class="type">SpiceCursorChannel</span></a> *cursor,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a>                width,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a>                height,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a>                hot_x,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a>                hot_y,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            rgba,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            user_data)</pre>
+<p>The <a class="link" href="SpiceCursorChannel.html#SpiceCursorChannel-cursor-set" title="The “cursor-set” signal"><span class="type">“cursor-set”</span></a> signal is emitted to modify
+cursor aspect and position on the display area.</p>
+<div class="warning">
+<p><code class="literal">SpiceCursorChannel::cursor-set</code> has been deprecated since version 0.34 and should not be used in newly-written code.</p>
+<p>Use <a class="link" href="SpiceCursorChannel.html#SpiceCursorChannel--cursor" title="The “cursor” property"><span class="type">“cursor”</span></a> notify instead.</p>
+</div>
+<div class="refsect3">
+<a name="SpiceCursorChannel-cursor-set.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>cursor</p></td>
+<td class="parameter_description"><p>the <a class="link" href="SpiceCursorChannel.html" title="Cursor Channel"><span class="type">SpiceCursorChannel</span></a> that emitted the signal</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>width</p></td>
+<td class="parameter_description"><p>width of the shape</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>height</p></td>
+<td class="parameter_description"><p>height of the shape</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>hot_x</p></td>
+<td class="parameter_description"><p>horizontal offset of the 'hotspot' of the cursor</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>hot_y</p></td>
+<td class="parameter_description"><p>vertical offset of the 'hotspot' of the cursor</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>rgba</p></td>
+<td class="parameter_description"><p>32bits shape data, or <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if default cursor. It might
+be freed after the signal is emitted, so make sure to copy it
+if you need it later!</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: <a href="/usr/share/gtk-doc/html/gobjectgobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></p>
+</div>
+</div>
+<div class="refsect1">
+<a name="SpiceCursorChannel.see-also"></a><h2>See Also</h2>
+<p><a class="link" href="SpiceChannel.html" title="Spice Channel"><span class="type">SpiceChannel</span></a>, and the GTK widget <a class="link" href="SpiceDisplay.html" title="Spice Display"><span class="type">SpiceDisplay</span></a></p>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.25</div>
+</body>
+</html>

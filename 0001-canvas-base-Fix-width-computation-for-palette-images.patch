@@ -1,0 +1,33 @@
+From 3b4759ce15325e2de1b473d619b69ae786c2fcec Mon Sep 17 00:00:00 2001
+From: Frediano Ziglio <fziglio@redhat.com>
+Date: Thu, 21 Dec 2017 15:54:04 +0000
+Subject: [PATCH spice-common] canvas-base: Fix width computation for palette
+ images
+
+Palette images are encoded with a slightly larger pixel than
+width. This cause a wrong calculation of stride_encoded value
+which cause a wrong stride adjustment.
+
+This fix bug https://bugzilla.redhat.com/show_bug.cgi?id=1508847.
+
+Signed-off-by: Frediano Ziglio <fziglio@redhat.com>
+---
+ common/canvas_base.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/common/canvas_base.c b/common/canvas_base.c
+index a9d7855..2ecd276 100644
+--- a/spice-common/common/canvas_base.c
++++ b/spice-common/common/canvas_base.c
+@@ -824,7 +824,7 @@ static pixman_image_t *canvas_get_lz(CanvasBase *canvas, SpiceImage *image,
+     lz_decode_begin(lz_data->lz, comp_buf, comp_size, &type,
+                     &width, &height, &n_comp_pixels, &top_down, palette);
+ 
+-    stride_encoded = width;
++    stride_encoded = n_comp_pixels / height;
+     switch (type) {
+     case LZ_IMAGE_TYPE_RGBA:
+         as_type = LZ_IMAGE_TYPE_RGBA;
+-- 
+2.14.3
+

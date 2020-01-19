@@ -1,0 +1,975 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Display Channel: Spice-GTK Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Spice-GTK Reference Manual">
+<link rel="up" href="ch02.html" title="Session and Channels Objects, from spice-client-glib">
+<link rel="prev" href="SpiceCursorChannel.html" title="Cursor Channel">
+<link rel="next" href="SpiceInputsChannel.html" title="Inputs Channel">
+<meta name="generator" content="GTK-Doc V1.25 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#SpiceDisplayChannel.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#SpiceDisplayChannel.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#SpiceDisplayChannel.properties" class="shortcut">Properties</a></span><span id="nav_signals">  <span class="dim">|</span> 
+                  <a href="#SpiceDisplayChannel.signals" class="shortcut">Signals</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch02.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="SpiceCursorChannel.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="SpiceInputsChannel.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="SpiceDisplayChannel"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="SpiceDisplayChannel.top_of_page"></a>Display Channel</span></h2>
+<p>Display Channel — remote display area</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="SpiceDisplayChannel.stability-level"></a><h2>Stability Level</h2>
+<acronym title="The intention of a Stable interface is to enable arbitrary third parties to
+develop applications to these interfaces, release them, and have confidence that
+they will run on all minor releases of the product (after the one in which the
+interface was introduced, and within the same major release). Even at a major
+release, incompatible changes are expected to be rare, and to have strong
+justifications.
+"><span class="acronym">Stable</span></acronym>, unless otherwise indicated
+</div>
+<div class="refsect1">
+<a name="SpiceDisplayChannel.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">const <a class="link" href="SpiceDisplayChannel.html#SpiceGlScanout"><span class="returnvalue">SpiceGlScanout</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="SpiceDisplayChannel.html#spice-display-get-gl-scanout" title="spice_display_get_gl_scanout ()">spice_display_get_gl_scanout</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="SpiceDisplayChannel.html#spice-display-gl-draw-done" title="spice_display_gl_draw_done ()">spice_display_gl_draw_done</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="SpiceDisplayChannel.html#spice-display-get-primary" title="spice_display_get_primary ()">spice_display_get_primary</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="SpiceDisplayChannel.html#spice-display-change-preferred-compression" title="spice_display_change_preferred_compression ()">spice_display_change_preferred_compression</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="SpiceDisplayChannel.html#spice-display-change-preferred-video-codec-type" title="spice_display_change_preferred_video_codec_type ()">spice_display_change_preferred_video_codec_type</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="SpiceDisplayChannel.html#spice-gl-scanout-free" title="spice_gl_scanout_free ()">spice_gl_scanout_free</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="SpiceDisplayChannel.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type">
+<a class="link" href="SpiceDisplayChannel.html#SpiceGlScanout"><span class="type">SpiceGlScanout</span></a> *</td>
+<td class="property_name"><a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel--gl-scanout" title="The “gl-scanout” property">gl-scanout</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel--height" title="The “height” property">height</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Arrays.html#GArray"><span class="type">GArray</span></a> *</td>
+<td class="property_name"><a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel--monitors" title="The “monitors” property">monitors</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel--monitors-max" title="The “monitors-max” property">monitors-max</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel--width" title="The “width” property">width</a></td>
+<td class="property_flags">Read</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="SpiceDisplayChannel.signals"></a><h2>Signals</h2>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col width="150px" class="signals_return">
+<col width="300px" class="signals_name">
+<col width="200px" class="signals_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel-display-invalidate" title="The “display-invalidate” signal">display-invalidate</a></td>
+<td class="signal_flags"><a href="/usr/share/gtk-doc/html/gobjectgobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel-display-mark" title="The “display-mark” signal">display-mark</a></td>
+<td class="signal_flags"><a href="/usr/share/gtk-doc/html/gobjectgobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel-display-primary-create" title="The “display-primary-create” signal">display-primary-create</a></td>
+<td class="signal_flags"><a href="/usr/share/gtk-doc/html/gobjectgobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel-display-primary-destroy" title="The “display-primary-destroy” signal">display-primary-destroy</a></td>
+<td class="signal_flags"><a href="/usr/share/gtk-doc/html/gobjectgobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel-gl-draw" title="The “gl-draw” signal">gl-draw</a></td>
+<td class="signal_flags"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="SpiceGlScanout"></a><div class="refsect1">
+<a name="SpiceDisplayChannel.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel-struct" title="struct SpiceDisplayChannel">SpiceDisplayChannel</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannelClass" title="struct SpiceDisplayChannelClass">SpiceDisplayChannelClass</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="SpiceDisplayChannel.html#SpiceDisplayMonitorConfig" title="struct SpiceDisplayMonitorConfig">SpiceDisplayMonitorConfig</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="SpiceDisplayChannel.html#SpiceDisplayPrimary" title="struct SpiceDisplayPrimary">SpiceDisplayPrimary</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="SpiceDisplayChannel.html#SpiceGlScanout-struct" title="struct SpiceGlScanout">SpiceGlScanout</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="SpiceDisplayChannel.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="https://developer.gnome.org/gobject/unstable/gobject-Boxed-Types.html">GBoxed</a>
+    <span class="lineart">╰──</span> SpiceGlScanout
+    <a href="/usr/share/gtk-doc/html/gobjectgobject-The-Base-Object-Type.html#GObject-struct">GObject</a>
+    <span class="lineart">╰──</span> <a class="link" href="SpiceChannel.html" title="Spice Channel">SpiceChannel</a>
+        <span class="lineart">╰──</span> SpiceDisplayChannel
+</pre>
+</div>
+<div class="refsect1">
+<a name="SpiceDisplayChannel.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;spice-client.h&gt;
+</pre>
+</div>
+<div class="refsect1">
+<a name="SpiceDisplayChannel.description"></a><h2>Description</h2>
+<p>A class that handles the rendering of the remote display and inform
+of its updates.</p>
+<p>The creation of the main graphic buffer is signaled with
+<a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel-display-primary-create" title="The “display-primary-create” signal"><span class="type">“display-primary-create”</span></a>.</p>
+<p>The update of regions is notified by
+<a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel-display-invalidate" title="The “display-invalidate” signal"><span class="type">“display-invalidate”</span></a> signals.</p>
+</div>
+<div class="refsect1">
+<a name="SpiceDisplayChannel.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="spice-display-get-gl-scanout"></a><h3>spice_display_get_gl_scanout ()</h3>
+<pre class="programlisting">const <a class="link" href="SpiceDisplayChannel.html#SpiceGlScanout"><span class="returnvalue">SpiceGlScanout</span></a> *
+spice_display_get_gl_scanout (<em class="parameter"><code><a class="link" href="SpiceDisplayChannel.html" title="Display Channel"><span class="type">SpiceDisplayChannel</span></a> *channel</code></em>);</pre>
+<p>Retrieves the GL scanout if available</p>
+<div class="refsect3">
+<a name="spice-display-get-gl-scanout.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>channel</p></td>
+<td class="parameter_description"><p>a <a class="link" href="SpiceDisplayChannel.html" title="Display Channel"><span class="type">SpiceDisplayChannel</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="spice-display-get-gl-scanout.returns"></a><h4>Returns</h4>
+<p> the current GL scanout, or <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if none or not valid</p>
+</div>
+<p class="since">Since: 0.31</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="spice-display-gl-draw-done"></a><h3>spice_display_gl_draw_done ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+spice_display_gl_draw_done (<em class="parameter"><code><a class="link" href="SpiceDisplayChannel.html" title="Display Channel"><span class="type">SpiceDisplayChannel</span></a> *channel</code></em>);</pre>
+<p>After a SpiceDisplayChannel::gl-draw is emitted, the client should
+draw the current display with the current GL scanout, and must
+release the GL resource with a call to <a class="link" href="SpiceDisplayChannel.html#spice-display-gl-draw-done" title="spice_display_gl_draw_done ()"><code class="function">spice_display_gl_draw_done()</code></a>
+(failing to do so for each gl-draw may result in a frozen display).</p>
+<div class="refsect3">
+<a name="spice-display-gl-draw-done.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>channel</p></td>
+<td class="parameter_description"><p>a <a class="link" href="SpiceDisplayChannel.html" title="Display Channel"><span class="type">SpiceDisplayChannel</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<p class="since">Since: 0.31</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="spice-display-get-primary"></a><h3>spice_display_get_primary ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+spice_display_get_primary (<em class="parameter"><code><a class="link" href="SpiceChannel.html" title="Spice Channel"><span class="type">SpiceChannel</span></a> *channel</code></em>,
+                           <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint32"><span class="type">guint32</span></a> surface_id</code></em>,
+                           <em class="parameter"><code><a class="link" href="SpiceDisplayChannel.html#SpiceDisplayPrimary" title="struct SpiceDisplayPrimary"><span class="type">SpiceDisplayPrimary</span></a> *primary</code></em>);</pre>
+<p>Retrieve primary display surface <em class="parameter"><code>surface_id</code></em>
+.</p>
+<div class="refsect3">
+<a name="spice-display-get-primary.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>channel</p></td>
+<td class="parameter_description"><p>a <a class="link" href="SpiceDisplayChannel.html" title="Display Channel"><span class="type">SpiceDisplayChannel</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>surface_id</p></td>
+<td class="parameter_description"><p>a surface id</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>primary</p></td>
+<td class="parameter_description"><p>a <a class="link" href="SpiceDisplayChannel.html#SpiceDisplayPrimary" title="struct SpiceDisplayPrimary"><span class="type">SpiceDisplayPrimary</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="spice-display-get-primary.returns"></a><h4>Returns</h4>
+<p> <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the primary surface was found and its details
+collected in <em class="parameter"><code>primary</code></em>
+.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="spice-display-change-preferred-compression"></a><h3>spice_display_change_preferred_compression ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+spice_display_change_preferred_compression
+                               (<em class="parameter"><code><a class="link" href="SpiceChannel.html" title="Spice Channel"><span class="type">SpiceChannel</span></a> *channel</code></em>,
+                                <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a> compression</code></em>);</pre>
+<p>Tells the spice server to change the preferred image compression
+for the <em class="parameter"><code>channel</code></em>
+.</p>
+<div class="refsect3">
+<a name="spice-display-change-preferred-compression.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>channel</p></td>
+<td class="parameter_description"><p>a <a class="link" href="SpiceDisplayChannel.html" title="Display Channel"><span class="type">SpiceDisplayChannel</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>compression</p></td>
+<td class="parameter_description"><p>a <span class="type">SpiceImageCompression</span></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 0.31</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="spice-display-change-preferred-video-codec-type"></a><h3>spice_display_change_preferred_video_codec_type ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+spice_display_change_preferred_video_codec_type
+                               (<em class="parameter"><code><a class="link" href="SpiceChannel.html" title="Spice Channel"><span class="type">SpiceChannel</span></a> *channel</code></em>,
+                                <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a> codec_type</code></em>);</pre>
+<p>Tells the spice server to change the preferred video codec type for
+streaming in <em class="parameter"><code>channel</code></em>
+. Application can set only one preferred video codec per
+display channel.</p>
+<div class="refsect3">
+<a name="spice-display-change-preferred-video-codec-type.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>channel</p></td>
+<td class="parameter_description"><p>a <a class="link" href="SpiceDisplayChannel.html" title="Display Channel"><span class="type">SpiceDisplayChannel</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>codec_type</p></td>
+<td class="parameter_description"><p>a <span class="type">SpiceVideoCodecType</span></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 0.34</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="spice-gl-scanout-free"></a><h3>spice_gl_scanout_free ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+spice_gl_scanout_free (<em class="parameter"><code><a class="link" href="SpiceDisplayChannel.html#SpiceGlScanout"><span class="type">SpiceGlScanout</span></a> *scanout</code></em>);</pre>
+<p>Frees the <em class="parameter"><code>scanout</code></em>
+.</p>
+<div class="refsect3">
+<a name="spice-gl-scanout-free.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>scanout</p></td>
+<td class="parameter_description"><p>a <a class="link" href="SpiceDisplayChannel.html#SpiceGlScanout"><span class="type">SpiceGlScanout</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<p class="since">Since: 0.31</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="SpiceDisplayChannel.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="SpiceDisplayChannel-struct"></a><h3>struct SpiceDisplayChannel</h3>
+<pre class="programlisting">struct SpiceDisplayChannel;</pre>
+<p>The <a class="link" href="SpiceDisplayChannel.html" title="Display Channel"><span class="type">SpiceDisplayChannel</span></a> struct is opaque and should not be accessed directly.</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="SpiceDisplayChannelClass"></a><h3>struct SpiceDisplayChannelClass</h3>
+<pre class="programlisting">struct SpiceDisplayChannelClass {
+    SpiceChannelClass parent_class;
+
+    /* signals */
+    void (*display_primary_create)(SpiceChannel *channel, gint format,
+                                   gint width, gint height, gint stride,
+                                   gint shmid, gpointer data);
+    void (*display_primary_destroy)(SpiceChannel *channel);
+    void (*display_invalidate)(SpiceChannel *channel,
+                               gint x, gint y, gint w, gint h);
+    void (*display_mark)(SpiceChannel *channel,
+                         gboolean mark);
+};
+</pre>
+<p>Class structure for <a class="link" href="SpiceDisplayChannel.html" title="Display Channel"><span class="type">SpiceDisplayChannel</span></a>.</p>
+<div class="refsect3">
+<a name="SpiceDisplayChannelClass.members"></a><h4>Members</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="SpiceDisplayChannelClass.display-primary-create"></a>display_primary_create</code></em> ()</p></td>
+<td class="struct_member_description"><p>Signal class handler for the <a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel-display-primary-create" title="The “display-primary-create” signal"><span class="type">“display-primary-create”</span></a> signal.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="SpiceDisplayChannelClass.display-primary-destroy"></a>display_primary_destroy</code></em> ()</p></td>
+<td class="struct_member_description"><p>Signal class handler for the <a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel-display-primary-destroy" title="The “display-primary-destroy” signal"><span class="type">“display-primary-destroy”</span></a> signal.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="SpiceDisplayChannelClass.display-invalidate"></a>display_invalidate</code></em> ()</p></td>
+<td class="struct_member_description"><p>Signal class handler for the <a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel-display-invalidate" title="The “display-invalidate” signal"><span class="type">“display-invalidate”</span></a> signal.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="SpiceDisplayChannelClass.display-mark"></a>display_mark</code></em> ()</p></td>
+<td class="struct_member_description"><p>Signal class handler for the <a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel-display-mark" title="The “display-mark” signal"><span class="type">“display-mark”</span></a> signal.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="SpiceDisplayMonitorConfig"></a><h3>struct SpiceDisplayMonitorConfig</h3>
+<pre class="programlisting">struct SpiceDisplayMonitorConfig {
+    guint id;
+    guint surface_id;
+    guint x;
+    guint y;
+    guint width;
+    guint height;
+};
+</pre>
+<p>Holds a monitor configuration.</p>
+<div class="refsect3">
+<a name="SpiceDisplayMonitorConfig.members"></a><h4>Members</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a> <em class="structfield"><code><a name="SpiceDisplayMonitorConfig.id"></a>id</code></em>;</p></td>
+<td class="struct_member_description"><p>monitor id</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a> <em class="structfield"><code><a name="SpiceDisplayMonitorConfig.surface-id"></a>surface_id</code></em>;</p></td>
+<td class="struct_member_description"><p>monitor surface id</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a> <em class="structfield"><code><a name="SpiceDisplayMonitorConfig.x"></a>x</code></em>;</p></td>
+<td class="struct_member_description"><p>x position of the monitor</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a> <em class="structfield"><code><a name="SpiceDisplayMonitorConfig.y"></a>y</code></em>;</p></td>
+<td class="struct_member_description"><p>y position of the monitor</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a> <em class="structfield"><code><a name="SpiceDisplayMonitorConfig.width"></a>width</code></em>;</p></td>
+<td class="struct_member_description"><p>width of the monitor</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a> <em class="structfield"><code><a name="SpiceDisplayMonitorConfig.height"></a>height</code></em>;</p></td>
+<td class="struct_member_description"><p>height of the monitor</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="SpiceDisplayPrimary"></a><h3>struct SpiceDisplayPrimary</h3>
+<pre class="programlisting">struct SpiceDisplayPrimary {
+    enum SpiceSurfaceFmt format;
+    gint width;
+    gint height;
+    gint stride;
+    gint shmid;
+    guint8 *data;
+    gboolean marked;
+};
+</pre>
+<p>Holds the information necessary to use the primary surface.</p>
+<div class="refsect3">
+<a name="SpiceDisplayPrimary.members"></a><h4>Members</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p>enum <span class="type">SpiceSurfaceFmt</span> <em class="structfield"><code><a name="SpiceDisplayPrimary.format"></a>format</code></em>;</p></td>
+<td class="struct_member_description"><p>primary buffer format</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="SpiceDisplayPrimary.width"></a>width</code></em>;</p></td>
+<td class="struct_member_description"><p>width of the primary</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="SpiceDisplayPrimary.height"></a>height</code></em>;</p></td>
+<td class="struct_member_description"><p>height of the primary</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="SpiceDisplayPrimary.stride"></a>stride</code></em>;</p></td>
+<td class="struct_member_description"><p>stride of the primary</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="SpiceDisplayPrimary.shmid"></a>shmid</code></em>;</p></td>
+<td class="struct_member_description"><p>identifier of the shared memory segment associated with
+the <em class="parameter"><code>data</code></em>
+, or -1 if not shm</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint8"><span class="type">guint8</span></a> *<em class="structfield"><code><a name="SpiceDisplayPrimary.data"></a>data</code></em>;</p></td>
+<td class="struct_member_description"><p>pointer to primary buffer</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="SpiceDisplayPrimary.marked"></a>marked</code></em>;</p></td>
+<td class="struct_member_description"><p>whether the display is marked ready</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="SpiceGlScanout-struct"></a><h3>struct SpiceGlScanout</h3>
+<pre class="programlisting">struct SpiceGlScanout {
+    gint fd;
+    guint32 width;
+    guint32 height;
+    guint32 stride;
+    guint32 format;
+    gboolean y0top;
+};
+</pre>
+<p>Holds the information necessary for using the GL display scanout.</p>
+<div class="refsect3">
+<a name="SpiceGlScanout.members"></a><h4>Members</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="SpiceGlScanout-struct.fd"></a>fd</code></em>;</p></td>
+<td class="struct_member_description"><p>a drm DMABUF file that can be imported with eglCreateImageKHR</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint32"><span class="type">guint32</span></a> <em class="structfield"><code><a name="SpiceGlScanout-struct.width"></a>width</code></em>;</p></td>
+<td class="struct_member_description"><p>width of the scanout</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint32"><span class="type">guint32</span></a> <em class="structfield"><code><a name="SpiceGlScanout-struct.height"></a>height</code></em>;</p></td>
+<td class="struct_member_description"><p>height of the scanout</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint32"><span class="type">guint32</span></a> <em class="structfield"><code><a name="SpiceGlScanout-struct.stride"></a>stride</code></em>;</p></td>
+<td class="struct_member_description"><p>stride of the scanout</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint32"><span class="type">guint32</span></a> <em class="structfield"><code><a name="SpiceGlScanout-struct.format"></a>format</code></em>;</p></td>
+<td class="struct_member_description"><p>the drm fourcc format</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="SpiceGlScanout-struct.y0top"></a>y0top</code></em>;</p></td>
+<td class="struct_member_description"><p>orientation of the scanout</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="SpiceDisplayChannel.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="SpiceDisplayChannel--gl-scanout"></a><h3>The <code class="literal">“gl-scanout”</code> property</h3>
+<pre class="programlisting">  “gl-scanout”               <a class="link" href="SpiceDisplayChannel.html#SpiceGlScanout"><span class="type">SpiceGlScanout</span></a> *</pre>
+<p>The last <a class="link" href="SpiceDisplayChannel.html#SpiceGlScanout"><span class="type">SpiceGlScanout</span></a> received.</p>
+<p>Flags: Read</p>
+<p class="since">Since: 0.31</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="SpiceDisplayChannel--height"></a><h3>The <code class="literal">“height”</code> property</h3>
+<pre class="programlisting">  “height”                   <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>The primary surface height.</p>
+<p>Flags: Read</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="SpiceDisplayChannel--monitors"></a><h3>The <code class="literal">“monitors”</code> property</h3>
+<pre class="programlisting">  “monitors”                 <a href="/usr/share/gtk-doc/html/glibglib-Arrays.html#GArray"><span class="type">GArray</span></a> *</pre>
+<p>Current monitors configuration.</p>
+<p>Flags: Read</p>
+<p class="since">Since: 0.13</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="SpiceDisplayChannel--monitors-max"></a><h3>The <code class="literal">“monitors-max”</code> property</h3>
+<pre class="programlisting">  “monitors-max”             <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>The maximum number of monitors the server or guest supports.
+May change during client lifetime, for instance guest may
+reboot or dynamically adjust this.</p>
+<p>Flags: Read</p>
+<p>Allowed values: [1,256]</p>
+<p>Default value: 1</p>
+<p class="since">Since: 0.13</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="SpiceDisplayChannel--width"></a><h3>The <code class="literal">“width”</code> property</h3>
+<pre class="programlisting">  “width”                    <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>The primary surface width.</p>
+<p>Flags: Read</p>
+<p>Default value: 0</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="SpiceDisplayChannel.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2">
+<a name="SpiceDisplayChannel-display-invalidate"></a><h3>The <code class="literal">“display-invalidate”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="SpiceDisplayChannel.html" title="Display Channel"><span class="type">SpiceDisplayChannel</span></a> *display,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a>                 x,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a>                 y,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a>                 width,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a>                 height,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>             user_data)</pre>
+<p>The <a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel-display-invalidate" title="The “display-invalidate” signal"><span class="type">“display-invalidate”</span></a> signal is emitted
+when the rectangular region x/y/w/h of the primary buffer is
+updated.</p>
+<div class="refsect3">
+<a name="SpiceDisplayChannel-display-invalidate.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>display</p></td>
+<td class="parameter_description"><p>the <a class="link" href="SpiceDisplayChannel.html" title="Display Channel"><span class="type">SpiceDisplayChannel</span></a> that emitted the signal</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>x position</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>y</p></td>
+<td class="parameter_description"><p>y position</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>width</p></td>
+<td class="parameter_description"><p>width</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>height</p></td>
+<td class="parameter_description"><p>height</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: <a href="/usr/share/gtk-doc/html/gobjectgobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="SpiceDisplayChannel-display-mark"></a><h3>The <code class="literal">“display-mark”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="SpiceDisplayChannel.html" title="Display Channel"><span class="type">SpiceDisplayChannel</span></a> *display,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a>                 mark,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>             user_data)</pre>
+<p>The <a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel-display-mark" title="The “display-mark” signal"><span class="type">“display-mark”</span></a> signal is emitted when
+the <code class="literal">RED_DISPLAY_MARK</code> command is received, and the display
+should be exposed.</p>
+<div class="refsect3">
+<a name="SpiceDisplayChannel-display-mark.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>display</p></td>
+<td class="parameter_description"><p>the <a class="link" href="SpiceDisplayChannel.html" title="Display Channel"><span class="type">SpiceDisplayChannel</span></a> that emitted the signal</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>mark</p></td>
+<td class="parameter_description"><p><a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> when the display mark has been received</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: <a href="/usr/share/gtk-doc/html/gobjectgobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="SpiceDisplayChannel-display-primary-create"></a><h3>The <code class="literal">“display-primary-create”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="SpiceDisplayChannel.html" title="Display Channel"><span class="type">SpiceDisplayChannel</span></a> *display,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a>                 format,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a>                 width,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a>                 height,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a>                 stride,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a>                 shmid,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>             imgdata,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>             user_data)</pre>
+<p>The <a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel-display-primary-create" title="The “display-primary-create” signal"><span class="type">“display-primary-create”</span></a> signal
+provides main display buffer data.</p>
+<div class="refsect3">
+<a name="SpiceDisplayChannel-display-primary-create.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>display</p></td>
+<td class="parameter_description"><p>the <a class="link" href="SpiceDisplayChannel.html" title="Display Channel"><span class="type">SpiceDisplayChannel</span></a> that emitted the signal</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>format</p></td>
+<td class="parameter_description"><p><code class="literal">SPICE_SURFACE_FMT_32_xRGB</code> or <code class="literal">SPICE_SURFACE_FMT_16_555</code>;</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>width</p></td>
+<td class="parameter_description"><p>width resolution</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>height</p></td>
+<td class="parameter_description"><p>height resolution</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>stride</p></td>
+<td class="parameter_description"><p>the buffer stride ("width" padding)</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>shmid</p></td>
+<td class="parameter_description"><p>identifier of the shared memory segment associated with
+the <em class="parameter"><code>imgdata</code></em>
+, or -1 if not shm</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>imgdata</p></td>
+<td class="parameter_description"><p>pointer to surface buffer</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: <a href="/usr/share/gtk-doc/html/gobjectgobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="SpiceDisplayChannel-display-primary-destroy"></a><h3>The <code class="literal">“display-primary-destroy”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="SpiceDisplayChannel.html" title="Display Channel"><span class="type">SpiceDisplayChannel</span></a> *display,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>             user_data)</pre>
+<p>The <a class="link" href="SpiceDisplayChannel.html#SpiceDisplayChannel-display-primary-destroy" title="The “display-primary-destroy” signal"><span class="type">“display-primary-destroy”</span></a> signal is
+emitted when the primary surface is freed and should not be
+accessed anymore.</p>
+<div class="refsect3">
+<a name="SpiceDisplayChannel-display-primary-destroy.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>display</p></td>
+<td class="parameter_description"><p>the <a class="link" href="SpiceDisplayChannel.html" title="Display Channel"><span class="type">SpiceDisplayChannel</span></a> that emitted the signal</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: <a href="/usr/share/gtk-doc/html/gobjectgobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="SpiceDisplayChannel-gl-draw"></a><h3>The <code class="literal">“gl-draw”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="SpiceDisplayChannel.html" title="Display Channel"><span class="type">SpiceDisplayChannel</span></a> *display,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a>                x,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a>                y,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a>                width,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a>                height,
+               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>             user_data)</pre>
+<p>The <span class="type">“draw”</span> signal is emitted when the
+rectangular region x/y/w/h of the GL scanout is updated and
+must be drawn. When the draw is finished, you must call
+<a class="link" href="SpiceDisplayChannel.html#spice-display-gl-draw-done" title="spice_display_gl_draw_done ()"><code class="function">spice_display_gl_draw_done()</code></a> in order to release the GL
+resources.</p>
+<div class="refsect3">
+<a name="SpiceDisplayChannel-gl-draw.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>display</p></td>
+<td class="parameter_description"><p>the <a class="link" href="SpiceDisplayChannel.html" title="Display Channel"><span class="type">SpiceDisplayChannel</span></a> that emitted the signal</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>x position</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>y</p></td>
+<td class="parameter_description"><p>y position</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>width</p></td>
+<td class="parameter_description"><p>width</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>height</p></td>
+<td class="parameter_description"><p>height</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 0.31</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="SpiceDisplayChannel.see-also"></a><h2>See Also</h2>
+<p><a class="link" href="SpiceChannel.html" title="Spice Channel"><span class="type">SpiceChannel</span></a>, and the GTK widget <a class="link" href="SpiceDisplay.html" title="Spice Display"><span class="type">SpiceDisplay</span></a></p>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.25</div>
+</body>
+</html>

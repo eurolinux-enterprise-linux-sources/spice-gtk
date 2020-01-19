@@ -1,0 +1,122 @@
+From 9788af437a99cb2600aeae6e313a43efb2ceb466 Mon Sep 17 00:00:00 2001
+From: Alon Levy <alevy@redhat.com>
+Date: Wed, 6 May 2015 09:04:02 -0400
+Subject: [PATCH] gtk/Makefile.am: add PIE flags to libspice-client-glib
+
+Also to gtk and controller lib
+
+Signed-off-by: Pavel Grunt <pgrunt@redhat.com>
+---
+ src/Makefile.am            | 7 +++++++
+ src/Makefile.in            | 7 +++++++
+ src/controller/Makefile.am | 2 ++
+ src/controller/Makefile.in | 2 ++
+ 4 files changed, 18 insertions(+)
+
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 78953dd..688a7e8 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -115,6 +115,7 @@ SPICE_GTK_LDFLAGS_COMMON =		\
+ 	-version-info 5:0:0		\
+ 	-no-undefined			\
+ 	$(GTK_SYMBOLS_LDFLAGS)		\
++	$(PIE_LDFLAGS)			\
+ 	$(NULL)
+ 
+ SPICE_GTK_LIBADD_COMMON =		\
+@@ -161,6 +162,7 @@ endif
+ if WITH_GTK
+ EXTRA_libspice_client_gtk_3_0_la_DEPENDENCIES = $(GTK_SYMBOLS_FILE)
+ libspice_client_gtk_3_0_la_LDFLAGS = $(SPICE_GTK_LDFLAGS_COMMON)
++libspice_client_gtk_3_0_la_CPPFLAGS = $(PIE_CFLAGS)
+ libspice_client_gtk_3_0_la_LIBADD = $(SPICE_GTK_LIBADD_COMMON)
+ libspice_client_gtk_3_0_la_SOURCES = $(SPICE_GTK_SOURCES_COMMON)
+ nodist_libspice_client_gtk_3_0_la_SOURCES = $(nodist_SPICE_GTK_SOURCES_COMMON)
+@@ -185,6 +187,11 @@ libspice_client_glib_2_0_la_LDFLAGS =	\
+ 	-version-info 14:0:6		\
+ 	-no-undefined			\
+ 	$(GLIB_SYMBOLS_LDFLAGS)		\
++	$(PIE_LDFLAGS)			\
++	$(NULL)
++
++libspice_client_glib_2_0_la_CPPFLAGS =	\
++	$(PIE_CFLAGS)			\
+ 	$(NULL)
+ 
+ libspice_client_glib_2_0_la_LIBADD =					\
+diff --git a/src/Makefile.in b/src/Makefile.in
+index 2ea0804..a5e3a37 100644
+--- a/src/Makefile.in
++++ b/src/Makefile.in
+@@ -790,6 +790,7 @@ SPICE_GTK_LDFLAGS_COMMON = \
+ 	-version-info 5:0:0		\
+ 	-no-undefined			\
+ 	$(GTK_SYMBOLS_LDFLAGS)		\
++	$(PIE_LDFLAGS)			\
+ 	$(NULL)
+ 
+ SPICE_GTK_LIBADD_COMMON = \
+@@ -815,6 +816,7 @@ nodist_SPICE_GTK_SOURCES_COMMON = \
+ 
+ @WITH_GTK_TRUE@EXTRA_libspice_client_gtk_3_0_la_DEPENDENCIES = $(GTK_SYMBOLS_FILE)
+ @WITH_GTK_TRUE@libspice_client_gtk_3_0_la_LDFLAGS = $(SPICE_GTK_LDFLAGS_COMMON)
++@WITH_GTK_TRUE@libspice_client_gtk_3_0_la_CPPFLAGS = $(PIE_CFLAGS)
+ @WITH_GTK_TRUE@libspice_client_gtk_3_0_la_LIBADD = $(SPICE_GTK_LIBADD_COMMON)
+ @WITH_GTK_TRUE@libspice_client_gtk_3_0_la_SOURCES = $(SPICE_GTK_SOURCES_COMMON)
+ @WITH_GTK_TRUE@nodist_libspice_client_gtk_3_0_la_SOURCES = $(nodist_SPICE_GTK_SOURCES_COMMON)
+@@ -836,6 +838,11 @@ libspice_client_glib_2_0_la_LDFLAGS = \
+ 	-version-info 14:0:6		\
+ 	-no-undefined			\
+ 	$(GLIB_SYMBOLS_LDFLAGS)		\
++	$(PIE_LDFLAGS)			\
++	$(NULL)
++
++libspice_client_glib_2_0_la_CPPFLAGS =	\
++	$(PIE_CFLAGS)			\
+ 	$(NULL)
+ 
+ libspice_client_glib_2_0_la_LIBADD =  \
+diff --git a/src/controller/Makefile.am b/src/controller/Makefile.am
+index fb56986..71dd2bd 100644
+--- a/src/controller/Makefile.am
++++ b/src/controller/Makefile.am
+@@ -4,6 +4,7 @@ AM_CPPFLAGS =					\
+ 	-DG_LOG_DOMAIN=\"GSpiceController\"	\
+ 	$(GIO_CFLAGS)				\
+ 	$(COMMON_CFLAGS)			\
++	$(PIE_CFLAGS)				\
+ 	-Wno-deprecated-declarations		\
+ 	$(NULL)
+ 
+@@ -11,6 +12,7 @@ AM_CPPFLAGS =					\
+ AM_LDFLAGS =					\
+ 	-no-undefined				\
+ 	$(GIO_LIBS)				\
++	$(PIE_LDFLAGS)				\
+ 	$(NULL)
+ 
+ AM_VALAFLAGS =							\
+diff --git a/src/controller/Makefile.in b/src/controller/Makefile.in
+index 03e67a4..32c1d44 100644
+--- a/src/controller/Makefile.in
++++ b/src/controller/Makefile.in
+@@ -495,6 +495,7 @@ AM_CPPFLAGS = \
+ 	-DG_LOG_DOMAIN=\"GSpiceController\"	\
+ 	$(GIO_CFLAGS)				\
+ 	$(COMMON_CFLAGS)			\
++        $(PIE_CFLAGS)                           \
+ 	-Wno-deprecated-declarations		\
+ 	$(NULL)
+ 
+@@ -503,6 +504,7 @@ AM_CPPFLAGS = \
+ AM_LDFLAGS = \
+ 	-no-undefined				\
+ 	$(GIO_LIBS)				\
++        $(PIE_LDFLAGS)                          \
+ 	$(NULL)
+ 
+ AM_VALAFLAGS = \
+-- 
+2.13.0
+
