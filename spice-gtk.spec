@@ -4,7 +4,7 @@
 
 Name:           spice-gtk
 Version:        0.34
-Release:        3%{?dist}.1
+Release:        3%{?dist}.2
 Summary:        A GTK+ widget for SPICE clients
 
 Group:          System Environment/Libraries
@@ -16,6 +16,7 @@ Source0:        https://www.spice-space.org/download/gtk/%{name}-%{version}%{?_v
 Patch0001:      0001-canvas-base-Fix-width-computation-for-palette-images.patch
 Patch0002:      0002-Revert-channel-usbredir-Fix-crash-on-channel-up.patch
 Patch0003:      0003-channel-usbredir-Fix-crash-on-channel-up.patch
+Patch0004:      0004-Fix-flexible-array-buffer-overflow.patch
 Patch1000:      1000-gtk-Makefile.am-add-PIE-flags-to-libspice-client-gli.patch
 
 BuildRequires: intltool
@@ -43,6 +44,7 @@ BuildRequires: spice-protocol >= 0.12.12-1
 # Hack because of bz #613466
 BuildRequires: libtool
 BuildRequires: opus-devel
+BuildRequires: pyparsing python-six
 Requires: spice-glib%{?_isa} = %{version}-%{release}
 
 
@@ -120,6 +122,7 @@ spicy-screenshot is a tool to capture screen-shots of a SPICE desktop.
 %patch0001 -p1
 %patch0002 -p1
 %patch0003 -p1
+%patch0004 -p1
 %patch1000 -p1
 find . -name '*.stamp' | xargs touch
 
@@ -199,6 +202,10 @@ rm -f %{buildroot}%{_libdir}/*.la
 %{_bindir}/spicy-stats
 
 %changelog
+* Thu Aug 09 2018 Frediano Ziglio <fziglio@redhat.com> - 0.34-3.2
+- Fix flexible array buffer overflow
+  Resolves: rhbz#1596008
+
 * Wed Jun 13 2018 Victor Toso <victortoso@redhat.com> - 0.34-3.1
 - Fix migration failure when USB is enabled
   Resolves: rhbz#1590412
