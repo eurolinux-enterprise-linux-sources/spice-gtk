@@ -27,9 +27,6 @@
 #include <pulse/pulseaudio.h>
 #include <pulse/ext-stream-restore.h>
 
-#define SPICE_PULSE_GET_PRIVATE(obj)                                  \
-    (G_TYPE_INSTANCE_GET_PRIVATE((obj), SPICE_TYPE_PULSE, SpicePulsePrivate))
-
 struct async_task {
     SpicePulse                 *pulse;
     SpiceMainChannel           *main_channel;
@@ -69,7 +66,7 @@ struct _SpicePulsePrivate {
     GList                   *results;
 };
 
-G_DEFINE_TYPE(SpicePulse, spice_pulse, SPICE_TYPE_AUDIO)
+G_DEFINE_TYPE_WITH_PRIVATE(SpicePulse, spice_pulse, SPICE_TYPE_AUDIO)
 
 static const char *stream_state_names[] = {
     [ PA_STREAM_UNCONNECTED ] = "unconnected",
@@ -155,7 +152,7 @@ static void spice_pulse_dispose(GObject *obj)
 
 static void spice_pulse_init(SpicePulse *pulse)
 {
-    pulse->priv = SPICE_PULSE_GET_PRIVATE(pulse);
+    pulse->priv = spice_pulse_get_instance_private(pulse);
 }
 
 static void spice_pulse_class_init(SpicePulseClass *klass)
@@ -171,8 +168,6 @@ static void spice_pulse_class_init(SpicePulseClass *klass)
 
     gobject_class->finalize = spice_pulse_finalize;
     gobject_class->dispose = spice_pulse_dispose;
-
-    g_type_class_add_private(klass, sizeof(SpicePulsePrivate));
 }
 
 /* ------------------------------------------------------------------ */
@@ -503,10 +498,10 @@ static void stream_read_callback(pa_stream *s, size_t length, void *data)
         g_return_if_fail(length > 0);
 
         if (p->rchannel != NULL)
-            spice_record_send_data(SPICE_RECORD_CHANNEL(p->rchannel),
-                                   /* FIXME: server side doesn't care about ts?
-                                      what is the unit? ms apparently */
-                                   (gpointer)snddata, length, 0);
+            spice_record_channel_send_data(SPICE_RECORD_CHANNEL(p->rchannel),
+                                           /* FIXME: server side doesn't care about ts?
+                                           what is the unit? ms apparently */
+                                           (gpointer)snddata, length, 0);
 
         if (pa_stream_drop(s) < 0) {
             g_warning("pa_stream_drop() failed: %s",
@@ -941,26 +936,7 @@ static void cancel_task(GCancellable *cancellable, gpointer user_data)
     struct async_task *task = user_data;
     g_return_if_fail(task != NULL);
 
-#if GLIB_CHECK_VERSION(2,40,0)
     free_async_task(task);
-#else
-    /* This must be done now otherwise pulseaudio may return to a
-     * cancelled task operation before free_async_task is called */
-    if (task->pa_op != NULL) {
-        pa_operation_cancel(task->pa_op);
-        g_clear_pointer(&task->pa_op, pa_operation_unref);
-    }
-
-    /* Clear the pending_restore_task reference to avoid triggering a
-     * pa_operation when context state is in READY state */
-    if (task->pulse->priv->pending_restore_task == task) {
-        task->pulse->priv->pending_restore_task = NULL;
-    }
-
-    /* FIXME: https://bugzilla.gnome.org/show_bug.cgi?id=705395
-     * Free the memory in idle */
-    g_idle_add(free_async_task, task);
-#endif
 }
 
 static void complete_task(SpicePulse *pulse, struct async_task *task, const gchar *err_msg)

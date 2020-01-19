@@ -110,56 +110,24 @@
 
 #define _PIXEL_A(channel, curr) ((unsigned int)GET_##channel((curr) - 1))
 #define _PIXEL_B(channel, prev) ((unsigned int)GET_##channel(prev))
-#define _PIXEL_C(channel, prev) ((unsigned int)GET_##channel((prev) - 1))
 
 /*  a  */
 
-#define DECORELATE_0(channel, curr, bpc_mask)\
+#define DECORRELATE_0(channel, curr, bpc_mask)\
     family.xlatU2L[(unsigned)((int)GET_##channel(curr) - (int)_PIXEL_A(channel, curr)) & bpc_mask]
 
-#define CORELATE_0(channel, curr, correlate, bpc_mask)\
+#define CORRELATE_0(channel, curr, correlate, bpc_mask)\
     ((family.xlatL2U[correlate] + _PIXEL_A(channel, curr)) & bpc_mask)
 
-#ifdef PRED_1
 
 /*  (a+b)/2  */
-#define DECORELATE(channel, prev, curr, bpc_mask, r)                                            \
+#define DECORRELATE(channel, prev, curr, bpc_mask, r)                                           \
     r = family.xlatU2L[(unsigned)((int)GET_##channel(curr) - (int)((_PIXEL_A(channel, curr) +   \
                         _PIXEL_B(channel, prev)) >> 1)) & bpc_mask]
 
-#define CORELATE(channel, prev, curr, correlate, bpc_mask, r)                                   \
+#define CORRELATE(channel, prev, curr, correlate, bpc_mask, r)                                  \
     SET_##channel(r, ((family.xlatL2U[correlate] +                                              \
           (int)((_PIXEL_A(channel, curr) + _PIXEL_B(channel, prev)) >> 1)) & bpc_mask))
-#endif
-
-#ifdef PRED_2
-
-/*  .75a+.75b-.5c  */
-#define DECORELATE(channel, prev, curr, bpc_mask, r) {                          \
-    int p = ((int)(3 * (_PIXEL_A(channel, curr) + _PIXEL_B(channel, prev))) -   \
-                        (int)(_PIXEL_C(channel, prev) << 1)) >> 2;              \
-    if (p < 0) {                                                                \
-        p = 0;                                                                  \
-    } else if ((unsigned)p > bpc_mask) {                                        \
-        p = bpc_mask;                                                           \
-    }                                                                           \
-    r = family.xlatU2L[(unsigned)((int)GET_##channel(curr) - p) & bpc_mask];    \
-}
-
-#define CORELATE(channel, prev, curr, correlate, bpc_mask, r) {                         \
-    const int p = ((int)(3 * (_PIXEL_A(channel, curr) + _PIXEL_B(channel, prev))) -     \
-                        (int)(_PIXEL_C(channel, prev) << 1) ) >> 2;                     \
-    const unsigned int s = family.xlatL2U[correlate];                                   \
-    if (!(p & ~bpc_mask)) {                                                             \
-        SET_##channel(r, (s + (unsigned)p) & bpc_mask);                                 \
-    } else if (p < 0) {                                                                 \
-        SET_##channel(r, s);                                                            \
-    } else {                                                                            \
-        SET_##channel(r, (s + bpc_mask) & bpc_mask);                                    \
-    }                                                                                   \
-}
-
-#endif
 
 
 #define COMPRESS_ONE_ROW0_0(channel)                                                \
@@ -170,52 +138,27 @@
     encode(encoder, codeword, codewordlen);
 
 #define COMPRESS_ONE_ROW0(channel, index)                                               \
-    correlate_row_##channel[index] = DECORELATE_0(channel, &cur_row[index], bpc_mask);  \
+    correlate_row_##channel[index] = DECORRELATE_0(channel, &cur_row[index], bpc_mask); \
     golomb_coding(correlate_row_##channel[index], find_bucket(channel_##channel,        \
                   correlate_row_##channel[index -1])->bestcode,                         \
                   &codeword, &codewordlen);                                             \
     encode(encoder, codeword, codewordlen);
 
-#define UPDATE_MODEL(index)                                                                 \
-    update_model(&encoder->rgb_state, find_bucket(channel_r, correlate_row_r[index - 1]),   \
+#define UPDATE_MODEL(index)                                                            \
+    update_model(state, find_bucket(channel_r, correlate_row_r[index - 1]),            \
                 correlate_row_r[index]);                                               \
-    update_model(&encoder->rgb_state, find_bucket(channel_g, correlate_row_g[index - 1]),   \
+    update_model(state, find_bucket(channel_g, correlate_row_g[index - 1]),            \
                 correlate_row_g[index]);                                               \
-    update_model(&encoder->rgb_state, find_bucket(channel_b, correlate_row_b[index - 1]),   \
+    update_model(state, find_bucket(channel_b, correlate_row_b[index - 1]),            \
                 correlate_row_b[index]);
 
 
-#ifdef RLE_PRED_1
-#define RLE_PRED_1_IMP                                                                          \
-if (SAME_PIXEL(&cur_row[i - 1], &prev_row[i])) {                                                \
-    if (run_index != i && SAME_PIXEL(&prev_row[i - 1], &prev_row[i]) &&                         \
-                                i + 1 < end && SAME_PIXEL(&prev_row[i], &prev_row[i + 1])) {    \
-        goto do_run;                                                                            \
-    }                                                                                           \
-}
-#else
-#define RLE_PRED_1_IMP
-#endif
-
-#ifdef RLE_PRED_2
-#define RLE_PRED_2_IMP                                                              \
+#define RLE_PRED_IMP                                                                \
 if (SAME_PIXEL(&prev_row[i - 1], &prev_row[i])) {                                   \
     if (run_index != i && i > 2 && SAME_PIXEL(&cur_row[i - 1], &cur_row[i - 2])) {  \
         goto do_run;                                                                \
     }                                                                               \
 }
-#else
-#define RLE_PRED_2_IMP
-#endif
-
-#ifdef RLE_PRED_3
-#define RLE_PRED_3_IMP                                                              \
-if (i > 1 &&  SAME_PIXEL(&cur_row[i - 1], &cur_row[i - 2]) && i != run_index) {     \
-    goto do_run;                                                                    \
-}
-#else
-#define RLE_PRED_3_IMP
-#endif
 
 #ifdef COMPRESS_IMP
 
@@ -226,6 +169,7 @@ static void FNAME(compress_row0_seg)(Encoder *encoder, int i,
                                      SPICE_GNUC_UNUSED const unsigned int bpc,
                                      const unsigned int bpc_mask)
 {
+    CommonState *state = &encoder->rgb_state;
     Channel * const channel_r = encoder->channels;
     Channel * const channel_g = channel_r + 1;
     Channel * const channel_b = channel_g + 1;
@@ -237,22 +181,22 @@ static void FNAME(compress_row0_seg)(Encoder *encoder, int i,
 
     spice_assert(end - i > 0);
 
-    if (!i) {
+    if (i == 0) {
         unsigned int codeword, codewordlen;
 
         COMPRESS_ONE_ROW0_0(r);
         COMPRESS_ONE_ROW0_0(g);
         COMPRESS_ONE_ROW0_0(b);
 
-        if (encoder->rgb_state.waitcnt) {
-            encoder->rgb_state.waitcnt--;
+        if (state->waitcnt) {
+            state->waitcnt--;
         } else {
-            encoder->rgb_state.waitcnt = (tabrand(&encoder->rgb_state.tabrand_seed) & waitmask);
+            state->waitcnt = (tabrand(&state->tabrand_seed) & waitmask);
             UPDATE_MODEL(0);
         }
-        stopidx = ++i + encoder->rgb_state.waitcnt;
+        stopidx = ++i + state->waitcnt;
     } else {
-        stopidx = i + encoder->rgb_state.waitcnt;
+        stopidx = i + state->waitcnt;
     }
 
     while (stopidx < end) {
@@ -264,7 +208,7 @@ static void FNAME(compress_row0_seg)(Encoder *encoder, int i,
         }
 
         UPDATE_MODEL(stopidx);
-        stopidx = i + (tabrand(&encoder->rgb_state.tabrand_seed) & waitmask);
+        stopidx = i + (tabrand(&state->tabrand_seed) & waitmask);
     }
 
     for (; i < end; i++) {
@@ -274,40 +218,41 @@ static void FNAME(compress_row0_seg)(Encoder *encoder, int i,
         COMPRESS_ONE_ROW0(g, i);
         COMPRESS_ONE_ROW0(b, i);
     }
-    encoder->rgb_state.waitcnt = stopidx - end;
+    state->waitcnt = stopidx - end;
 }
 
 static void FNAME(compress_row0)(Encoder *encoder, const PIXEL *cur_row,
                                  unsigned int width)
 {
+    CommonState *state = &encoder->rgb_state;
     const unsigned int bpc = BPC;
     const unsigned int bpc_mask = BPC_MASK;
     int pos = 0;
 
-    while ((wmimax > (int)encoder->rgb_state.wmidx) && (encoder->rgb_state.wmileft <= width)) {
-        if (encoder->rgb_state.wmileft) {
-            FNAME(compress_row0_seg)(encoder, pos, cur_row, pos + encoder->rgb_state.wmileft,
-                                     bppmask[encoder->rgb_state.wmidx], bpc, bpc_mask);
-            width -= encoder->rgb_state.wmileft;
-            pos += encoder->rgb_state.wmileft;
+    while ((DEFwmimax > (int)state->wmidx) && (state->wmileft <= width)) {
+        if (state->wmileft) {
+            FNAME(compress_row0_seg)(encoder, pos, cur_row, pos + state->wmileft,
+                                     bppmask[state->wmidx], bpc, bpc_mask);
+            width -= state->wmileft;
+            pos += state->wmileft;
         }
 
-        encoder->rgb_state.wmidx++;
-        set_wm_trigger(&encoder->rgb_state);
-        encoder->rgb_state.wmileft = wminext;
+        state->wmidx++;
+        set_wm_trigger(state);
+        state->wmileft = DEFwminext;
     }
 
     if (width) {
         FNAME(compress_row0_seg)(encoder, pos, cur_row, pos + width,
-                                 bppmask[encoder->rgb_state.wmidx], bpc, bpc_mask);
-        if (wmimax > (int)encoder->rgb_state.wmidx) {
-            encoder->rgb_state.wmileft -= width;
+                                 bppmask[state->wmidx], bpc, bpc_mask);
+        if (DEFwmimax > (int)state->wmidx) {
+            state->wmileft -= width;
         }
     }
 
-    spice_assert((int)encoder->rgb_state.wmidx <= wmimax);
-    spice_assert(encoder->rgb_state.wmidx <= 32);
-    spice_assert(wminext > 0);
+    spice_assert((int)state->wmidx <= DEFwmimax);
+    spice_assert(state->wmidx <= 32);
+    spice_assert(DEFwminext > 0);
 }
 
 #define COMPRESS_ONE_0(channel) \
@@ -319,7 +264,7 @@ static void FNAME(compress_row0)(Encoder *encoder, const PIXEL *cur_row,
     encode(encoder, codeword, codewordlen);
 
 #define COMPRESS_ONE(channel, index)                                                            \
-    DECORELATE(channel, &prev_row[index], &cur_row[index],bpc_mask,                             \
+    DECORRELATE(channel, &prev_row[index], &cur_row[index],bpc_mask,                            \
                correlate_row_##channel[index]);                                                 \
     golomb_coding(correlate_row_##channel[index],                                               \
                  find_bucket(channel_##channel, correlate_row_##channel[index - 1])->bestcode,  \
@@ -334,6 +279,7 @@ static void FNAME(compress_row_seg)(Encoder *encoder, int i,
                                     SPICE_GNUC_UNUSED const unsigned int bpc,
                                     const unsigned int bpc_mask)
 {
+    CommonState *state = &encoder->rgb_state;
     Channel * const channel_r = encoder->channels;
     Channel * const channel_g = channel_r + 1;
     Channel * const channel_b = channel_g + 1;
@@ -342,67 +288,56 @@ static void FNAME(compress_row_seg)(Encoder *encoder, int i,
     BYTE * const correlate_row_g = channel_g->correlate_row;
     BYTE * const correlate_row_b = channel_b->correlate_row;
     int stopidx;
-#ifdef RLE
     int run_index = 0;
     int run_size;
-#endif
 
     spice_assert(end - i > 0);
 
-    if (!i) {
+    if (i == 0) {
         unsigned int codeword, codewordlen;
 
         COMPRESS_ONE_0(r);
         COMPRESS_ONE_0(g);
         COMPRESS_ONE_0(b);
 
-        if (encoder->rgb_state.waitcnt) {
-            encoder->rgb_state.waitcnt--;
+        if (state->waitcnt) {
+            state->waitcnt--;
         } else {
-            encoder->rgb_state.waitcnt = (tabrand(&encoder->rgb_state.tabrand_seed) & waitmask);
+            state->waitcnt = (tabrand(&state->tabrand_seed) & waitmask);
             UPDATE_MODEL(0);
         }
-        stopidx = ++i + encoder->rgb_state.waitcnt;
+        stopidx = ++i + state->waitcnt;
     } else {
-        stopidx = i + encoder->rgb_state.waitcnt;
+        stopidx = i + state->waitcnt;
     }
     for (;;) {
         while (stopidx < end) {
             for (; i <= stopidx; i++) {
                 unsigned int codeword, codewordlen;
-#ifdef RLE
-                RLE_PRED_1_IMP;
-                RLE_PRED_2_IMP;
-                RLE_PRED_3_IMP;
-#endif
+                RLE_PRED_IMP;
                 COMPRESS_ONE(r, i);
                 COMPRESS_ONE(g, i);
                 COMPRESS_ONE(b, i);
             }
 
             UPDATE_MODEL(stopidx);
-            stopidx = i + (tabrand(&encoder->rgb_state.tabrand_seed) & waitmask);
+            stopidx = i + (tabrand(&state->tabrand_seed) & waitmask);
         }
 
         for (; i < end; i++) {
             unsigned int codeword, codewordlen;
-#ifdef RLE
-            RLE_PRED_1_IMP;
-            RLE_PRED_2_IMP;
-            RLE_PRED_3_IMP;
-#endif
+            RLE_PRED_IMP;
             COMPRESS_ONE(r, i);
             COMPRESS_ONE(g, i);
             COMPRESS_ONE(b, i);
         }
-        encoder->rgb_state.waitcnt = stopidx - end;
+        state->waitcnt = stopidx - end;
 
         return;
 
-#ifdef RLE
 do_run:
         run_index = i;
-        encoder->rgb_state.waitcnt = stopidx - i;
+        state->waitcnt = stopidx - i;
         run_size = 0;
 
         while (SAME_PIXEL(&cur_row[i], &cur_row[i - 1])) {
@@ -413,8 +348,7 @@ do_run:
             }
         }
         encode_run(encoder, run_size);
-        stopidx = i + encoder->rgb_state.waitcnt;
-#endif
+        stopidx = i + state->waitcnt;
     }
 }
 
@@ -424,36 +358,37 @@ static void FNAME(compress_row)(Encoder *encoder,
                                 unsigned int width)
 
 {
+    CommonState *state = &encoder->rgb_state;
     const unsigned int bpc = BPC;
     const unsigned int bpc_mask = BPC_MASK;
     unsigned int pos = 0;
 
-    while ((wmimax > (int)encoder->rgb_state.wmidx) && (encoder->rgb_state.wmileft <= width)) {
-        if (encoder->rgb_state.wmileft) {
+    while ((DEFwmimax > (int)state->wmidx) && (state->wmileft <= width)) {
+        if (state->wmileft) {
             FNAME(compress_row_seg)(encoder, pos, prev_row, cur_row,
-                                    pos + encoder->rgb_state.wmileft,
-                                    bppmask[encoder->rgb_state.wmidx],
+                                    pos + state->wmileft,
+                                    bppmask[state->wmidx],
                                     bpc, bpc_mask);
-            width -= encoder->rgb_state.wmileft;
-            pos += encoder->rgb_state.wmileft;
+            width -= state->wmileft;
+            pos += state->wmileft;
         }
 
-        encoder->rgb_state.wmidx++;
-        set_wm_trigger(&encoder->rgb_state);
-        encoder->rgb_state.wmileft = wminext;
+        state->wmidx++;
+        set_wm_trigger(state);
+        state->wmileft = DEFwminext;
     }
 
     if (width) {
         FNAME(compress_row_seg)(encoder, pos, prev_row, cur_row, pos + width,
-                                bppmask[encoder->rgb_state.wmidx], bpc, bpc_mask);
-        if (wmimax > (int)encoder->rgb_state.wmidx) {
-            encoder->rgb_state.wmileft -= width;
+                                bppmask[state->wmidx], bpc, bpc_mask);
+        if (DEFwmimax > (int)state->wmidx) {
+            state->wmileft -= width;
         }
     }
 
-    spice_assert((int)encoder->rgb_state.wmidx <= wmimax);
-    spice_assert(encoder->rgb_state.wmidx <= 32);
-    spice_assert(wminext > 0);
+    spice_assert((int)state->wmidx <= DEFwmimax);
+    spice_assert(state->wmidx <= 32);
+    spice_assert(DEFwminext > 0);
 }
 
 #endif
@@ -470,7 +405,7 @@ static void FNAME(compress_row)(Encoder *encoder,
                                                        correlate_row_##channel[i - 1])->bestcode, \
                                                        encoder->io_word,                          \
                                                        &codewordlen);                             \
-    SET_##channel(&cur_row[i], CORELATE_0(channel, &cur_row[i], correlate_row_##channel[i],       \
+    SET_##channel(&cur_row[i], CORRELATE_0(channel, &cur_row[i], correlate_row_##channel[i],      \
                   bpc_mask));                                                                     \
     decode_eatbits(encoder, codewordlen);
 
@@ -481,6 +416,7 @@ static void FNAME(uncompress_row0_seg)(Encoder *encoder, int i,
                                        SPICE_GNUC_UNUSED const unsigned int bpc,
                                        const unsigned int bpc_mask)
 {
+    CommonState *state = &encoder->rgb_state;
     Channel * const channel_r = encoder->channels;
     Channel * const channel_g = channel_r + 1;
     Channel * const channel_b = channel_g + 1;
@@ -492,7 +428,7 @@ static void FNAME(uncompress_row0_seg)(Encoder *encoder, int i,
 
     spice_assert(end - i > 0);
 
-    if (!i) {
+    if (i == 0) {
         unsigned int codewordlen;
 
         UNCOMPRESS_PIX_START(&cur_row[i]);
@@ -500,15 +436,15 @@ static void FNAME(uncompress_row0_seg)(Encoder *encoder, int i,
         UNCOMPRESS_ONE_ROW0_0(g);
         UNCOMPRESS_ONE_ROW0_0(b);
 
-        if (encoder->rgb_state.waitcnt) {
-            --encoder->rgb_state.waitcnt;
+        if (state->waitcnt) {
+            --state->waitcnt;
         } else {
-            encoder->rgb_state.waitcnt = (tabrand(&encoder->rgb_state.tabrand_seed) & waitmask);
+            state->waitcnt = (tabrand(&state->tabrand_seed) & waitmask);
             UPDATE_MODEL(0);
         }
-        stopidx = ++i + encoder->rgb_state.waitcnt;
+        stopidx = ++i + state->waitcnt;
     } else {
-        stopidx = i + encoder->rgb_state.waitcnt;
+        stopidx = i + state->waitcnt;
     }
 
     while (stopidx < end) {
@@ -521,7 +457,7 @@ static void FNAME(uncompress_row0_seg)(Encoder *encoder, int i,
             UNCOMPRESS_ONE_ROW0(b);
         }
         UPDATE_MODEL(stopidx);
-        stopidx = i + (tabrand(&encoder->rgb_state.tabrand_seed) & waitmask);
+        stopidx = i + (tabrand(&state->tabrand_seed) & waitmask);
     }
 
     for (; i < end; i++) {
@@ -532,7 +468,7 @@ static void FNAME(uncompress_row0_seg)(Encoder *encoder, int i,
         UNCOMPRESS_ONE_ROW0(g);
         UNCOMPRESS_ONE_ROW0(b);
     }
-    encoder->rgb_state.waitcnt = stopidx - end;
+    state->waitcnt = stopidx - end;
 }
 
 static void FNAME(uncompress_row0)(Encoder *encoder,
@@ -540,36 +476,37 @@ static void FNAME(uncompress_row0)(Encoder *encoder,
                                    unsigned int width)
 
 {
+    CommonState *state = &encoder->rgb_state;
     const unsigned int bpc = BPC;
     const unsigned int bpc_mask = BPC_MASK;
     unsigned int pos = 0;
 
-    while ((wmimax > (int)encoder->rgb_state.wmidx) && (encoder->rgb_state.wmileft <= width)) {
-        if (encoder->rgb_state.wmileft) {
+    while ((DEFwmimax > (int)state->wmidx) && (state->wmileft <= width)) {
+        if (state->wmileft) {
             FNAME(uncompress_row0_seg)(encoder, pos, cur_row,
-                                       pos + encoder->rgb_state.wmileft,
-                                       bppmask[encoder->rgb_state.wmidx],
+                                       pos + state->wmileft,
+                                       bppmask[state->wmidx],
                                        bpc, bpc_mask);
-            pos += encoder->rgb_state.wmileft;
-            width -= encoder->rgb_state.wmileft;
+            pos += state->wmileft;
+            width -= state->wmileft;
         }
 
-        encoder->rgb_state.wmidx++;
-        set_wm_trigger(&encoder->rgb_state);
-        encoder->rgb_state.wmileft = wminext;
+        state->wmidx++;
+        set_wm_trigger(state);
+        state->wmileft = DEFwminext;
     }
 
     if (width) {
         FNAME(uncompress_row0_seg)(encoder, pos, cur_row, pos + width,
-                                   bppmask[encoder->rgb_state.wmidx], bpc, bpc_mask);
-        if (wmimax > (int)encoder->rgb_state.wmidx) {
-            encoder->rgb_state.wmileft -= width;
+                                   bppmask[state->wmidx], bpc, bpc_mask);
+        if (DEFwmimax > (int)state->wmidx) {
+            state->wmileft -= width;
         }
     }
 
-    spice_assert((int)encoder->rgb_state.wmidx <= wmimax);
-    spice_assert(encoder->rgb_state.wmidx <= 32);
-    spice_assert(wminext > 0);
+    spice_assert((int)state->wmidx <= DEFwmimax);
+    spice_assert(state->wmidx <= 32);
+    spice_assert(DEFwminext > 0);
 }
 
 #define UNCOMPRESS_ONE_0(channel) \
@@ -585,7 +522,7 @@ static void FNAME(uncompress_row0)(Encoder *encoder,
                                                        correlate_row_##channel[i - 1])->bestcode, \
                                                        encoder->io_word,                          \
                                                        &codewordlen);                             \
-    CORELATE(channel, &prev_row[i], &cur_row[i], correlate_row_##channel[i], bpc_mask,            \
+    CORRELATE(channel, &prev_row[i], &cur_row[i], correlate_row_##channel[i], bpc_mask,           \
              &cur_row[i]);                                                                        \
     decode_eatbits(encoder, codewordlen);
 
@@ -597,6 +534,7 @@ static void FNAME(uncompress_row_seg)(Encoder *encoder,
                                       SPICE_GNUC_UNUSED const unsigned int bpc,
                                       const unsigned int bpc_mask)
 {
+    CommonState *state = &encoder->rgb_state;
     Channel * const channel_r = encoder->channels;
     Channel * const channel_g = channel_r + 1;
     Channel * const channel_b = channel_g + 1;
@@ -604,16 +542,14 @@ static void FNAME(uncompress_row_seg)(Encoder *encoder,
     BYTE * const correlate_row_r = channel_r->correlate_row;
     BYTE * const correlate_row_g = channel_g->correlate_row;
     BYTE * const correlate_row_b = channel_b->correlate_row;
-    const unsigned int waitmask = bppmask[encoder->rgb_state.wmidx];
+    const unsigned int waitmask = bppmask[state->wmidx];
     int stopidx;
-#ifdef RLE
     int run_index = 0;
     int run_end;
-#endif
 
     spice_assert(end - i > 0);
 
-    if (!i) {
+    if (i == 0) {
         unsigned int codewordlen;
 
         UNCOMPRESS_PIX_START(&cur_row[i]);
@@ -621,25 +557,21 @@ static void FNAME(uncompress_row_seg)(Encoder *encoder,
         UNCOMPRESS_ONE_0(g);
         UNCOMPRESS_ONE_0(b);
 
-        if (encoder->rgb_state.waitcnt) {
-            --encoder->rgb_state.waitcnt;
+        if (state->waitcnt) {
+            --state->waitcnt;
         } else {
-            encoder->rgb_state.waitcnt = (tabrand(&encoder->rgb_state.tabrand_seed) & waitmask);
+            state->waitcnt = (tabrand(&state->tabrand_seed) & waitmask);
             UPDATE_MODEL(0);
         }
-        stopidx = ++i + encoder->rgb_state.waitcnt;
+        stopidx = ++i + state->waitcnt;
     } else {
-        stopidx = i + encoder->rgb_state.waitcnt;
+        stopidx = i + state->waitcnt;
     }
     for (;;) {
         while (stopidx < end) {
             for (; i <= stopidx; i++) {
                 unsigned int codewordlen;
-#ifdef RLE
-                RLE_PRED_1_IMP;
-                RLE_PRED_2_IMP;
-                RLE_PRED_3_IMP;
-#endif
+                RLE_PRED_IMP;
                 UNCOMPRESS_PIX_START(&cur_row[i]);
                 UNCOMPRESS_ONE(r);
                 UNCOMPRESS_ONE(g);
@@ -648,29 +580,24 @@ static void FNAME(uncompress_row_seg)(Encoder *encoder,
 
             UPDATE_MODEL(stopidx);
 
-            stopidx = i + (tabrand(&encoder->rgb_state.tabrand_seed) & waitmask);
+            stopidx = i + (tabrand(&state->tabrand_seed) & waitmask);
         }
 
         for (; i < end; i++) {
             unsigned int codewordlen;
-#ifdef RLE
-            RLE_PRED_1_IMP;
-            RLE_PRED_2_IMP;
-            RLE_PRED_3_IMP;
-#endif
+            RLE_PRED_IMP;
             UNCOMPRESS_PIX_START(&cur_row[i]);
             UNCOMPRESS_ONE(r);
             UNCOMPRESS_ONE(g);
             UNCOMPRESS_ONE(b);
         }
 
-        encoder->rgb_state.waitcnt = stopidx - end;
+        state->waitcnt = stopidx - end;
 
         return;
 
-#ifdef RLE
 do_run:
-        encoder->rgb_state.waitcnt = stopidx - i;
+        state->waitcnt = stopidx - i;
         run_index = i;
         run_end = i + decode_run(encoder);
 
@@ -685,8 +612,7 @@ do_run:
             return;
         }
 
-        stopidx = i + encoder->rgb_state.waitcnt;
-#endif
+        stopidx = i + state->waitcnt;
     }
 }
 
@@ -696,54 +622,52 @@ static void FNAME(uncompress_row)(Encoder *encoder,
                                   unsigned int width)
 
 {
+    CommonState *state = &encoder->rgb_state;
     const unsigned int bpc = BPC;
     const unsigned int bpc_mask = BPC_MASK;
     unsigned int pos = 0;
 
-    while ((wmimax > (int)encoder->rgb_state.wmidx) && (encoder->rgb_state.wmileft <= width)) {
-        if (encoder->rgb_state.wmileft) {
+    while ((DEFwmimax > (int)state->wmidx) && (state->wmileft <= width)) {
+        if (state->wmileft) {
             FNAME(uncompress_row_seg)(encoder, prev_row, cur_row, pos,
-                                      pos + encoder->rgb_state.wmileft, bpc, bpc_mask);
-            pos += encoder->rgb_state.wmileft;
-            width -= encoder->rgb_state.wmileft;
+                                      pos + state->wmileft, bpc, bpc_mask);
+            pos += state->wmileft;
+            width -= state->wmileft;
         }
 
-        encoder->rgb_state.wmidx++;
-        set_wm_trigger(&encoder->rgb_state);
-        encoder->rgb_state.wmileft = wminext;
+        state->wmidx++;
+        set_wm_trigger(state);
+        state->wmileft = DEFwminext;
     }
 
     if (width) {
         FNAME(uncompress_row_seg)(encoder, prev_row, cur_row, pos,
                                   pos + width, bpc, bpc_mask);
-        if (wmimax > (int)encoder->rgb_state.wmidx) {
-            encoder->rgb_state.wmileft -= width;
+        if (DEFwmimax > (int)state->wmidx) {
+            state->wmileft -= width;
         }
     }
 
-    spice_assert((int)encoder->rgb_state.wmidx <= wmimax);
-    spice_assert(encoder->rgb_state.wmidx <= 32);
-    spice_assert(wminext > 0);
+    spice_assert((int)state->wmidx <= DEFwmimax);
+    spice_assert(state->wmidx <= 32);
+    spice_assert(DEFwminext > 0);
 }
 
 #undef PIXEL
 #undef FNAME
 #undef _PIXEL_A
 #undef _PIXEL_B
-#undef _PIXEL_C
 #undef SAME_PIXEL
-#undef RLE_PRED_1_IMP
-#undef RLE_PRED_2_IMP
-#undef RLE_PRED_3_IMP
+#undef RLE_PRED_IMP
 #undef UPDATE_MODEL
-#undef DECORELATE_0
-#undef DECORELATE
+#undef DECORRELATE_0
+#undef DECORRELATE
 #undef COMPRESS_ONE_ROW0_0
 #undef COMPRESS_ONE_ROW0
 #undef COMPRESS_ONE_0
 #undef COMPRESS_ONE
-#undef CORELATE_0
-#undef CORELATE
+#undef CORRELATE_0
+#undef CORRELATE
 #undef UNCOMPRESS_ONE_ROW0_0
 #undef UNCOMPRESS_ONE_ROW0
 #undef UNCOMPRESS_ONE_0

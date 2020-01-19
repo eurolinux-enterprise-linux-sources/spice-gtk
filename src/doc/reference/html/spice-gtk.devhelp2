@@ -92,6 +92,7 @@
     <keyword type="property" name="The “verify” property" link="SpiceSession.html#SpiceSession--verify"/>
     <keyword type="signal" name="The “channel-destroy” signal" link="SpiceSession.html#SpiceSession-channel-destroy"/>
     <keyword type="signal" name="The “channel-new” signal" link="SpiceSession.html#SpiceSession-channel-new"/>
+    <keyword type="signal" name="The “disconnected” signal" link="SpiceSession.html#SpiceSession-disconnected"/>
     <keyword type="signal" name="The “mm-time-reset” signal" link="SpiceSession.html#SpiceSession-mm-time-reset"/>
     <keyword type="function" name="spice_channel_new ()" link="SpiceChannel.html#spice-channel-new"/>
     <keyword type="function" name="spice_channel_destroy ()" link="SpiceChannel.html#spice-channel-destroy" deprecated=""/>
@@ -124,11 +125,16 @@
     <keyword type="signal" name="The “cursor-move” signal" link="SpiceCursorChannel.html#SpiceCursorChannel-cursor-move"/>
     <keyword type="signal" name="The “cursor-reset” signal" link="SpiceCursorChannel.html#SpiceCursorChannel-cursor-reset"/>
     <keyword type="signal" name="The “cursor-set” signal" link="SpiceCursorChannel.html#SpiceCursorChannel-cursor-set"/>
-    <keyword type="function" name="spice_display_get_gl_scanout ()" link="SpiceDisplayChannel.html#spice-display-get-gl-scanout" since="0.31"/>
-    <keyword type="function" name="spice_display_gl_draw_done ()" link="SpiceDisplayChannel.html#spice-display-gl-draw-done" since="0.31"/>
-    <keyword type="function" name="spice_display_get_primary ()" link="SpiceDisplayChannel.html#spice-display-get-primary"/>
-    <keyword type="function" name="spice_display_change_preferred_compression ()" link="SpiceDisplayChannel.html#spice-display-change-preferred-compression" since="0.31"/>
-    <keyword type="function" name="spice_display_change_preferred_video_codec_type ()" link="SpiceDisplayChannel.html#spice-display-change-preferred-video-codec-type" since="0.34"/>
+    <keyword type="function" name="spice_display_get_gl_scanout ()" link="SpiceDisplayChannel.html#spice-display-get-gl-scanout" deprecated="0.35: use spice_display_channel_get_gl_scanout() instead." since="0.31"/>
+    <keyword type="function" name="spice_display_channel_get_gl_scanout ()" link="SpiceDisplayChannel.html#spice-display-channel-get-gl-scanout" since="0.35"/>
+    <keyword type="function" name="spice_display_gl_draw_done ()" link="SpiceDisplayChannel.html#spice-display-gl-draw-done" deprecated="0.35: use spice_display_channel_gl_draw_done() instead." since="0.31"/>
+    <keyword type="function" name="spice_display_channel_gl_draw_done ()" link="SpiceDisplayChannel.html#spice-display-channel-gl-draw-done" since="0.35"/>
+    <keyword type="function" name="spice_display_get_primary ()" link="SpiceDisplayChannel.html#spice-display-get-primary" deprecated="0.35: use spice_display_channel_get_primary() instead."/>
+    <keyword type="function" name="spice_display_channel_get_primary ()" link="SpiceDisplayChannel.html#spice-display-channel-get-primary" since="0.35"/>
+    <keyword type="function" name="spice_display_change_preferred_compression ()" link="SpiceDisplayChannel.html#spice-display-change-preferred-compression" deprecated="0.35: use spice_display_channel_change_preferred_compression() instead." since="0.31"/>
+    <keyword type="function" name="spice_display_channel_change_preferred_compression ()" link="SpiceDisplayChannel.html#spice-display-channel-change-preferred-compression" since="0.35"/>
+    <keyword type="function" name="spice_display_change_preferred_video_codec_type ()" link="SpiceDisplayChannel.html#spice-display-change-preferred-video-codec-type" deprecated="0.35: use spice_display_channel_change_preferred_video_codec_type() instead." since="0.34"/>
+    <keyword type="function" name="spice_display_channel_change_preferred_video_codec_type ()" link="SpiceDisplayChannel.html#spice-display-channel-change-preferred-video-codec-type" since="0.35"/>
     <keyword type="function" name="spice_gl_scanout_free ()" link="SpiceDisplayChannel.html#spice-gl-scanout-free" since="0.31"/>
     <keyword type="struct" name="struct SpiceDisplayChannel" link="SpiceDisplayChannel.html#SpiceDisplayChannel-struct"/>
     <keyword type="struct" name="struct SpiceDisplayChannelClass" link="SpiceDisplayChannel.html#SpiceDisplayChannelClass"/>
@@ -145,36 +151,56 @@
     <keyword type="signal" name="The “display-primary-create” signal" link="SpiceDisplayChannel.html#SpiceDisplayChannel-display-primary-create"/>
     <keyword type="signal" name="The “display-primary-destroy” signal" link="SpiceDisplayChannel.html#SpiceDisplayChannel-display-primary-destroy"/>
     <keyword type="signal" name="The “gl-draw” signal" link="SpiceDisplayChannel.html#SpiceDisplayChannel-gl-draw"/>
-    <keyword type="function" name="spice_inputs_motion ()" link="SpiceInputsChannel.html#spice-inputs-motion"/>
-    <keyword type="function" name="spice_inputs_position ()" link="SpiceInputsChannel.html#spice-inputs-position"/>
-    <keyword type="function" name="spice_inputs_button_press ()" link="SpiceInputsChannel.html#spice-inputs-button-press"/>
-    <keyword type="function" name="spice_inputs_button_release ()" link="SpiceInputsChannel.html#spice-inputs-button-release"/>
-    <keyword type="function" name="spice_inputs_key_press ()" link="SpiceInputsChannel.html#spice-inputs-key-press"/>
-    <keyword type="function" name="spice_inputs_key_press_and_release ()" link="SpiceInputsChannel.html#spice-inputs-key-press-and-release" since="0.13"/>
-    <keyword type="function" name="spice_inputs_key_release ()" link="SpiceInputsChannel.html#spice-inputs-key-release"/>
-    <keyword type="function" name="spice_inputs_set_key_locks ()" link="SpiceInputsChannel.html#spice-inputs-set-key-locks"/>
+    <keyword type="signal" name="The “streaming-mode” signal" link="SpiceDisplayChannel.html#SpiceDisplayChannel-streaming-mode"/>
+    <keyword type="function" name="spice_inputs_motion ()" link="SpiceInputsChannel.html#spice-inputs-motion" deprecated="0.35: use spice_inputs_channel_motion() instead."/>
+    <keyword type="function" name="spice_inputs_channel_motion ()" link="SpiceInputsChannel.html#spice-inputs-channel-motion" since="0.35"/>
+    <keyword type="function" name="spice_inputs_position ()" link="SpiceInputsChannel.html#spice-inputs-position" deprecated="0.35: use spice_inputs_channel_position() instead."/>
+    <keyword type="function" name="spice_inputs_channel_position ()" link="SpiceInputsChannel.html#spice-inputs-channel-position" since="0.35"/>
+    <keyword type="function" name="spice_inputs_button_press ()" link="SpiceInputsChannel.html#spice-inputs-button-press" deprecated="0.35: use spice_inputs_channel_button_press() instead."/>
+    <keyword type="function" name="spice_inputs_channel_button_press ()" link="SpiceInputsChannel.html#spice-inputs-channel-button-press" since="0.35"/>
+    <keyword type="function" name="spice_inputs_button_release ()" link="SpiceInputsChannel.html#spice-inputs-button-release" deprecated="0.35: use spice_inputs_channel_button_release() instead."/>
+    <keyword type="function" name="spice_inputs_channel_button_release ()" link="SpiceInputsChannel.html#spice-inputs-channel-button-release" since="0.35"/>
+    <keyword type="function" name="spice_inputs_key_press ()" link="SpiceInputsChannel.html#spice-inputs-key-press" deprecated="0.35: use spice_inputs_channel_key_press() instead."/>
+    <keyword type="function" name="spice_inputs_channel_key_press ()" link="SpiceInputsChannel.html#spice-inputs-channel-key-press" since="0.35"/>
+    <keyword type="function" name="spice_inputs_key_press_and_release ()" link="SpiceInputsChannel.html#spice-inputs-key-press-and-release" deprecated="0.35" since="0.13"/>
+    <keyword type="function" name="spice_inputs_channel_key_press_and_release ()" link="SpiceInputsChannel.html#spice-inputs-channel-key-press-and-release" since="0.35"/>
+    <keyword type="function" name="spice_inputs_key_release ()" link="SpiceInputsChannel.html#spice-inputs-key-release" deprecated="0.35: use spice_inputs_channel_key_release() instead."/>
+    <keyword type="function" name="spice_inputs_channel_key_release ()" link="SpiceInputsChannel.html#spice-inputs-channel-key-release" since="0.35"/>
+    <keyword type="function" name="spice_inputs_set_key_locks ()" link="SpiceInputsChannel.html#spice-inputs-set-key-locks" deprecated="0.35: use spice_inputs_channel_set_key_locks() instead."/>
+    <keyword type="function" name="spice_inputs_channel_set_key_locks ()" link="SpiceInputsChannel.html#spice-inputs-channel-set-key-locks" since="0.35"/>
     <keyword type="struct" name="struct SpiceInputsChannel" link="SpiceInputsChannel.html#SpiceInputsChannel-struct"/>
     <keyword type="struct" name="struct SpiceInputsChannelClass" link="SpiceInputsChannel.html#SpiceInputsChannelClass"/>
     <keyword type="enum" name="enum SpiceInputsLock" link="SpiceInputsChannel.html#SpiceInputsLock"/>
     <keyword type="property" name="The “key-modifiers” property" link="SpiceInputsChannel.html#SpiceInputsChannel--key-modifiers"/>
     <keyword type="signal" name="The “inputs-modifiers” signal" link="SpiceInputsChannel.html#SpiceInputsChannel-inputs-modifiers"/>
-    <keyword type="function" name="spice_main_set_display ()" link="SpiceMainChannel.html#spice-main-set-display"/>
-    <keyword type="function" name="spice_main_set_display_enabled ()" link="SpiceMainChannel.html#spice-main-set-display-enabled" since="0.6"/>
-    <keyword type="function" name="spice_main_update_display ()" link="SpiceMainChannel.html#spice-main-update-display"/>
-    <keyword type="function" name="spice_main_update_display_enabled ()" link="SpiceMainChannel.html#spice-main-update-display-enabled" since="0.30"/>
-    <keyword type="function" name="spice_main_send_monitor_config ()" link="SpiceMainChannel.html#spice-main-send-monitor-config"/>
-    <keyword type="function" name="spice_main_agent_test_capability ()" link="SpiceMainChannel.html#spice-main-agent-test-capability"/>
-    <keyword type="function" name="spice_main_request_mouse_mode ()" link="SpiceMainChannel.html#spice-main-request-mouse-mode" since="0.32"/>
-    <keyword type="function" name="spice_main_clipboard_selection_grab ()" link="SpiceMainChannel.html#spice-main-clipboard-selection-grab" since="0.6"/>
-    <keyword type="function" name="spice_main_clipboard_selection_notify ()" link="SpiceMainChannel.html#spice-main-clipboard-selection-notify" since="0.6"/>
-    <keyword type="function" name="spice_main_clipboard_selection_release ()" link="SpiceMainChannel.html#spice-main-clipboard-selection-release" since="0.6"/>
-    <keyword type="function" name="spice_main_clipboard_selection_request ()" link="SpiceMainChannel.html#spice-main-clipboard-selection-request" since="0.6"/>
-    <keyword type="function" name="spice_main_clipboard_grab ()" link="SpiceMainChannel.html#spice-main-clipboard-grab" deprecated="0.6: use spice_main_clipboard_selection_grab() instead."/>
-    <keyword type="function" name="spice_main_clipboard_release ()" link="SpiceMainChannel.html#spice-main-clipboard-release" deprecated="0.6: use spice_main_clipboard_selection_release() instead."/>
-    <keyword type="function" name="spice_main_clipboard_notify ()" link="SpiceMainChannel.html#spice-main-clipboard-notify" deprecated="0.6: use spice_main_clipboard_selection_notify() instead."/>
-    <keyword type="function" name="spice_main_clipboard_request ()" link="SpiceMainChannel.html#spice-main-clipboard-request" deprecated="0.6: use spice_main_clipboard_selection_request() instead."/>
-    <keyword type="function" name="spice_main_file_copy_async ()" link="SpiceMainChannel.html#spice-main-file-copy-async"/>
-    <keyword type="function" name="spice_main_file_copy_finish ()" link="SpiceMainChannel.html#spice-main-file-copy-finish"/>
+    <keyword type="function" name="spice_main_set_display ()" link="SpiceMainChannel.html#spice-main-set-display" deprecated="0.35: use spice_main_channel_update_display() instead."/>
+    <keyword type="function" name="spice_main_set_display_enabled ()" link="SpiceMainChannel.html#spice-main-set-display-enabled" deprecated="0.35: use spice_main_channel_update_display_enabled() instead." since="0.6"/>
+    <keyword type="function" name="spice_main_update_display ()" link="SpiceMainChannel.html#spice-main-update-display" deprecated="0.35: use spice_main_channel_update_display() instead."/>
+    <keyword type="function" name="spice_main_channel_update_display ()" link="SpiceMainChannel.html#spice-main-channel-update-display" since="0.35"/>
+    <keyword type="function" name="spice_main_update_display_enabled ()" link="SpiceMainChannel.html#spice-main-update-display-enabled" deprecated="0.35: use spice_main_channel_update_display_enabled() instead." since="0.30"/>
+    <keyword type="function" name="spice_main_channel_update_display_enabled ()" link="SpiceMainChannel.html#spice-main-channel-update-display-enabled" since="0.35"/>
+    <keyword type="function" name="spice_main_send_monitor_config ()" link="SpiceMainChannel.html#spice-main-send-monitor-config" deprecated="0.35: use spice_main_channel_send_monitor_config() instead."/>
+    <keyword type="function" name="spice_main_channel_send_monitor_config ()" link="SpiceMainChannel.html#spice-main-channel-send-monitor-config" since="0.35"/>
+    <keyword type="function" name="spice_main_agent_test_capability ()" link="SpiceMainChannel.html#spice-main-agent-test-capability" deprecated="0.35: use spice_main_channel_agent_test_capability() instead."/>
+    <keyword type="function" name="spice_main_channel_agent_test_capability ()" link="SpiceMainChannel.html#spice-main-channel-agent-test-capability" since="0.35"/>
+    <keyword type="function" name="spice_main_request_mouse_mode ()" link="SpiceMainChannel.html#spice-main-request-mouse-mode" deprecated="0.35: use spice_main_channel_request_mouse_mode() instead." since="0.32"/>
+    <keyword type="function" name="spice_main_channel_request_mouse_mode ()" link="SpiceMainChannel.html#spice-main-channel-request-mouse-mode" since="0.35"/>
+    <keyword type="function" name="spice_main_clipboard_selection_grab ()" link="SpiceMainChannel.html#spice-main-clipboard-selection-grab" deprecated="0.35: use spice_main_channel_clipboard_selection_grab() instead." since="0.6"/>
+    <keyword type="function" name="spice_main_channel_clipboard_selection_grab ()" link="SpiceMainChannel.html#spice-main-channel-clipboard-selection-grab" since="0.35"/>
+    <keyword type="function" name="spice_main_clipboard_selection_notify ()" link="SpiceMainChannel.html#spice-main-clipboard-selection-notify" deprecated="0.35: use spice_main_channel_clipboard_selection_notify() instead." since="0.6"/>
+    <keyword type="function" name="spice_main_channel_clipboard_selection_notify ()" link="SpiceMainChannel.html#spice-main-channel-clipboard-selection-notify" since="0.35"/>
+    <keyword type="function" name="spice_main_clipboard_selection_release ()" link="SpiceMainChannel.html#spice-main-clipboard-selection-release" deprecated="0.35: use spice_main_channel_clipboard_selection_release() instead." since="0.6"/>
+    <keyword type="function" name="spice_main_channel_clipboard_selection_release ()" link="SpiceMainChannel.html#spice-main-channel-clipboard-selection-release" since="0.35"/>
+    <keyword type="function" name="spice_main_clipboard_selection_request ()" link="SpiceMainChannel.html#spice-main-clipboard-selection-request" deprecated="0.35: use spice_main_channel_clipboard_selection_request() instead." since="0.6"/>
+    <keyword type="function" name="spice_main_channel_clipboard_selection_request ()" link="SpiceMainChannel.html#spice-main-channel-clipboard-selection-request" since="0.35"/>
+    <keyword type="function" name="spice_main_clipboard_grab ()" link="SpiceMainChannel.html#spice-main-clipboard-grab" deprecated="0.6: use spice_main_channel_clipboard_selection_grab() instead."/>
+    <keyword type="function" name="spice_main_clipboard_release ()" link="SpiceMainChannel.html#spice-main-clipboard-release" deprecated="0.6: use spice_main_channel_clipboard_selection_release() instead."/>
+    <keyword type="function" name="spice_main_clipboard_notify ()" link="SpiceMainChannel.html#spice-main-clipboard-notify" deprecated="0.6: use spice_main_channel_clipboard_selection_notify() instead."/>
+    <keyword type="function" name="spice_main_clipboard_request ()" link="SpiceMainChannel.html#spice-main-clipboard-request" deprecated="0.6: use spice_main_channel_clipboard_selection_request() instead."/>
+    <keyword type="function" name="spice_main_file_copy_async ()" link="SpiceMainChannel.html#spice-main-file-copy-async" deprecated="0.35: use spice_main_channel_file_copy_async() instead."/>
+    <keyword type="function" name="spice_main_channel_file_copy_async ()" link="SpiceMainChannel.html#spice-main-channel-file-copy-async" since="0.35"/>
+    <keyword type="function" name="spice_main_file_copy_finish ()" link="SpiceMainChannel.html#spice-main-file-copy-finish" deprecated=""/>
+    <keyword type="function" name="spice_main_channel_file_copy_finish ()" link="SpiceMainChannel.html#spice-main-channel-file-copy-finish"/>
     <keyword type="struct" name="struct SpiceMainChannel" link="SpiceMainChannel.html#SpiceMainChannel-struct"/>
     <keyword type="struct" name="struct SpiceMainChannelClass" link="SpiceMainChannel.html#SpiceMainChannelClass"/>
     <keyword type="property" name="The “agent-caps-0” property" link="SpiceMainChannel.html#SpiceMainChannel--agent-caps-0"/>
@@ -210,7 +236,8 @@
     <keyword type="signal" name="The “playback-get-delay” signal" link="SpicePlaybackChannel.html#SpicePlaybackChannel-playback-get-delay"/>
     <keyword type="signal" name="The “playback-start” signal" link="SpicePlaybackChannel.html#SpicePlaybackChannel-playback-start"/>
     <keyword type="signal" name="The “playback-stop” signal" link="SpicePlaybackChannel.html#SpicePlaybackChannel-playback-stop"/>
-    <keyword type="function" name="spice_record_send_data ()" link="SpiceRecordChannel.html#spice-record-send-data"/>
+    <keyword type="function" name="spice_record_send_data ()" link="SpiceRecordChannel.html#spice-record-send-data" deprecated="0.35: use spice_record_channel_send_data() instead."/>
+    <keyword type="function" name="spice_record_channel_send_data ()" link="SpiceRecordChannel.html#spice-record-channel-send-data" since="0.35"/>
     <keyword type="struct" name="struct SpiceRecordChannel" link="SpiceRecordChannel.html#SpiceRecordChannel-struct"/>
     <keyword type="struct" name="struct SpiceRecordChannelClass" link="SpiceRecordChannel.html#SpiceRecordChannelClass"/>
     <keyword type="property" name="The “mute” property" link="SpiceRecordChannel.html#SpiceRecordChannel--mute"/>
@@ -222,9 +249,12 @@
     <keyword type="struct" name="struct SpiceSmartcardChannelClass" link="SpiceSmartcardChannel.html#SpiceSmartcardChannelClass"/>
     <keyword type="struct" name="struct SpiceUsbredirChannel" link="SpiceUsbredirChannel.html#SpiceUsbredirChannel-struct"/>
     <keyword type="struct" name="struct SpiceUsbredirChannelClass" link="SpiceUsbredirChannel.html#SpiceUsbredirChannelClass"/>
-    <keyword type="function" name="spice_port_event ()" link="SpicePortChannel.html#spice-port-event" since="0.15"/>
-    <keyword type="function" name="spice_port_write_async ()" link="SpicePortChannel.html#spice-port-write-async" since="0.15"/>
-    <keyword type="function" name="spice_port_write_finish ()" link="SpicePortChannel.html#spice-port-write-finish" since="0.15"/>
+    <keyword type="function" name="spice_port_event ()" link="SpicePortChannel.html#spice-port-event" deprecated="0.35: use spice_port_channel_event() instead." since="0.15"/>
+    <keyword type="function" name="spice_port_channel_event ()" link="SpicePortChannel.html#spice-port-channel-event" since="0.35"/>
+    <keyword type="function" name="spice_port_write_async ()" link="SpicePortChannel.html#spice-port-write-async" deprecated="0.35: use spice_port_channel_write_async() instead." since="0.15"/>
+    <keyword type="function" name="spice_port_channel_write_async ()" link="SpicePortChannel.html#spice-port-channel-write-async" since="0.35"/>
+    <keyword type="function" name="spice_port_write_finish ()" link="SpicePortChannel.html#spice-port-write-finish" deprecated="0.35: use spice_port_channel_write_finish() instead." since="0.15"/>
+    <keyword type="function" name="spice_port_channel_write_finish ()" link="SpicePortChannel.html#spice-port-channel-write-finish" since="0.35"/>
     <keyword type="struct" name="struct SpicePortChannel" link="SpicePortChannel.html#SpicePortChannel-struct"/>
     <keyword type="struct" name="struct SpicePortChannelClass" link="SpicePortChannel.html#SpicePortChannelClass"/>
     <keyword type="property" name="The “port-name” property" link="SpicePortChannel.html#SpicePortChannel--port-name"/>

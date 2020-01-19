@@ -8,7 +8,7 @@
 <link rel="up" href="application-support.html" title="Application Support, from spice-client-glib">
 <link rel="prev" href="SpiceUsbDeviceManager.html" title="Spice USB Manager">
 <link rel="next" href="spice-gtk-Version-Information.html" title="Version Information">
-<meta name="generator" content="GTK-Doc V1.25 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.28 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -58,7 +58,7 @@ justifications.
 </td>
 </tr>
 <tr>
-<td class="function_type">const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+<td class="function_type">const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
 </td>
 <td class="function_name">
 <a class="link" href="spice-gtk-Utilities.html#spice-util-get-version-string" title="spice_util_get_version_string ()">spice_util_get_version_string</a> <span class="c_punctuation">()</span>
@@ -66,7 +66,7 @@ justifications.
 </tr>
 <tr>
 <td class="function_type">
-<a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
 </td>
 <td class="function_name">
 <a class="link" href="spice-gtk-Utilities.html#spice-uuid-to-string" title="spice_uuid_to_string ()">spice_uuid_to_string</a> <span class="c_punctuation">()</span>
@@ -89,7 +89,7 @@ justifications.
 <div class="refsect2">
 <a name="spice-util-set-debug"></a><h3>spice_util_set_debug ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
-spice_util_set_debug (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> enabled</code></em>);</pre>
+spice_util_set_debug (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> enabled</code></em>);</pre>
 <p>Enable or disable Spice-GTK debugging messages.</p>
 <div class="refsect3">
 <a name="spice-util-set-debug.parameters"></a><h4>Parameters</h4>
@@ -101,7 +101,7 @@ spice_util_set_debug (<em class="parameter"><code><a href="/usr/share/gtk-doc/ht
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>enabled</p></td>
-<td class="parameter_description"><p><a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> or <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a></p></td>
+<td class="parameter_description"><p><a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a></p></td>
 <td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
@@ -110,7 +110,7 @@ spice_util_set_debug (<em class="parameter"><code><a href="/usr/share/gtk-doc/ht
 <hr>
 <div class="refsect2">
 <a name="spice-util-get-version-string"></a><h3>spice_util_get_version_string ()</h3>
-<pre class="programlisting">const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+<pre class="programlisting">const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
 spice_util_get_version_string (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>Gets the version string</p>
 <div class="refsect3">
@@ -121,8 +121,8 @@ spice_util_get_version_string (<em class="parameter"><code><span class="type">vo
 <hr>
 <div class="refsect2">
 <a name="spice-uuid-to-string"></a><h3>spice_uuid_to_string ()</h3>
-<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
-spice_uuid_to_string (<em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint8"><span class="type">guint8</span></a> uuid[16]</code></em>);</pre>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+spice_uuid_to_string (<em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint8"><span class="type">guint8</span></a> uuid[16]</code></em>);</pre>
 <p>Creates a string representation of <em class="parameter"><code>uuid</code></em>
 , of the form
 "06e023d5-86d8-420e-8103-383e4566087a"</p>
@@ -143,7 +143,7 @@ spice_uuid_to_string (<em class="parameter"><code>const <a href="/usr/share/gtk-
 </div>
 <div class="refsect3">
 <a name="spice-uuid-to-string.returns"></a><h4>Returns</h4>
-<p> A string that should be freed with <a href="/usr/share/gtk-doc/html/glibglib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a>.</p>
+<p> A string that should be freed with <a href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a>.</p>
 </div>
 <p class="since">Since: 0.22</p>
 </div>
@@ -153,6 +153,6 @@ spice_uuid_to_string (<em class="parameter"><code>const <a href="/usr/share/gtk-
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.25</div>
+<hr>Generated by GTK-Doc V1.28</div>
 </body>
 </html>

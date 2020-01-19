@@ -595,7 +595,7 @@ PACKAGE_STRING='spice-common noversion'
 PACKAGE_BUGREPORT='spice-devel@lists.freedesktop.org'
 PACKAGE_URL=''
 
-ac_unique_file="common/bitops.h"
+ac_unique_file="common/log.h"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -637,6 +637,10 @@ am__EXEEXT_TRUE
 LTLIBOBJS
 SPICE_COMMON_LIBS
 SPICE_COMMON_CFLAGS
+HAVE_GDK_PIXBUF_FALSE
+HAVE_GDK_PIXBUF_TRUE
+GDK_PIXBUF_LIBS
+GDK_PIXBUF_CFLAGS
 OPENSSL_LIBS
 OPENSSL_CFLAGS
 HAVE_OPUS_FALSE
@@ -669,6 +673,8 @@ PROTOCOL_CFLAGS
 PKG_CONFIG_LIBDIR
 PKG_CONFIG_PATH
 PKG_CONFIG
+ENABLE_EXTRA_CHECKS_FALSE
+ENABLE_EXTRA_CHECKS_TRUE
 LIBOBJS
 ALLOCA
 BUILD_CHUNKED_MANUAL_FALSE
@@ -810,10 +816,12 @@ with_gnu_ld
 with_sysroot
 enable_libtool_lock
 enable_manual
+enable_extra_checks
 enable_alignment_checks
 enable_python_checks
 enable_smartcard
 enable_celt051
+enable_opus
 '
       ac_precious_vars='build_alias
 host_alias
@@ -842,7 +850,9 @@ GLIB2_LIBS
 OPUS_CFLAGS
 OPUS_LIBS
 OPENSSL_CFLAGS
-OPENSSL_LIBS'
+OPENSSL_LIBS
+GDK_PIXBUF_CFLAGS
+GDK_PIXBUF_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1477,6 +1487,8 @@ Optional Features:
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --enable-manual=[auto/yes/no]
                           Build SPICE manual
+  --enable-extra-checks=[yes/no]
+                          Enable expensive checks [default=no]
   --enable-alignment-checks
                           Enable runtime checks for cast alignment
                           [default=no]
@@ -1485,7 +1497,8 @@ Optional Features:
                           from git [default=no]
   --enable-smartcard=[yes/no/auto]
                           Enable smartcard support [default=auto]
-  --disable-celt051       Disable celt051 audio codec (enabled by default)
+  --enable-celt051       Enable celt051 audio codec (disabled by default)
+  --disable-opus       Disable Opus audio codec (enabled by default)
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -1540,6 +1553,10 @@ Some influential environment variables:
               C compiler flags for OPENSSL, overriding pkg-config
   OPENSSL_LIBS
               linker flags for OPENSSL, overriding pkg-config
+  GDK_PIXBUF_CFLAGS
+              C compiler flags for GDK_PIXBUF, overriding pkg-config
+  GDK_PIXBUF_LIBS
+              linker flags for GDK_PIXBUF, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -14342,7 +14359,7 @@ $as_echo "#define HAVE_WORKING_FORK 1" >>confdefs.h
 
 fi
 
-    for ac_func in dup2 floor inet_ntoa memmove memset pow sqrt
+    for ac_func in dup2 floor memmove memset
 do :
   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
 ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
@@ -14354,6 +14371,86 @@ _ACEOF
 fi
 done
 
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing hypot" >&5
+$as_echo_n "checking for library containing hypot... " >&6; }
+if ${ac_cv_search_hypot+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_func_search_save_LIBS=$LIBS
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char hypot ();
+int
+main ()
+{
+return hypot ();
+  ;
+  return 0;
+}
+_ACEOF
+for ac_lib in '' m; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_search_hypot=$ac_res
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext
+  if ${ac_cv_search_hypot+:} false; then :
+  break
+fi
+done
+if ${ac_cv_search_hypot+:} false; then :
+
+else
+  ac_cv_search_hypot=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_hypot" >&5
+$as_echo "$ac_cv_search_hypot" >&6; }
+ac_res=$ac_cv_search_hypot
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
+
+else
+
+        as_fn_error $? "unable to find the hypot() function" "$LINENO" 5
+
+fi
+
+
+
+# Check whether --enable-extra-checks was given.
+if test "${enable_extra_checks+set}" = set; then :
+  enableval=$enable_extra_checks;
+fi
+
+ if test "x$enable_extra_checks" = "xyes"; then
+  ENABLE_EXTRA_CHECKS_TRUE=
+  ENABLE_EXTRA_CHECKS_FALSE='#'
+else
+  ENABLE_EXTRA_CHECKS_TRUE='#'
+  ENABLE_EXTRA_CHECKS_FALSE=
+fi
+
+if test -z "$ENABLE_EXTRA_CHECKS_TRUE"; then :
+
+$as_echo "#define ENABLE_EXTRA_CHECKS 1" >>confdefs.h
+
+fi
 
 
 # Check whether --enable-alignment-checks was given.
@@ -14601,7 +14698,7 @@ fi
 
         # Find any Python interpreter.
     if test -z "$PYTHON"; then
-      for ac_prog in python python2 python3 python3.3 python3.2 python3.1 python3.0 python2.7  python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 python2.0
+      for ac_prog in python python2 python3 python3.5 python3.4 python3.3 python3.2 python3.1 python3.0 python2.7  python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 python2.0
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -14947,7 +15044,7 @@ if ${am_cv_pathless_PYTHON+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
-	for am_cv_pathless_PYTHON in python python2 python3 python3.3 python3.2 python3.1 python3.0 python2.7  python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 python2.0 none; do
+	for am_cv_pathless_PYTHON in python python2 python3 python3.5 python3.4 python3.3 python3.2 python3.1 python3.0 python2.7  python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 python2.0 none; do
 	  test "$am_cv_pathless_PYTHON" = none && break
 	  prog="import sys
 # split strings by '.' and convert to numeric.  Append some zeros
@@ -15262,7 +15359,7 @@ if ${am_cv_pathless_PYTHON+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
-	for am_cv_pathless_PYTHON in python python2 python3 python3.3 python3.2 python3.1 python3.0 python2.7  python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 python2.0 none; do
+	for am_cv_pathless_PYTHON in python python2 python3 python3.5 python3.4 python3.3 python3.2 python3.1 python3.0 python2.7  python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 python2.0 none; do
 	  test "$am_cv_pathless_PYTHON" = none && break
 	  prog="import sys
 # split strings by '.' and convert to numeric.  Append some zeros
@@ -15494,7 +15591,7 @@ fi
 
         # Find any Python interpreter.
     if test -z "$PYTHON"; then
-      for ac_prog in python python2 python3 python3.3 python3.2 python3.1 python3.0 python2.7  python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 python2.0
+      for ac_prog in python python2 python3 python3.5 python3.4 python3.3 python3.2 python3.1 python3.0 python2.7  python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 python2.0
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -15972,11 +16069,11 @@ fi
 if test "${enable_celt051+set}" = set; then :
   enableval=$enable_celt051;
 else
-  enable_celt051="yes"
+  enable_celt051="auto"
 fi
 
 
-    if test "x$enable_celt051" = "xyes"; then
+    if test "x$enable_celt051" != "xno"; then
 
 pkg_failed=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for CELT051" >&5
@@ -16048,6 +16145,15 @@ else
 $as_echo "yes" >&6; }
 	have_celt051=yes
 fi
+        if test "x$enable_celt051" = "xauto"; then
+            if test "x$have_celt051" = "xyes"; then
+                as_fn_error $? "CELT 0.5.1.x has been detected, but CELT support is no longer automatically enabled by default. Please explicitly use --enable-celt051 or --disable-celt051" "$LINENO" 5
+            fi
+            # have_celt051 is "no" here, so celt is disabled by default
+        fi
+        if test "x$enable_celt051" = "xyes" && test "x$have_celt051" != "xyes"; then
+            as_fn_error $? "\"--enable-celt051 has been specified, but CELT 0.5.1 is missing\"" "$LINENO" 5
+        fi
     else
         have_celt051=no
     fi
@@ -16076,12 +16182,12 @@ if test -n "$GLIB2_CFLAGS"; then
     pkg_cv_GLIB2_CFLAGS="$GLIB2_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"glib-2.0 >= 2.22 gio-2.0 >= 2.22 gthread-2.0 >= 2.22\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "glib-2.0 >= 2.22 gio-2.0 >= 2.22 gthread-2.0 >= 2.22") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"glib-2.0 >= 2.38 gio-2.0 >= 2.38 gthread-2.0 >= 2.38\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "glib-2.0 >= 2.38 gio-2.0 >= 2.38 gthread-2.0 >= 2.38") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_GLIB2_CFLAGS=`$PKG_CONFIG --cflags "glib-2.0 >= 2.22 gio-2.0 >= 2.22 gthread-2.0 >= 2.22" 2>/dev/null`
+  pkg_cv_GLIB2_CFLAGS=`$PKG_CONFIG --cflags "glib-2.0 >= 2.38 gio-2.0 >= 2.38 gthread-2.0 >= 2.38" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -16093,12 +16199,12 @@ if test -n "$GLIB2_LIBS"; then
     pkg_cv_GLIB2_LIBS="$GLIB2_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"glib-2.0 >= 2.22 gio-2.0 >= 2.22 gthread-2.0 >= 2.22\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "glib-2.0 >= 2.22 gio-2.0 >= 2.22 gthread-2.0 >= 2.22") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"glib-2.0 >= 2.38 gio-2.0 >= 2.38 gthread-2.0 >= 2.38\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "glib-2.0 >= 2.38 gio-2.0 >= 2.38 gthread-2.0 >= 2.38") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_GLIB2_LIBS=`$PKG_CONFIG --libs "glib-2.0 >= 2.22 gio-2.0 >= 2.22 gthread-2.0 >= 2.22" 2>/dev/null`
+  pkg_cv_GLIB2_LIBS=`$PKG_CONFIG --libs "glib-2.0 >= 2.38 gio-2.0 >= 2.38 gthread-2.0 >= 2.38" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -16119,14 +16225,14 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GLIB2_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "glib-2.0 >= 2.22 gio-2.0 >= 2.22 gthread-2.0 >= 2.22" 2>&1`
+	        GLIB2_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "glib-2.0 >= 2.38 gio-2.0 >= 2.38 gthread-2.0 >= 2.38" 2>&1`
         else
-	        GLIB2_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "glib-2.0 >= 2.22 gio-2.0 >= 2.22 gthread-2.0 >= 2.22" 2>&1`
+	        GLIB2_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "glib-2.0 >= 2.38 gio-2.0 >= 2.38 gthread-2.0 >= 2.38" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GLIB2_PKG_ERRORS" >&5
 
-	as_fn_error $? "Package requirements (glib-2.0 >= 2.22 gio-2.0 >= 2.22 gthread-2.0 >= 2.22) were not met:
+	as_fn_error $? "Package requirements (glib-2.0 >= 2.38 gio-2.0 >= 2.38 gthread-2.0 >= 2.38) were not met:
 
 $GLIB2_PKG_ERRORS
 
@@ -16160,6 +16266,14 @@ $as_echo "yes" >&6; }
 fi
 
 
+    # Check whether --enable-opus was given.
+if test "${enable_opus+set}" = set; then :
+  enableval=$enable_opus;
+else
+  enable_opus="auto"
+fi
+
+    if test "x$enable_opus" != "xno"; then
 
 pkg_failed=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for OPUS" >&5
@@ -16231,6 +16345,13 @@ else
 $as_echo "yes" >&6; }
 	have_opus=yes
 fi
+        if test "x$enable_opus" = "xauto" && test "x$have_opus" = "xno"; then
+            as_fn_error $? "Opus could not be detected, explicitly use --disable-opus if that's intentional" "$LINENO" 5
+        fi
+        if test "x$enable_opus" = "xyes" && test "x$have_opus" != "xyes"; then
+            as_fn_error $? "--enable-opus has been specified, but Opus is missing" "$LINENO" 5
+        fi
+    fi
 
      if test "x$have_opus" = "xyes"; then
   HAVE_OPUS_TRUE=
@@ -16240,11 +16361,11 @@ else
   HAVE_OPUS_FALSE=
 fi
 
-    if test "x$have_opus" = "xyes" ; then
+    if test -z "$HAVE_OPUS_TRUE"; then :
 
 $as_echo "#define HAVE_OPUS 1" >>confdefs.h
 
-    fi
+fi
 
 
 
@@ -16340,15 +16461,101 @@ $as_echo "yes" >&6; }
 fi
 
 
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for GDK_PIXBUF" >&5
+$as_echo_n "checking for GDK_PIXBUF... " >&6; }
+
+if test -n "$GDK_PIXBUF_CFLAGS"; then
+    pkg_cv_GDK_PIXBUF_CFLAGS="$GDK_PIXBUF_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gdk-pixbuf-2.0 >= 2.26\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gdk-pixbuf-2.0 >= 2.26") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_GDK_PIXBUF_CFLAGS=`$PKG_CONFIG --cflags "gdk-pixbuf-2.0 >= 2.26" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$GDK_PIXBUF_LIBS"; then
+    pkg_cv_GDK_PIXBUF_LIBS="$GDK_PIXBUF_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gdk-pixbuf-2.0 >= 2.26\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gdk-pixbuf-2.0 >= 2.26") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_GDK_PIXBUF_LIBS=`$PKG_CONFIG --libs "gdk-pixbuf-2.0 >= 2.26" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        GDK_PIXBUF_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gdk-pixbuf-2.0 >= 2.26" 2>&1`
+        else
+	        GDK_PIXBUF_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gdk-pixbuf-2.0 >= 2.26" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$GDK_PIXBUF_PKG_ERRORS" >&5
+
+	have_gdk_pixbuf=no
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	have_gdk_pixbuf=no
+else
+	GDK_PIXBUF_CFLAGS=$pkg_cv_GDK_PIXBUF_CFLAGS
+	GDK_PIXBUF_LIBS=$pkg_cv_GDK_PIXBUF_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	have_gdk_pixbuf=yes
+fi
+
+     if test "x$have_gdk_pixbuf" = "xyes"; then
+  HAVE_GDK_PIXBUF_TRUE=
+  HAVE_GDK_PIXBUF_FALSE='#'
+else
+  HAVE_GDK_PIXBUF_TRUE='#'
+  HAVE_GDK_PIXBUF_FALSE=
+fi
+
+    if test -z "$HAVE_GDK_PIXBUF_TRUE"; then :
+
+$as_echo "#define HAVE_GDK_PIXBUF 1" >>confdefs.h
+
+fi
+
+
 SPICE_COMMON_CFLAGS='$(PIXMAN_CFLAGS) $(SMARTCARD_CFLAGS) $(CELT051_CFLAGS) $(GLIB2_CFLAGS) $(OPUS_CFLAGS) $(OPENSSL_CFLAGS)'
+SPICE_COMMON_CFLAGS="$SPICE_COMMON_CFLAGS -DG_LOG_DOMAIN=\\\"Spice\\\""
 SPICE_COMMON_LIBS='$(PIXMAN_LIBS) $(CELT051_LIBS) $(GLIB2_LIBS) $(OPUS_LIBS) $(OPENSSL_LIBS)'
 
 
 
 # The End!
 ac_config_files="$ac_config_files Makefile common/Makefile python_modules/Makefile tests/Makefile docs/Makefile"
-
-
 
 
 cat >confcache <<\_ACEOF
@@ -16500,6 +16707,10 @@ if test -z "${BUILD_CHUNKED_MANUAL_TRUE}" && test -z "${BUILD_CHUNKED_MANUAL_FAL
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 
+if test -z "${ENABLE_EXTRA_CHECKS_TRUE}" && test -z "${ENABLE_EXTRA_CHECKS_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_EXTRA_CHECKS\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
 if test -z "${HAVE_SMARTCARD_TRUE}" && test -z "${HAVE_SMARTCARD_FALSE}"; then
   as_fn_error $? "conditional \"HAVE_SMARTCARD\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
@@ -16510,6 +16721,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_OPUS_TRUE}" && test -z "${HAVE_OPUS_FALSE}"; then
   as_fn_error $? "conditional \"HAVE_OPUS\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_GDK_PIXBUF_TRUE}" && test -z "${HAVE_GDK_PIXBUF_FALSE}"; then
+  as_fn_error $? "conditional \"HAVE_GDK_PIXBUF\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

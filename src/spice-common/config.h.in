@@ -11,6 +11,9 @@
 /* Define to 1 if using `alloca.c'. */
 #undef C_ALLOCA
 
+/* Enable extra checks on code */
+#undef ENABLE_EXTRA_CHECKS
+
 /* Define to 1 if you have `alloca', as a function or macro. */
 #undef HAVE_ALLOCA
 
@@ -36,8 +39,8 @@
 /* Define to 1 if you have the `fork' function. */
 #undef HAVE_FORK
 
-/* Define to 1 if you have the `inet_ntoa' function. */
-#undef HAVE_INET_NTOA
+/* Define if gdk-pixbuf was found */
+#undef HAVE_GDK_PIXBUF
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
@@ -59,12 +62,6 @@
 
 /* Define if we have OPUS */
 #undef HAVE_OPUS
-
-/* Define to 1 if you have the `pow' function. */
-#undef HAVE_POW
-
-/* Define to 1 if you have the `sqrt' function. */
-#undef HAVE_SQRT
 
 /* Define to 1 if you have the <stddef.h> header file. */
 #undef HAVE_STDDEF_H
@@ -225,10 +222,3 @@
 
 /* Define as `fork' if `vfork' does not work. */
 #undef vfork
-
-
-/* argh.. this is evil */
-#if defined(FIXME_SERVER_SMARTCARD) && defined(USE_SMARTCARD)
-%:undef USE_SMARTCARD
-#endif
-

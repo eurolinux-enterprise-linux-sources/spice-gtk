@@ -34,40 +34,58 @@
 
 
 
-#ifdef WORDS_BIGENDIAN
+#include <spice/start-packed.h>
+typedef struct SPICE_ATTR_PACKED {
+    int16_t v;
+} int16_unaligned_t;
+typedef struct SPICE_ATTR_PACKED {
+    uint16_t v;
+} uint16_unaligned_t;
+typedef struct SPICE_ATTR_PACKED {
+    int32_t v;
+} int32_unaligned_t;
+typedef struct SPICE_ATTR_PACKED {
+    uint32_t v;
+} uint32_unaligned_t;
+typedef struct SPICE_ATTR_PACKED {
+    int64_t v;
+} int64_unaligned_t;
+typedef struct SPICE_ATTR_PACKED {
+    uint64_t v;
+} uint64_unaligned_t;
+#include <spice/end-packed.h>
+
 #define read_int8(ptr) (*((int8_t *)(ptr)))
 #define write_int8(ptr, val) *(int8_t *)(ptr) = val
 #define read_uint8(ptr) (*((uint8_t *)(ptr)))
 #define write_uint8(ptr, val) *(uint8_t *)(ptr) = val
-#define read_int16(ptr) ((int16_t)SPICE_BYTESWAP16(*((uint16_t *)(ptr))))
-#define write_int16(ptr, val) *(uint16_t *)(ptr) = SPICE_BYTESWAP16((uint16_t)val)
-#define read_uint16(ptr) ((uint16_t)SPICE_BYTESWAP16(*((uint16_t *)(ptr))))
-#define write_uint16(ptr, val) *(uint16_t *)(ptr) = SPICE_BYTESWAP16((uint16_t)val)
-#define read_int32(ptr) ((int32_t)SPICE_BYTESWAP32(*((uint32_t *)(ptr))))
-#define write_int32(ptr, val) *(uint32_t *)(ptr) = SPICE_BYTESWAP32((uint32_t)val)
-#define read_uint32(ptr) ((uint32_t)SPICE_BYTESWAP32(*((uint32_t *)(ptr))))
-#define write_uint32(ptr, val) *(uint32_t *)(ptr) = SPICE_BYTESWAP32((uint32_t)val)
-#define read_int64(ptr) ((int64_t)SPICE_BYTESWAP64(*((uint64_t *)(ptr))))
-#define write_int64(ptr, val) *(uint64_t *)(ptr) = SPICE_BYTESWAP64((uint64_t)val)
-#define read_uint64(ptr) ((uint64_t)SPICE_BYTESWAP64(*((uint64_t *)(ptr))))
-#define write_uint64(ptr, val) *(uint64_t *)(ptr) = SPICE_BYTESWAP64((uint64_t)val)
+
+#ifdef WORDS_BIGENDIAN
+#define read_int16(ptr) ((int16_t)SPICE_BYTESWAP16(((uint16_unaligned_t *)(ptr))->v))
+#define write_int16(ptr, val) ((uint16_unaligned_t *)(ptr))->v = SPICE_BYTESWAP16((uint16_t)val)
+#define read_uint16(ptr) ((uint16_t)SPICE_BYTESWAP16(((uint16_unaligned_t *)(ptr))->v))
+#define write_uint16(ptr, val) ((uint16_unaligned_t *)(ptr))->v = SPICE_BYTESWAP16((uint16_t)val)
+#define read_int32(ptr) ((int32_t)SPICE_BYTESWAP32(((uint32_unaligned_t *)(ptr))->v))
+#define write_int32(ptr, val) ((uint32_unaligned_t *)(ptr))->v = SPICE_BYTESWAP32((uint32_t)val)
+#define read_uint32(ptr) ((uint32_t)SPICE_BYTESWAP32(((uint32_unaligned_t *)(ptr))->v))
+#define write_uint32(ptr, val) ((uint32_unaligned_t *)(ptr))->v = SPICE_BYTESWAP32((uint32_t)val)
+#define read_int64(ptr) ((int64_t)SPICE_BYTESWAP64(((uint64_unaligned_t *)(ptr))->v))
+#define write_int64(ptr, val) ((uint64_unaligned_t *)(ptr))->v = SPICE_BYTESWAP64((uint64_t)val)
+#define read_uint64(ptr) ((uint64_t)SPICE_BYTESWAP64(((uint64_unaligned_t *)(ptr))->v))
+#define write_uint64(ptr, val) ((uint64_unaligned_t *)(ptr))->v = SPICE_BYTESWAP64((uint64_t)val)
 #else
-#define read_int8(ptr) (*((int8_t *)(ptr)))
-#define write_int8(ptr, val) (*((int8_t *)(ptr))) = val
-#define read_uint8(ptr) (*((uint8_t *)(ptr)))
-#define write_uint8(ptr, val) (*((uint8_t *)(ptr))) = val
-#define read_int16(ptr) (*((int16_t *)(ptr)))
-#define write_int16(ptr, val) (*((int16_t *)(ptr))) = val
-#define read_uint16(ptr) (*((uint16_t *)(ptr)))
-#define write_uint16(ptr, val) (*((uint16_t *)(ptr))) = val
-#define read_int32(ptr) (*((int32_t *)(ptr)))
-#define write_int32(ptr, val) (*((int32_t *)(ptr))) = val
-#define read_uint32(ptr) (*((uint32_t *)(ptr)))
-#define write_uint32(ptr, val) (*((uint32_t *)(ptr))) = val
-#define read_int64(ptr) (*((int64_t *)(ptr)))
-#define write_int64(ptr, val) (*((int64_t *)(ptr))) = val
-#define read_uint64(ptr) (*((uint64_t *)(ptr)))
-#define write_uint64(ptr, val) (*((uint64_t *)(ptr))) = val
+#define read_int16(ptr) (((int16_unaligned_t *)(ptr))->v)
+#define write_int16(ptr, val) (((int16_unaligned_t *)(ptr))->v) = val
+#define read_uint16(ptr) (((uint16_unaligned_t *)(ptr))->v)
+#define write_uint16(ptr, val) (((uint16_unaligned_t *)(ptr))->v) = val
+#define read_int32(ptr) (((int32_unaligned_t *)(ptr))->v)
+#define write_int32(ptr, val) (((int32_unaligned_t *)(ptr))->v) = val
+#define read_uint32(ptr) (((uint32_unaligned_t *)(ptr))->v)
+#define write_uint32(ptr, val) (((uint32_unaligned_t *)(ptr))->v) = val
+#define read_int64(ptr) (((int64_unaligned_t *)(ptr))->v)
+#define write_int64(ptr, val) (((int64_unaligned_t *)(ptr))->v) = val
+#define read_uint64(ptr) (((uint64_unaligned_t *)(ptr))->v)
+#define write_uint64(ptr, val) (((uint64_unaligned_t *)(ptr))->v) = val
 #endif
 
 static int8_t SPICE_GNUC_UNUSED consume_int8(uint8_t **ptr)
@@ -148,7 +166,7 @@ struct PointerInfo {
     uint64_t offset;
     parse_func_t parse;
     void * *dest;
-    uint32_t nelements;
+    uint64_t nelements;
 };
 
 static uint8_t * parse_msgc_ack_sync(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
@@ -156,8 +174,8 @@ static uint8_t * parse_msgc_ack_sync(uint8_t *message_start, uint8_t *message_en
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcAckSync *out;
 
@@ -165,12 +183,12 @@ static uint8_t * parse_msgc_ack_sync(uint8_t *message_start, uint8_t *message_en
     mem_size = sizeof(SpiceMsgcAckSync);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -198,20 +216,20 @@ static uint8_t * parse_SpiceMsgEmpty(uint8_t *message_start, uint8_t *message_en
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
 
     nw_size = 0;
     mem_size = sizeof(SpiceMsgEmpty);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -236,8 +254,8 @@ static uint8_t * parse_msgc_pong(uint8_t *message_start, uint8_t *message_end, S
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgPing *out;
 
@@ -245,12 +263,12 @@ static uint8_t * parse_msgc_pong(uint8_t *message_start, uint8_t *message_end, S
     mem_size = sizeof(SpiceMsgPing);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -283,9 +301,9 @@ static uint8_t * parse_SpiceMsgData(uint8_t *message_start, uint8_t *message_end
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t data__nw_size;
-    uint32_t data__nelements;
+    uint64_t nw_size;
+    uint64_t data__nw_size;
+    uint64_t data__nelements;
 
     { /* data */
         data__nelements = message_end - (start + 0);
@@ -296,7 +314,7 @@ static uint8_t * parse_SpiceMsgData(uint8_t *message_start, uint8_t *message_end
     nw_size = 0 + data__nw_size;
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
@@ -313,8 +331,8 @@ static uint8_t * parse_msgc_disconnecting(uint8_t *message_start, uint8_t *messa
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgDisconnect *out;
 
@@ -322,12 +340,12 @@ static uint8_t * parse_msgc_disconnecting(uint8_t *message_start, uint8_t *messa
     mem_size = sizeof(SpiceMsgDisconnect);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -356,8 +374,8 @@ static uint8_t * parse_msgc_main_client_info(uint8_t *message_start, uint8_t *me
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcClientInfo *out;
 
@@ -365,12 +383,12 @@ static uint8_t * parse_msgc_main_client_info(uint8_t *message_start, uint8_t *me
     mem_size = sizeof(SpiceMsgcClientInfo);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -398,8 +416,8 @@ static uint8_t * parse_msgc_main_mouse_mode_request(uint8_t *message_start, uint
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcMainMouseModeRequest *out;
 
@@ -407,12 +425,12 @@ static uint8_t * parse_msgc_main_mouse_mode_request(uint8_t *message_start, uint
     mem_size = sizeof(SpiceMsgcMainMouseModeRequest);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -440,8 +458,8 @@ static uint8_t * parse_msgc_main_agent_start(uint8_t *message_start, uint8_t *me
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcMainAgentStart *out;
 
@@ -449,12 +467,12 @@ static uint8_t * parse_msgc_main_agent_start(uint8_t *message_start, uint8_t *me
     mem_size = sizeof(SpiceMsgcMainAgentStart);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -482,8 +500,8 @@ static uint8_t * parse_msgc_main_agent_token(uint8_t *message_start, uint8_t *me
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcMainAgentTokens *out;
 
@@ -491,12 +509,12 @@ static uint8_t * parse_msgc_main_agent_token(uint8_t *message_start, uint8_t *me
     mem_size = sizeof(SpiceMsgcMainAgentTokens);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -524,8 +542,8 @@ static uint8_t * parse_msgc_main_migrate_dst_do_seamless(uint8_t *message_start,
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcMainMigrateDstDoSeamless *out;
 
@@ -533,12 +551,12 @@ static uint8_t * parse_msgc_main_migrate_dst_do_seamless(uint8_t *message_start,
     mem_size = sizeof(SpiceMsgcMainMigrateDstDoSeamless);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -599,8 +617,8 @@ static uint8_t * parse_msgc_display_init(uint8_t *message_start, uint8_t *messag
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcDisplayInit *out;
 
@@ -608,12 +626,12 @@ static uint8_t * parse_msgc_display_init(uint8_t *message_start, uint8_t *messag
     mem_size = sizeof(SpiceMsgcDisplayInit);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -644,8 +662,8 @@ static uint8_t * parse_msgc_display_stream_report(uint8_t *message_start, uint8_
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcDisplayStreamReport *out;
 
@@ -653,12 +671,12 @@ static uint8_t * parse_msgc_display_stream_report(uint8_t *message_start, uint8_
     mem_size = sizeof(SpiceMsgcDisplayStreamReport);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -693,8 +711,8 @@ static uint8_t * parse_msgc_display_preferred_compression(uint8_t *message_start
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcDisplayPreferredCompression *out;
 
@@ -702,12 +720,12 @@ static uint8_t * parse_msgc_display_preferred_compression(uint8_t *message_start
     mem_size = sizeof(SpiceMsgcDisplayPreferredCompression);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -735,20 +753,20 @@ static uint8_t * parse_msgc_display_gl_draw_done(uint8_t *message_start, uint8_t
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
 
     nw_size = 0;
     mem_size = sizeof(SpiceMsgcDisplayGlDrawDone);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -773,11 +791,11 @@ static uint8_t * parse_msgc_display_preferred_video_codec_type(uint8_t *message_
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
-    size_t codecs__nw_size, codecs__mem_size;
-    uint32_t codecs__nelements;
+    uint64_t codecs__nw_size, codecs__mem_size;
+    uint64_t codecs__nelements;
     SpiceMsgcDisplayPreferredVideoCodecType *out;
     uint32_t i;
 
@@ -798,12 +816,12 @@ static uint8_t * parse_msgc_display_preferred_video_codec_type(uint8_t *message_
     mem_size = sizeof(SpiceMsgcDisplayPreferredVideoCodecType) + codecs__mem_size;
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -862,8 +880,8 @@ static uint8_t * parse_msgc_inputs_key_down(uint8_t *message_start, uint8_t *mes
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcKeyDown *out;
 
@@ -871,12 +889,12 @@ static uint8_t * parse_msgc_inputs_key_down(uint8_t *message_start, uint8_t *mes
     mem_size = sizeof(SpiceMsgcKeyDown);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -904,8 +922,8 @@ static uint8_t * parse_msgc_inputs_key_up(uint8_t *message_start, uint8_t *messa
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcKeyUp *out;
 
@@ -913,12 +931,12 @@ static uint8_t * parse_msgc_inputs_key_up(uint8_t *message_start, uint8_t *messa
     mem_size = sizeof(SpiceMsgcKeyUp);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -946,8 +964,8 @@ static uint8_t * parse_msgc_inputs_key_modifiers(uint8_t *message_start, uint8_t
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcKeyModifiers *out;
 
@@ -955,12 +973,12 @@ static uint8_t * parse_msgc_inputs_key_modifiers(uint8_t *message_start, uint8_t
     mem_size = sizeof(SpiceMsgcKeyModifiers);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -988,8 +1006,8 @@ static uint8_t * parse_msgc_inputs_mouse_motion(uint8_t *message_start, uint8_t 
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcMouseMotion *out;
 
@@ -997,12 +1015,12 @@ static uint8_t * parse_msgc_inputs_mouse_motion(uint8_t *message_start, uint8_t 
     mem_size = sizeof(SpiceMsgcMouseMotion);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -1032,8 +1050,8 @@ static uint8_t * parse_msgc_inputs_mouse_position(uint8_t *message_start, uint8_
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcMousePosition *out;
 
@@ -1041,12 +1059,12 @@ static uint8_t * parse_msgc_inputs_mouse_position(uint8_t *message_start, uint8_
     mem_size = sizeof(SpiceMsgcMousePosition);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -1077,8 +1095,8 @@ static uint8_t * parse_msgc_inputs_mouse_press(uint8_t *message_start, uint8_t *
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcMousePress *out;
 
@@ -1086,12 +1104,12 @@ static uint8_t * parse_msgc_inputs_mouse_press(uint8_t *message_start, uint8_t *
     mem_size = sizeof(SpiceMsgcMousePress);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -1120,8 +1138,8 @@ static uint8_t * parse_msgc_inputs_mouse_release(uint8_t *message_start, uint8_t
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcMouseRelease *out;
 
@@ -1129,12 +1147,12 @@ static uint8_t * parse_msgc_inputs_mouse_release(uint8_t *message_start, uint8_t
     mem_size = sizeof(SpiceMsgcMouseRelease);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -1233,11 +1251,11 @@ static uint8_t * parse_msgc_record_data(uint8_t *message_start, uint8_t *message
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
-    size_t data__nw_size;
-    uint32_t data__nelements;
+    uint64_t data__nw_size;
+    uint64_t data__nelements;
     SpiceMsgcRecordPacket *out;
 
     { /* data */
@@ -1250,12 +1268,12 @@ static uint8_t * parse_msgc_record_data(uint8_t *message_start, uint8_t *message
     mem_size = sizeof(SpiceMsgcRecordPacket);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -1287,11 +1305,11 @@ static uint8_t * parse_msgc_record_mode(uint8_t *message_start, uint8_t *message
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
-    size_t data__nw_size;
-    uint32_t data__nelements;
+    uint64_t data__nw_size;
+    uint64_t data__nelements;
     SpiceMsgcRecordMode *out;
 
     { /* data */
@@ -1304,12 +1322,12 @@ static uint8_t * parse_msgc_record_mode(uint8_t *message_start, uint8_t *message
     mem_size = sizeof(SpiceMsgcRecordMode);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -1342,8 +1360,8 @@ static uint8_t * parse_msgc_record_start_mark(uint8_t *message_start, uint8_t *m
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcRecordStartMark *out;
 
@@ -1351,12 +1369,12 @@ static uint8_t * parse_msgc_record_start_mark(uint8_t *message_start, uint8_t *m
     mem_size = sizeof(SpiceMsgcRecordStartMark);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -1409,28 +1427,28 @@ static uint8_t * parse_msgc_tunnel_service_add(uint8_t *message_start, uint8_t *
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SPICE_GNUC_UNUSED intptr_t ptr_size;
     uint32_t n_ptr=0;
     PointerInfo ptr_info[2];
-    size_t name__extra_size;
-    size_t description__extra_size;
-    size_t u__nw_size;
+    uint64_t name__extra_size;
+    uint64_t description__extra_size;
+    uint64_t u__nw_size;
     uint16_t type__value;
     SpiceMsgcTunnelAddGenericService *out;
     uint32_t i;
 
     { /* name */
         uint32_t name__value;
-        uint32_t name__array__nw_size;
+        uint64_t name__array__nw_size;
         pos = (start + 14);
         if (SPICE_UNLIKELY(pos + 4 > message_end)) {
             goto error;
         }
         name__value = read_uint32(pos);
-        if (SPICE_UNLIKELY(message_start + name__value >= message_end)) {
+        if (SPICE_UNLIKELY(name__value >= (uintptr_t) (message_end - message_start))) {
             goto error;
         }
         name__array__nw_size = spice_strnlen((char *)message_start + name__value, message_end - (message_start + name__value));
@@ -1443,13 +1461,13 @@ static uint8_t * parse_msgc_tunnel_service_add(uint8_t *message_start, uint8_t *
 
     { /* description */
         uint32_t description__value;
-        uint32_t description__array__nw_size;
+        uint64_t description__array__nw_size;
         pos = (start + 18);
         if (SPICE_UNLIKELY(pos + 4 > message_end)) {
             goto error;
         }
         description__value = read_uint32(pos);
-        if (SPICE_UNLIKELY(message_start + description__value >= message_end)) {
+        if (SPICE_UNLIKELY(description__value >= (uintptr_t) (message_end - message_start))) {
             goto error;
         }
         description__array__nw_size = spice_strnlen((char *)message_start + description__value, message_end - (message_start + description__value));
@@ -1468,10 +1486,10 @@ static uint8_t * parse_msgc_tunnel_service_add(uint8_t *message_start, uint8_t *
         type__value = read_uint16(pos);
         if (type__value == SPICE_TUNNEL_SERVICE_TYPE_IPP) {
             SPICE_GNUC_UNUSED uint8_t *start2 = (start + 22);
-            size_t u_u__nw_size;
+            uint64_t u_u__nw_size;
             uint16_t type__value;
             { /* u */
-                uint32_t u_u__nelements;
+                uint64_t u_u__nelements;
                 pos = start2 + 0;
                 if (SPICE_UNLIKELY(pos + 2 > message_end)) {
                     goto error;
@@ -1498,12 +1516,12 @@ static uint8_t * parse_msgc_tunnel_service_add(uint8_t *message_start, uint8_t *
     mem_size = sizeof(SpiceMsgcTunnelAddGenericService) + name__extra_size + description__extra_size;
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -1523,7 +1541,7 @@ static uint8_t * parse_msgc_tunnel_service_add(uint8_t *message_start, uint8_t *
     if (out->type == SPICE_TUNNEL_SERVICE_TYPE_IPP) {
         out->u.ip.type = consume_uint16(&in);
         if (out->u.ip.type == SPICE_TUNNEL_IP_TYPE_IPv4) {
-            uint32_t ipv4__nelements;
+            uint64_t ipv4__nelements;
             ipv4__nelements = 4;
             memcpy(out->u.ip.u.ipv4, in, ipv4__nelements);
             in += ipv4__nelements;
@@ -1562,8 +1580,8 @@ static uint8_t * parse_msgc_tunnel_service_remove(uint8_t *message_start, uint8_
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcTunnelRemoveService *out;
 
@@ -1571,12 +1589,12 @@ static uint8_t * parse_msgc_tunnel_service_remove(uint8_t *message_start, uint8_
     mem_size = sizeof(SpiceMsgcTunnelRemoveService);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -1604,8 +1622,8 @@ static uint8_t * parse_msgc_tunnel_socket_open_ack(uint8_t *message_start, uint8
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcTunnelSocketOpenAck *out;
 
@@ -1613,12 +1631,12 @@ static uint8_t * parse_msgc_tunnel_socket_open_ack(uint8_t *message_start, uint8
     mem_size = sizeof(SpiceMsgcTunnelSocketOpenAck);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -1647,8 +1665,8 @@ static uint8_t * parse_msgc_tunnel_socket_open_nack(uint8_t *message_start, uint
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcTunnelSocketOpenNack *out;
 
@@ -1656,12 +1674,12 @@ static uint8_t * parse_msgc_tunnel_socket_open_nack(uint8_t *message_start, uint
     mem_size = sizeof(SpiceMsgcTunnelSocketOpenNack);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -1689,8 +1707,8 @@ static uint8_t * parse_msgc_tunnel_socket_fin(uint8_t *message_start, uint8_t *m
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcTunnelSocketFin *out;
 
@@ -1698,12 +1716,12 @@ static uint8_t * parse_msgc_tunnel_socket_fin(uint8_t *message_start, uint8_t *m
     mem_size = sizeof(SpiceMsgcTunnelSocketFin);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -1731,8 +1749,8 @@ static uint8_t * parse_msgc_tunnel_socket_closed(uint8_t *message_start, uint8_t
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcTunnelSocketClosed *out;
 
@@ -1740,12 +1758,12 @@ static uint8_t * parse_msgc_tunnel_socket_closed(uint8_t *message_start, uint8_t
     mem_size = sizeof(SpiceMsgcTunnelSocketClosed);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -1773,8 +1791,8 @@ static uint8_t * parse_msgc_tunnel_socket_closed_ack(uint8_t *message_start, uin
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcTunnelSocketClosedAck *out;
 
@@ -1782,12 +1800,12 @@ static uint8_t * parse_msgc_tunnel_socket_closed_ack(uint8_t *message_start, uin
     mem_size = sizeof(SpiceMsgcTunnelSocketClosedAck);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -1815,11 +1833,11 @@ static uint8_t * parse_msgc_tunnel_socket_data(uint8_t *message_start, uint8_t *
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
-    size_t data__nw_size, data__mem_size;
-    uint32_t data__nelements;
+    uint64_t data__nw_size, data__mem_size;
+    uint64_t data__nelements;
     SpiceMsgcTunnelSocketData *out;
 
     { /* data */
@@ -1833,12 +1851,12 @@ static uint8_t * parse_msgc_tunnel_socket_data(uint8_t *message_start, uint8_t *
     mem_size = sizeof(SpiceMsgcTunnelSocketData) + data__mem_size;
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -1869,8 +1887,8 @@ static uint8_t * parse_msgc_tunnel_socket_token(uint8_t *message_start, uint8_t 
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcTunnelSocketTokens *out;
 
@@ -1878,12 +1896,12 @@ static uint8_t * parse_msgc_tunnel_socket_token(uint8_t *message_start, uint8_t 
     mem_size = sizeof(SpiceMsgcTunnelSocketTokens);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -1939,42 +1957,37 @@ static uint8_t * parse_TunnelChannel_msgc(uint8_t *message_start, uint8_t *messa
 
 #ifdef USE_SMARTCARD
 
-static uint8_t * parse_msgc_smartcard_reader_add(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
+static uint8_t * parse_msgc_smartcard_header(uint8_t *message_start, uint8_t *message_end, SPICE_GNUC_UNUSED int minor, size_t *size, message_destructor_t *free_message)
 {
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
-    size_t reader_name__nw_size;
-    uint32_t reader_name__nelements;
-    VSCMsgReaderAdd *out;
+    VSCMsgHeader *out;
 
-    { /* reader_name */
-        reader_name__nelements = message_end - (start + 0);
-
-        reader_name__nw_size = reader_name__nelements;
-    }
-
-    nw_size = 0 + reader_name__nw_size;
+    nw_size = 12;
+    mem_size = sizeof(VSCMsgHeader);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
-    end = data + sizeof(VSCMsgReaderAdd);
+    end = data + sizeof(VSCMsgHeader);
     in = start;
 
-    out = (VSCMsgReaderAdd *)data;
+    out = (VSCMsgHeader *)data;
 
-    memcpy(out->reader_name, in, reader_name__nelements);
-    in += reader_name__nelements;
+    out->type = consume_uint32(&in);
+    out->reader_id = consume_uint32(&in);
+    out->length = consume_uint32(&in);
 
     assert(in <= message_end);
     assert(end <= data + mem_size);
@@ -1999,7 +2012,7 @@ static uint8_t * parse_SmartcardChannel_msgc(uint8_t *message_start, uint8_t *me
         parse_msgc_disconnecting
     };
     static parse_msg_func_t funcs2[1] =  {
-        parse_msgc_smartcard_reader_add
+        parse_msgc_smartcard_header
     };
     if (message_type >= 1 && message_type < 7) {
         return funcs1[message_type-1](message_start, message_end, minor, size_out, free_message);
@@ -2017,13 +2030,13 @@ static uint8_t * parse_SpiceMsgCompressedData(uint8_t *message_start, uint8_t *m
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
-    size_t u__nw_size;
+    uint64_t u__nw_size;
     uint8_t type__value;
-    size_t compressed_data__nw_size;
-    uint32_t compressed_data__nelements;
+    uint64_t compressed_data__nw_size;
+    uint64_t compressed_data__nelements;
     SpiceMsgCompressedData *out;
 
     { /* u */
@@ -2053,12 +2066,12 @@ static uint8_t * parse_SpiceMsgCompressedData(uint8_t *message_start, uint8_t *m
     mem_size = sizeof(SpiceMsgCompressedData);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }
@@ -2118,8 +2131,8 @@ static uint8_t * parse_msgc_port_event(uint8_t *message_start, uint8_t *message_
     SPICE_GNUC_UNUSED uint8_t *pos;
     uint8_t *start = message_start;
     uint8_t *data = NULL;
-    size_t nw_size;
-    size_t mem_size;
+    uint64_t nw_size;
+    uint64_t mem_size;
     uint8_t *in, *end;
     SpiceMsgcPortEvent *out;
 
@@ -2127,12 +2140,12 @@ static uint8_t * parse_msgc_port_event(uint8_t *message_start, uint8_t *message_
     mem_size = sizeof(SpiceMsgcPortEvent);
 
     /* Check if message fits in reported side */
-    if (start + nw_size > message_end) {
+    if (nw_size > (uintptr_t) (message_end - start)) {
         return NULL;
     }
 
     /* Validated extents and calculated size */
-    data = (uint8_t *)malloc(mem_size);
+    data = (uint8_t *)(mem_size > UINT32_MAX ? NULL : malloc(mem_size));
     if (SPICE_UNLIKELY(data == NULL)) {
         goto error;
     }

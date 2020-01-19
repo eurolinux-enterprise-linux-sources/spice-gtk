@@ -8,7 +8,7 @@
 <link rel="up" href="ch03.html" title="GTK Widget, from spice-client-gtk">
 <link rel="prev" href="ch03.html" title="GTK Widget, from spice-client-gtk">
 <link rel="next" href="SpiceDisplay.html" title="Spice Display">
-<meta name="generator" content="GTK-Doc V1.25 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.28 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -88,17 +88,17 @@ justifications.
 </colgroup>
 <tbody>
 <tr>
-<td class="property_type"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_type"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
 <td class="property_name"><a class="link" href="SpiceGtkSession.html#SpiceGtkSession--auto-clipboard" title="The “auto-clipboard” property">auto-clipboard</a></td>
 <td class="property_flags">Read / Write / Construct</td>
 </tr>
 <tr>
-<td class="property_type"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_type"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
 <td class="property_name"><a class="link" href="SpiceGtkSession.html#SpiceGtkSession--auto-usbredir" title="The “auto-usbredir” property">auto-usbredir</a></td>
 <td class="property_flags">Read / Write / Construct</td>
 </tr>
 <tr>
-<td class="property_type"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_type"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
 <td class="property_name"><a class="link" href="SpiceGtkSession.html#SpiceGtkSession--pointer-grabbed" title="The “pointer-grabbed” property">pointer-grabbed</a></td>
 <td class="property_flags">Read</td>
 </tr>
@@ -109,7 +109,7 @@ justifications.
 <td class="property_flags">Read / Write / Construct Only</td>
 </tr>
 <tr>
-<td class="property_type"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_type"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
 <td class="property_name"><a class="link" href="SpiceGtkSession.html#SpiceGtkSession--sync-modifiers" title="The “sync-modifiers” property">sync-modifiers</a></td>
 <td class="property_flags">Read / Write / Construct</td>
 </tr>
@@ -137,7 +137,7 @@ justifications.
 </div>
 <div class="refsect1">
 <a name="SpiceGtkSession.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    <a href="/usr/share/gtk-doc/html/gobjectgobject-The-Base-Object-Type.html#GObject-struct">GObject</a>
+<pre class="screen">    <a href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject-struct">GObject</a>
     <span class="lineart">╰──</span> SpiceGtkSession
 </pre>
 </div>
@@ -157,7 +157,7 @@ GTK. For example the clipboard functionality.</p>
 and <a class="link" href="SpiceSession.html" title="Spice Session"><span class="type">SpiceSession</span></a> objects. Therefor there is no spice_gtk_session_new,
 instead there is <a class="link" href="SpiceGtkSession.html#spice-gtk-session-get" title="spice_gtk_session_get ()"><code class="function">spice_gtk_session_get()</code></a> which ensures this 1:1 relation.</p>
 <p>Client and guest clipboards will be shared automatically if
-<a class="link" href="SpiceGtkSession.html#SpiceGtkSession--auto-clipboard" title="The “auto-clipboard” property"><span class="type">“auto-clipboard”</span></a> is set to <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a>. Alternatively, you
+<a class="link" href="SpiceGtkSession.html#SpiceGtkSession--auto-clipboard" title="The “auto-clipboard” property"><span class="type">“auto-clipboard”</span></a> is set to <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a>. Alternatively, you
 can send / receive clipboard data from client to guest with
 <a class="link" href="SpiceGtkSession.html#spice-gtk-session-copy-to-guest" title="spice_gtk_session_copy_to_guest ()"><code class="function">spice_gtk_session_copy_to_guest()</code></a> / <a class="link" href="SpiceGtkSession.html#spice-gtk-session-paste-from-guest" title="spice_gtk_session_paste_from_guest ()"><code class="function">spice_gtk_session_paste_from_guest()</code></a>.</p>
 </div>
@@ -189,7 +189,7 @@ after the <a class="link" href="SpiceSession.html" title="Spice Session"><span c
 </div>
 <div class="refsect3">
 <a name="spice-gtk-session-get.returns"></a><h4>Returns</h4>
-<p> a weak reference to the <a class="link" href="SpiceGtkSession.html" title="Spice GTK Session"><span class="type">SpiceGtkSession</span></a> associated with the passed in <a class="link" href="SpiceSession.html" title="Spice Session"><span class="type">SpiceSession</span></a></p>
+<p>a weak reference to the <a class="link" href="SpiceGtkSession.html" title="Spice GTK Session"><span class="type">SpiceGtkSession</span></a> associated with the passed in <a class="link" href="SpiceSession.html" title="Spice Session"><span class="type">SpiceSession</span></a></p>
 <p>Since 0.8. </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
 </div>
@@ -259,7 +259,7 @@ spice_gtk_session_paste_from_guest (<em class="parameter"><code><a class="link" 
 <a name="SpiceGtkSession.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
 <a name="SpiceGtkSession--auto-clipboard"></a><h3>The <code class="literal">“auto-clipboard”</code> property</h3>
-<pre class="programlisting">  “auto-clipboard”           <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<pre class="programlisting">  “auto-clipboard”           <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>When this is true the clipboard gets automatically shared between host
 and guest.</p>
 <p>Flags: Read / Write / Construct</p>
@@ -269,7 +269,7 @@ and guest.</p>
 <hr>
 <div class="refsect2">
 <a name="SpiceGtkSession--auto-usbredir"></a><h3>The <code class="literal">“auto-usbredir”</code> property</h3>
-<pre class="programlisting">  “auto-usbredir”            <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<pre class="programlisting">  “auto-usbredir”            <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Automatically redirect newly plugged in USB devices. Note the auto
 redirection only happens when a <a class="link" href="SpiceDisplay.html" title="Spice Display"><span class="type">SpiceDisplay</span></a> associated with the
 session had keyboard focus.</p>
@@ -280,8 +280,8 @@ session had keyboard focus.</p>
 <hr>
 <div class="refsect2">
 <a name="SpiceGtkSession--pointer-grabbed"></a><h3>The <code class="literal">“pointer-grabbed”</code> property</h3>
-<pre class="programlisting">  “pointer-grabbed”          <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
-<p>Returns <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the pointer is currently grabbed by this session.</p>
+<pre class="programlisting">  “pointer-grabbed”          <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Returns <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the pointer is currently grabbed by this session.</p>
 <p>Flags: Read</p>
 <p>Default value: FALSE</p>
 <p class="since">Since: 0.27</p>
@@ -297,7 +297,7 @@ session had keyboard focus.</p>
 <hr>
 <div class="refsect2">
 <a name="SpiceGtkSession--sync-modifiers"></a><h3>The <code class="literal">“sync-modifiers”</code> property</h3>
-<pre class="programlisting">  “sync-modifiers”           <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<pre class="programlisting">  “sync-modifiers”           <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Automatically sync modifiers (Caps, Num and Scroll locks) with the guest.</p>
 <p>Flags: Read / Write / Construct</p>
 <p>Default value: TRUE</p>
@@ -310,6 +310,6 @@ session had keyboard focus.</p>
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.25</div>
+<hr>Generated by GTK-Doc V1.28</div>
 </body>
 </html>

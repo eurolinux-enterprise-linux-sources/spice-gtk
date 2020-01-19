@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: spice master it\n"
 "Report-Msgid-Bugs-To: spice-devel@lists.freedesktop.org\n"
-"POT-Creation-Date: 2017-07-31 14:20+0200\n"
+"POT-Creation-Date: 2018-06-11 17:32+0200\n"
 "PO-Revision-Date: 2016-08-17 08:57+0100\n"
 "Last-Translator: Frediano Ziglio <fziglio@redhat.com>\n"
 "Language-Team: \n"
@@ -18,75 +18,75 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.8.8\n"
 
-#: src/channel-main.c:1868
+#: src/channel-main.c:1898
 msgid "The spice agent cancelled the file transfer"
 msgstr ""
 
-#: src/channel-main.c:1872
+#: src/channel-main.c:1902
 msgid "The spice agent reported an error during the file transfer"
 msgstr ""
 
-#: src/channel-main.c:1879
+#: src/channel-main.c:1909
 #, c-format
 msgid ""
 "File transfer failed due to lack of free space on remote machine (%s free, "
 "%s to transfer)"
 msgstr ""
 
-#: src/channel-main.c:1887
+#: src/channel-main.c:1917
 msgid ""
 "User's session is locked and cannot transfer files, unlock it and try again."
 msgstr ""
 
-#: src/channel-main.c:1892
+#: src/channel-main.c:1922
 msgid "Session agent not connected."
 msgstr ""
 
-#: src/channel-main.c:1896
+#: src/channel-main.c:1926
 #, fuzzy
 msgid "File transfer is disabled."
 msgstr "Redirezione USB disabilitata"
 
-#: src/channel-main.c:3122
+#: src/channel-main.c:3329
 #, fuzzy, c-format
 msgid "The file transfer is disabled"
 msgstr "Redirezione USB disabilitata"
 
-#: src/channel-usbredir.c:906
+#: src/channel-usbredir.c:907
 #, c-format
 msgid "usbredir protocol parse error for %s"
 msgstr "errore di formato nel protocollo usbredir per %s"
 
-#: src/channel-usbredir.c:911
+#: src/channel-usbredir.c:912
 #, c-format
 msgid "%s rejected by host"
 msgstr "%s rifiutato dall'host"
 
-#: src/channel-usbredir.c:916
+#: src/channel-usbredir.c:917
 #, c-format
 msgid "%s disconnected (fatal IO error)"
 msgstr "%s disconnesso (errore I/O fatale)"
 
-#: src/channel-usbredir.c:920
+#: src/channel-usbredir.c:921
 #, c-format
 msgid "Unknown error (%d) for %s"
 msgstr "Errore sconosciuto (%d) per %s"
 
-#: src/desktop-integration.c:104
+#: src/desktop-integration.c:98
 msgid "Automounting has been inhibited for USB auto-redirecting"
 msgstr ""
 "L'automontatura è stata disabilitata per consentire l'autoredirezione USB"
 
-#: src/spice-channel.c:1183
+#: src/spice-channel.c:1175
 #, fuzzy
 msgid "Authentication failed"
 msgstr "Autenticazione fallita: note utente necessario"
 
-#: src/spice-channel.c:1201
+#: src/spice-channel.c:1193
 msgid "Authentication failed: password is too long"
 msgstr "Autenticazione fallita: password troppo lunga"
 
-#: src/spice-channel.c:1206
+#: src/spice-channel.c:1198
 #, fuzzy
 msgid "Authentication failed: wrong password?"
 msgstr "Autenticazione fallita: password necessaria"
@@ -244,63 +244,63 @@ msgstr "Opzioni Spice:"
 msgid "Show Spice Options"
 msgstr "Mostra opzioni Spice"
 
-#: src/usb-device-manager.c:359 src/usb-device-manager.c:1747
+#: src/usb-device-manager.c:354 src/usb-device-manager.c:1740
 msgid "USB redirection support not compiled in"
 msgstr "Supporto redirezione USB non compilato"
 
-#: src/usb-device-manager.c:1434
+#: src/usb-device-manager.c:1427
 msgid "Device was not found"
 msgstr "Dispositivo non trovato"
 
-#: src/usb-device-manager.c:1450
+#: src/usb-device-manager.c:1443
 msgid "No free USB channel"
 msgstr "Nessun canale USB libero"
 
-#: src/usb-device-manager.c:1684
+#: src/usb-device-manager.c:1677
 msgid "USB redirection is disabled"
 msgstr "Redirezione USB disabilitata"
 
-#: src/usb-device-manager.c:1690
+#: src/usb-device-manager.c:1683
 msgid "The connected VM is not configured for USB redirection"
 msgstr ""
 "La macchina a cui siete connessi non è configurata per la redirezione USB"
 
-#: src/usb-device-manager.c:1712
+#: src/usb-device-manager.c:1705
 msgid "Some USB devices were not found"
 msgstr "Qualche dispositivo USB non è stato trovato"
 
-#: src/usb-device-manager.c:1722
+#: src/usb-device-manager.c:1715
 msgid "Some USB devices are blocked by host policy"
 msgstr "Qualche dispositivo USB è bloccato da una politica host"
 
-#: src/usb-device-manager.c:1740
+#: src/usb-device-manager.c:1733
 msgid "There are no free USB channels"
 msgstr "Non ci sono canali USB liberi"
 
-#: src/usb-device-manager.c:1796
+#: src/usb-device-manager.c:1789
 #, c-format
 msgid "%s %s %s at %d-%d"
 msgstr "%s %s %s a %d-%d"
 
-#: src/usb-device-widget.c:207
+#: src/usb-device-widget.c:190
 msgid "Select USB devices to redirect"
 msgstr "Selezionare dispositivo USB da redirigere"
 
-#: src/usb-device-widget.c:420
+#: src/usb-device-widget.c:399
 #, c-format
 msgid "Select USB devices to redirect (%d free channel)"
 msgstr "Selezionare dispositivo USB da redirigere (%d canale libero)"
 
-#: src/usb-device-widget.c:421
+#: src/usb-device-widget.c:400
 #, c-format
 msgid "Select USB devices to redirect (%d free channels)"
 msgstr "Selezionare dispositivo USB da redirigere (%d canali liberi)"
 
-#: src/usb-device-widget.c:439
+#: src/usb-device-widget.c:418
 msgid "Redirecting USB Device..."
 msgstr "Reindirizzando dispositivo USB..."
 
-#: src/usb-device-widget.c:447
+#: src/usb-device-widget.c:426
 msgid "No USB devices detected"
 msgstr "Dispositivo USB non rilevato"
 

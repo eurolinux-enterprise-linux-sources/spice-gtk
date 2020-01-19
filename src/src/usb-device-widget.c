@@ -64,13 +64,6 @@ static void device_error_cb(SpiceUsbDeviceManager *manager,
     SpiceUsbDevice *device, GError *err, gpointer user_data);
 static gboolean spice_usb_device_widget_update_status(gpointer user_data);
 
-/* ------------------------------------------------------------------ */
-/* gobject glue                                                       */
-
-#define SPICE_USB_DEVICE_WIDGET_GET_PRIVATE(obj) \
-    (G_TYPE_INSTANCE_GET_PRIVATE((obj), SPICE_TYPE_USB_DEVICE_WIDGET, \
-                                 SpiceUsbDeviceWidgetPrivate))
-
 enum {
     PROP_0,
     PROP_SESSION,
@@ -94,7 +87,7 @@ struct _SpiceUsbDeviceWidgetPrivate {
 
 static guint signals[LAST_SIGNAL] = { 0, };
 
-G_DEFINE_TYPE(SpiceUsbDeviceWidget, spice_usb_device_widget, GTK_TYPE_BOX);
+G_DEFINE_TYPE_WITH_PRIVATE(SpiceUsbDeviceWidget, spice_usb_device_widget, GTK_TYPE_BOX);
 
 static void spice_usb_device_widget_get_property(GObject     *gobject,
                                                  guint        prop_id,
@@ -180,25 +173,15 @@ spice_usb_device_widget_show_info_bar(SpiceUsbDeviceWidget *self,
     gtk_widget_show_all(priv->info_bar);
 }
 
-static GObject *spice_usb_device_widget_constructor(
-    GType gtype, guint n_properties, GObjectConstructParam *properties)
+static void spice_usb_device_widget_constructed(GObject *gobject)
 {
-    GObject *obj;
     SpiceUsbDeviceWidget *self;
     SpiceUsbDeviceWidgetPrivate *priv;
     GPtrArray *devices = NULL;
     GError *err = NULL;
     gchar *str;
-    int i;
 
-    {
-        /* Always chain up to the parent constructor */
-        GObjectClass *parent_class;
-        parent_class = G_OBJECT_CLASS(spice_usb_device_widget_parent_class);
-        obj = parent_class->constructor(gtype, n_properties, properties);
-    }
-
-    self = SPICE_USB_DEVICE_WIDGET(obj);
+    self = SPICE_USB_DEVICE_WIDGET(gobject);
     priv = self->priv;
     if (!priv->session)
         g_error("SpiceUsbDeviceWidget constructed without a session");
@@ -216,7 +199,7 @@ static GObject *spice_usb_device_widget_constructor(
                                               GTK_MESSAGE_WARNING,
                                               "dialog-warning");
         g_clear_error(&err);
-        return obj;
+        return;
     }
 
     g_signal_connect(priv->manager, "device-added",
@@ -227,18 +210,16 @@ static GObject *spice_usb_device_widget_constructor(
                      G_CALLBACK(device_error_cb), self);
 
     devices = spice_usb_device_manager_get_devices(priv->manager);
-    if (!devices)
-        goto end;
+    if (devices != NULL) {
+        int i;
+        for (i = 0; i < devices->len; i++) {
+            device_added_cb(NULL, g_ptr_array_index(devices, i), self);
+        }
 
-    for (i = 0; i < devices->len; i++)
-        device_added_cb(NULL, g_ptr_array_index(devices, i), self);
+        g_ptr_array_unref(devices);
+    }
 
-    g_ptr_array_unref(devices);
-
-end:
     spice_usb_device_widget_update_status(self);
-
-    return obj;
 }
 
 static void spice_usb_device_widget_finalize(GObject *object)
@@ -267,9 +248,7 @@ static void spice_usb_device_widget_class_init(
     GObjectClass *gobject_class = (GObjectClass *)klass;
     GParamSpec *pspec;
 
-    g_type_class_add_private (klass, sizeof (SpiceUsbDeviceWidgetPrivate));
-
-    gobject_class->constructor  = spice_usb_device_widget_constructor;
+    gobject_class->constructed  = spice_usb_device_widget_constructed;
     gobject_class->finalize     = spice_usb_device_widget_finalize;
     gobject_class->get_property = spice_usb_device_widget_get_property;
     gobject_class->set_property = spice_usb_device_widget_set_property;
@@ -328,7 +307,7 @@ static void spice_usb_device_widget_class_init(
 
 static void spice_usb_device_widget_init(SpiceUsbDeviceWidget *self)
 {
-    self->priv = SPICE_USB_DEVICE_WIDGET_GET_PRIVATE(self);
+    self->priv = spice_usb_device_widget_get_instance_private(self);
 }
 
 /* ------------------------------------------------------------------ */

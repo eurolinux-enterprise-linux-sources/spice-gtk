@@ -71,7 +71,7 @@ static unsigned int FNAME(golomb_decoding)(const unsigned int l, const unsigned 
 static void FNAME(update_model)(CommonState *state, s_bucket * const bucket,
                                 const BYTE curval)
 {
-    spice_static_assert(BPC >= 1);
+    SPICE_VERIFY(BPC >= 1);
     spice_return_if_fail (bucket != NULL);
 
     const unsigned int bpp = BPC;
@@ -105,7 +105,9 @@ static void FNAME(update_model)(CommonState *state, s_bucket * const bucket,
 
 static s_bucket *FNAME(find_bucket)(Channel *channel, const unsigned int val)
 {
-    spice_assert(val < (0x1U << BPC));
+    if (spice_extra_checks) {
+        spice_assert(val < (0x1U << BPC));
+    }
 
     return channel->_buckets_ptrs[val];
 }

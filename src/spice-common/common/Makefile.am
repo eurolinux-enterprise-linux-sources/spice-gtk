@@ -21,11 +21,8 @@ noinst_LTLIBRARIES = libspice-common.la libspice-common-server.la libspice-commo
 libspice_common_la_SOURCES =		\
 	backtrace.c			\
 	backtrace.h			\
-	bitops.h			\
 	canvas_utils.c			\
 	canvas_utils.h			\
-	client_demarshallers.h		\
-	client_marshallers.h		\
 	draw.h				\
 	lines.c				\
 	lines.h				\
@@ -55,8 +52,6 @@ libspice_common_la_SOURCES =		\
 	snd_codec.c			\
 	snd_codec.h			\
 	spice_common.h			\
-	ssl_verify.c			\
-	ssl_verify.h			\
 	verify.h			\
 	$(NULL)
 
@@ -71,14 +66,16 @@ EXTRA_libspice_common_la_SOURCES = 	\
 	$(NULL)
 
 libspice_common_client_la_SOURCES =		\
+	client_demarshallers.h			\
+	client_marshallers.h			\
+	ssl_verify.c				\
+	ssl_verify.h				\
 	$(CLIENT_MARSHALLERS)			\
 	$(NULL)
 
 libspice_common_server_la_SOURCES =		\
 	$(SERVER_MARSHALLERS)			\
 	$(NULL)
-
-libspice_common_server_la_CFLAGS = -DFIXME_SERVER_SMARTCARD
 
 AM_CPPFLAGS =				\
 	-I$(top_srcdir)			\
@@ -131,10 +128,9 @@ generated_server_marshallers.h: $(top_srcdir)/spice.proto $(MARSHALLERS_DEPS)
 EXTRA_DIST =				\
 	$(CLIENT_MARSHALLERS)		\
 	$(SERVER_MARSHALLERS)		\
+	meson.build			\
 	canvas_base.c			\
 	canvas_base.h			\
-	gdi_canvas.c			\
-	gdi_canvas.h			\
 	lz_compress_tmpl.c		\
 	lz_decompress_tmpl.c		\
 	quic_family_tmpl.c		\

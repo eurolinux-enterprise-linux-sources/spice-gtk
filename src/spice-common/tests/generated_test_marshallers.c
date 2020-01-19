@@ -49,10 +49,16 @@ void spice_marshall_msg_main_ShortDataSubMarshall(SPICE_GNUC_UNUSED SpiceMarshal
     SpiceMsgMainShortDataSubMarshall *src;
     src = (SpiceMsgMainShortDataSubMarshall *)msg;
 
+    spice_marshaller_add_uint8(m, src->dummy_byte);
     spice_marshaller_add_uint32(m, src->data_size);
     m2 = spice_marshaller_get_ptr_submarshaller(m, 0);
     if (src->data != NULL) {
         spice_marshall_array_uint64(m2, src->data, src->data_size);
     }
+}
+
+void spice_marshall_msg_main_ArrayMessage(SPICE_GNUC_UNUSED SpiceMarshaller *m, SPICE_GNUC_UNUSED SpiceMsgMainArrayMessage *msg)
+{
+    SPICE_GNUC_UNUSED SpiceMarshaller *m2;
 }
 

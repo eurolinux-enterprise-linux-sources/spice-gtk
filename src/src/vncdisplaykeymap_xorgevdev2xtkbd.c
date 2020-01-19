@@ -1,5 +1,5 @@
 /*
- * This file is auto-generated from keymaps.csv on 2017-07-31 14:22
+ * This file is auto-generated from keymaps.csv on 2018-06-11 17:32
  * Database checksum sha256(f45720dc09778503dea402d7b4c742d746b01d4c74155c4633a69f40d938a363)
  * To re-generate, run:
  *   keymap-gen --lang=glib2 --varname=keymap_xorgevdev2xtkbd code-map keymaps.csv xorgevdev xtkbd

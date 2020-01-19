@@ -27,11 +27,6 @@
 #include "spice-session.h"
 #include "spice-util.h"
 
-#define SPICE_GSTAUDIO_GET_PRIVATE(obj)                                  \
-    (G_TYPE_INSTANCE_GET_PRIVATE((obj), SPICE_TYPE_GSTAUDIO, SpiceGstaudioPrivate))
-
-G_DEFINE_TYPE(SpiceGstaudio, spice_gstaudio, SPICE_TYPE_AUDIO)
-
 struct stream {
     GstElement              *pipe;
     GstElement              *src;
@@ -48,6 +43,8 @@ struct _SpiceGstaudioPrivate {
     struct stream           record;
     guint                   mmtime_id;
 };
+
+G_DEFINE_TYPE_WITH_PRIVATE(SpiceGstaudio, spice_gstaudio, SPICE_TYPE_AUDIO)
 
 static gboolean connect_channel(SpiceAudio *audio, SpiceChannel *channel);
 static void channel_weak_notified(gpointer data, GObject *where_the_object_was);
@@ -102,7 +99,7 @@ static void spice_gstaudio_dispose(GObject *obj)
 
 static void spice_gstaudio_init(SpiceGstaudio *gstaudio)
 {
-    gstaudio->priv = SPICE_GSTAUDIO_GET_PRIVATE(gstaudio);
+    gstaudio->priv = spice_gstaudio_get_instance_private(gstaudio);
 }
 
 static void spice_gstaudio_class_init(SpiceGstaudioClass *klass)
@@ -118,8 +115,6 @@ static void spice_gstaudio_class_init(SpiceGstaudioClass *klass)
 
     gobject_class->finalize = spice_gstaudio_finalize;
     gobject_class->dispose = spice_gstaudio_dispose;
-
-    g_type_class_add_private(klass, sizeof(SpiceGstaudioPrivate));
 }
 
 static GstFlowReturn record_new_buffer(GstAppSink *appsink, gpointer data)
@@ -175,7 +170,7 @@ static gboolean record_bus_cb(GstBus *bus, GstMessage *msg, gpointer data)
             return TRUE;
         }
 
-        spice_record_send_data(SPICE_RECORD_CHANNEL(p->rchannel),
+        spice_record_channel_send_data(SPICE_RECORD_CHANNEL(p->rchannel),
                                /* FIXME: server side doesn't care about ts?
                                   what is the unit? ms apparently */
                                mapping.data, mapping.size, 0);
@@ -305,7 +300,7 @@ static void playback_start(SpicePlaybackChannel *channel, gint format, gint chan
                             "layout=interleaved", channels, frequency);
         gchar *pipeline = g_strdup (g_getenv("SPICE_GST_AUDIOSINK"));
         if (pipeline == NULL)
-            pipeline = g_strdup_printf("appsrc is-live=1 do-timestamp=0 caps=\"%s\" name=\"appsrc\" ! queue ! "
+            pipeline = g_strdup_printf("appsrc is-live=1 do-timestamp=0 format=time caps=\"%s\" name=\"appsrc\" ! queue ! "
                                        "audioconvert ! audioresample ! autoaudiosink name=\"audiosink\"", audio_caps);
         SPICE_DEBUG("audio pipeline: %s", pipeline);
         p->playback.pipe = gst_parse_launch(pipeline, &error);

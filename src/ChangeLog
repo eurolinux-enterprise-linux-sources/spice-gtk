@@ -1,3 +1,1058 @@
+2018-06-11  Victor Toso  <me@victortoso.com>
+
+	Update NEWS for v0.35 release
+	Acked-by: Christophe Fergeau <cfergeau@redhat.com>
+
+2018-06-11  Christophe Fergeau  <cfergeau@redhat.com>
+
+	build-sys: disable celt051 by default
+	With spice-common commit 72b0d603e12, SPICE_CHECK_CELT051 will error
+	out if celt051-devel is installed, but neither --enable-celt051 nor
+	--disable-celt051 are specified. This could be a problem when running
+	make distcheck, so this commit adds --disable-celt051 so that we never
+	hit that error.
+
+2018-06-11  Victor Toso  <me@victortoso.com>
+
+	Update spice-common
+	Christophe Fergeau (21):
+	      quic: Remove configurable RLE_PRED
+	      quic: Remove configurable PRED
+	      quic: Get rid of QUIC_RGB #define
+	      quic: Get rid of RLE_STAT #define
+	      quic: Get rid of RLE #define
+	      quic: Factor common code
+	      quic: Introduce CommonState *state variable in templates
+	      quic: s/decorrelate_drow/correlate_row
+	      quic: Add macros to make quic_tmpl.c much closer to quic_rgb_tmpl.c
+	      quic: Remove unused argument in uncompress_row{0, }
+	      quic: Use channel->correlate_row in macros
+	      quic: Add test case for compression/decompression
+	      build: Ensure we link with -lm if needed
+	      build: Disable celt 0.5.1 by default
+	      build: By default, error out if Opus is missing
+	      build: Use AM_COND_IF
+	      build: Remove checks for functions which are never called
+	      build: Remove bitops.h
+	      build: Move client sources to libspice_common_client_la_SOURCES
+	      meson: Support auto/true/false for optional dependencies
+	      meson: Remove check for vfork
+
+	Frediano Ziglio (21):
+	      protocol: Add some documentation for inval_all_pixmaps message
+	      Add --enable-extra-checks option
+	      codegen: Add some comments
+	      codegen: Removed unused get_type methods
+	      protocol: Use a typedef to specify stream_id type
+	      lz: Move ENCODE_PIXEL for RGB24 and RGB32 to a common place
+	      Fix integer overflows computing sizes
+	      Write a small test to test possible crash
+	      Avoid integer overflow computing image sizes
+	      Fix generation of Smartcard channel
+	      test-overflow: Remove a leak in the test
+	      marshaller: Remove initial underscore from static function
+	      codegen: Remove duplicate client and server code from ChannelType::resolve
+	      Check for messages with duplicate names inside a channel
+	      Check for messages with duplicate values inside a channel
+	      lz: Optimise SAME_PIXEL for RGB16
+	      lz: Inline GET_{r,g,b} macros
+	      quic: Remove 'no-inline' hack
+	      quic: Remove some too strict asserts in hot paths
+	      quic: Fix endianness encoding
+	      quic: Use __builtin_clz if available
+
+	Eduardo Lima (Etrunko) (8):
+	      build: Remove FIXME_SERVER_SMARTCARD hack
+	      Fix demarshaller code generator
+	      Fix field names for Smartcard protocol structures
+	      Fix cast to spice_marshaller_item_free_func function
+	      Bump glib requirements to 2.38
+	      test-quic: Fix -Wsign-compare warning
+	      Add support for building with meson/ninja
+	      Add .gitlab-ci.yml file
+
+	Jonathon Jongsma (2):
+	      Remove extra self parameter from member function
+	      miLineArc(): initialize edge1, edge2
+
+	Victor Toso (1):
+	      messages: document limitation of id in StreamCreate
+
+	Acked-by: Christophe Fergeau <cfergeau@redhat.com>
+
+	channel-usbredir: Fix crash on channel-up
+	By adding a guard to not handle channel-up on SpiceUsbredirChannel in
+	case struct usbredirhost wasn't initialized yet. Same guard is in
+	place for the generic usbredir_handle_msg() function to avoid handling
+	Server's message while Client's initialization is not done.
+
+	As mentioned in commit 291f3e4419e6, this isn't a problem for
+	graphical clients as some initialization is done to present the
+	shareable usb devices to user.
+
+	Resolves: https://bugzilla.redhat.com/show_bug.cgi?id=1399838
+	Acked-by: Christophe Fergeau <cfergeau@redhat.com>
+
+	Revert "channel-usbredir: Fix crash on channel-up"
+	This reverts commit 291f3e4419e6fb4077ae43a5e09eb1c37b9dd729.
+
+	Follow up patch should address rhbz#1399838 mentioned in commit above
+	in a different way.
+
+	Major reason to revert is that the SpiceUsbDeviceManager object is
+	kept in SpiceSession as an easy way to share it between different
+	SpiceUsbredirChannel while SpiceSession itself does not use it. This
+	causes problems on migration as we start a new session with a new
+	SpiceUsbDeviceManager object while the previous one still exists.
+
+	Resolves: https://bugzilla.redhat.com/show_bug.cgi?id=1558043
+	Acked-by: Christophe Fergeau <cfergeau@redhat.com>
+
+2018-06-08  Marc-André Lureau  <marcandre.lureau@redhat.com>
+
+	.mailmap: add another Victor Toso alias
+
+	Replace GET_PRIVATE macros with generated get_private
+	Acked-by: Victor Toso <victortoso@redhat.com>
+
+	Use new GObject define macros with private
+	G_ADD_PRIVATE was added in 2.38 and older functions are getting deprecated:
+	https://gitlab.gnome.org/GNOME/glib/merge_requests/7/commits
+
+	Acked-by: Victor Toso <victortoso@redhat.com>
+
+	widget: handle smooth-scroll events
+	With touchpads and similar devices, scroll events are not emitted on
+	Wayland, but only smooth-scroll events.
+
+	There is some discussion about handling smooth-scroll events in Spice
+	(see "Add horizontal mouse wheel support" thread), but it will mean
+	support from various components. For compatibility reasons, in the
+	meantime, let's synthetize the smooth-scroll events to regular scroll
+	buttons to fix scrolling.
+
+	Tested on f28, gnome-shell under X and wayland.
+
+	Related to:
+	https://bugzilla.redhat.com/show_bug.cgi?id=1386602
+
+	Acked-by: Christophe Fergeau <cfergeau@redhat.com>
+
+2018-06-08  Victor Toso  <me@victortoso.com>
+
+	build-sys: require spice-protocol 0.12.4
+	This is mostly needed form client side optimizations on streaming
+	mode. The following change introduced dependency of latest
+	spice-protocol:
+
+	 | commit 424397546463698c2912b15449ef5e94f2c39c12
+	 | Author: Snir Sheriber <ssheribe@redhat.com>
+	 | Date:   Thu Mar 8 15:57:31 2018 +0200
+	 |
+	 | Gstreamer: Use GstVideoOverlay if possible
+
+	The spice-protocol commit for reference:
+
+	 | commit 4250216bafd37905afe0e9ad8cb9beb4a0c89254
+	 | Author: Frediano Ziglio <fziglio@redhat.com>
+	 | Date:   Tue Nov 7 10:45:20 2017 +0000
+	 |
+	 | Allow to specify a surface will be streamed
+	 |
+	 | This flag will allow the client to perform some optimisations
+	 | on output and buffering processing.
+	 | Old clients will ignore this additional flag.
+
+	Note that without bumping the requirement, the code would fail to
+	build with:
+
+	 | channel-display.c:1809:50: error: ‘SPICE_SURFACE_FLAGS_STREAMING_MODE’
+	 | undeclared (first use in this function); did you mean ‘SPICE_DISPLAY_STREAMING_MODE’?
+	 |      surface->streaming_mode = !!(create->flags & SPICE_SURFACE_FLAGS_STREAMING_MODE);
+	 |                                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-06-07  Jonathon Jongsma  <jjongsma@redhat.com>
+
+	Add SpiceSession::disconnected signal
+	Previously, an application was required to determine whether a session
+	had been disconnected by listening for the SpiceSession::channel-destroy
+	signal for each individual channel. The Application had to keep track of
+	whether all channels had been destroyed.
+
+	An additional difficulty is that when a SpiceSession::channel-destroy
+	signal is emitted, the channel object has not been freed yet, so any
+	shutdown/de-allocation actions have not yet happened. This became
+	significant since virt-viewer exits the application in response to the
+	last 'channel-destroy' signal, which means that the channel objects are
+	never properly freed. This is particularly problematic for the usbredir
+	channel, which might need to disconnect USB devices asynchronously, and
+	if the application exits before that process has completed, the USB
+	devices may not be available on the client machine.
+
+	With this patch, the SpiceSession still emits the 'channel-destroy'
+	signal for each channel when it is disconnected. But it also internally
+	tracks which channels have been destroyed, and waits for them to be
+	freed. When all channels are freed, it emits an additional
+	'disconnected' signal.  An application can be confident that all
+	channels have been freed by this point, and the application can exit
+	safely.
+
+	Acked-by: Marc-André Lureau <marcandre.lureau@gmail.com>
+
+	Don't unref GAsyncResult in callback
+	A GAsyncReadCallback function should not unref the GAsyncResult passed
+	to it as an argument since it does not hold a reference. This could
+	cause a double-free error (or a glib warning that it is not a valid
+	GObject)..
+
+	Acked-by: Marc-André Lureau <marcandre.lureau@gmail.com>
+
+2018-06-07  Marc-André Lureau  <marcandre.lureau@redhat.com>
+
+	gstaudio: specify the segment format to be time-based
+	With gstreamer audio backend, the following criticals are printed:
+	(virt-viewer:27631): GStreamer-CRITICAL **: gst_segment_to_running_time: assertion 'segment->format == format' failed
+
+	Because the default appsrc segment format is byte-based, although an
+	audio sink want a time-based segment.
+
+	Fixes:
+	https://gitlab.freedesktop.org/spice/spice-gtk/issues/39
+
+	Acked-by: Victor Toso <victortoso@redhat.com>
+
+2018-06-04  Frediano Ziglio  <fziglio@redhat.com>
+
+	spice-channel: Fix endianness for SASL authentication
+	Acked-by: Christophe Fergeau <cfergeau@redhat.com>
+
+	spice-channel: Allows to connect from a big endian machine
+	Tested with a ppc64 machine.
+
+	Acked-by: Christophe Fergeau <cfergeau@redhat.com>
+
+	tests: Remove unused structure declaration
+	Acked-by: Christophe Fergeau <cfergeau@redhat.com>
+
+2018-06-01  Marc-André Lureau  <marcandre.lureau@redhat.com>
+
+	gtk-doc: fix a few warnings
+	Fixes:
+	../../src/channel-display.h:131: warning: Field description for SpiceDisplayChannelClass::streaming_mode is not used from source code comment block.
+	./spice-gtk-unused.txt:1: warning: 1 unused declarations. They should be added to spice-gtk-sections.txt in the appropriate place.
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-05-29  Snir Sheriber  <ssheribe@redhat.com>
+
+	Gstreamer: Don't let overlay to handle windowing system events
+	In case glimagesink is used (up to playbin) window system events
+	do not propagate to the widget. This patch tells the overlay not
+	to try handle window system events.
+	This could happen when the only decoder available is nvdec.
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-05-28  Uri Lublin  <uril@redhat.com>
+
+	gst_decoder_queue_frame: always free frame if it is not inserted into a queue
+	The decoder_queue_frame function now owns 'frame'.
+	If frame is not inserted into a queue (and freed later)
+	it must be freed before returning.
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+	mjpeg_decoder_queue_frame: free frame when dropping the frame
+	The frame is dropped and is not inserted into a queue to be
+	freed later.
+	mjpeg_decoder_queue_frame owns the frame and must free it.
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-05-24  Frediano Ziglio  <fziglio@redhat.com>
+
+	channel-display: Avoid ABI incompatibility for streaming-mode signal
+	Changing SpiceDisplayChannelClass structure causes ABI incompatibility.
+	Having a field for streaming-mode signal is not planned to be used
+	so remove it.
+
+	Acked-by: Snir Sheriber <ssheribe@redhat.com>
+
+2018-05-22  Victor Toso  <me@victortoso.com>
+
+	widget: update comment on fixed gtk+ bug
+	The bug was fixed in GTK+ 3.22. I'm updating the comment plus setting
+	the !GTK_CHECK_VERSION() to track changes that can be removed after
+	bumping the gtk+ library.
+
+	Acked-by: Christophe Fergeau <cfergeau@redhat.com>
+
+2018-05-09  Frediano Ziglio  <fziglio@redhat.com>
+
+	ci: Install pyparsing correctly
+	Now that spice-gtk is in Gitlab CI is run but using Fedora 28 is
+	failing during configure phase with:
+
+	  checking for PROTOCOL... yes
+	  checking python3 module: six... yes
+	  checking python3 module: pyparsing... no
+	  checking python2 module: six... no
+	  checking python2 module: pyparsing... yes
+	  configure: error: Python modules six and pyparsing are required
+	  configure: error: ./configure failed for spice-common
+	  ERROR: Job failed: exit code 1
+
+	Install Python 3 packages needed.
+
+	Acked-by: Victor Toso <victortoso@redhat.com>
+
+2018-05-09  Snir Sheriber  <ssheribe@redhat.com>
+
+	Gstreamer: Use GstVideoOverlay if possible
+	Currently when gstreamer is used to decode a full-screen
+	stream sent from the server, the decoding frames are being
+	forced to RBGA format and pushed using appsink to be scaled
+	and rendered to screen.
+
+	Today most of the gstreamer sinks supports the GstVideoOverlay
+	interface which allows to render directly from the pipeline to
+	a window by a given windowing system id (i.e. xid). This patch
+	makes playbin to use this feature if possible.
+
+	Setting the DISABLE_GSTVIDEOOVERLAY environment variable will
+	make gstreamer to avoid of using the gstvideooverlay interface.
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-05-04  Eduardo Lima (Etrunko)  <etrunko@redhat.com>
+
+	Remove unused spice-channel-enums.h file
+	This file has been deprecated a long ago, since the following commit:
+
+	commit d27f761325b356c91bda1ca60186d4613d6933d2
+	Author: Marc-André Lureau <marcandre.lureau@redhat.com>
+	Date:   Tue Jan 25 14:22:51 2011 +0100
+
+	    gtk: rename s/spice-channel-enums/spice-glib-enums
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-05-04  Christophe Fergeau  <cfergeau@redhat.com>
+
+	win32: Convert locale dir from UTF-8 to local encoding
+	As indicated in gtk+ win32 gtk_get_localedir [1], bindtextdomain() is not
+	UTF-8 aware on win32, so it needs a filename in locale encoding
+
+	[1] https://gitlab.gnome.org/GNOME/gtk/blob/master/gtk/gtkwin32.c#L187
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+	usb: Remove unused spice_marshaller_add_by_ref_full() user data
+	g_free() only expects a single argument, so it won't make use of the
+	extra 'channel' arg which will be passed as user data.
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+	build-sys: Disable -Wcast-function-type
+	With gcc 8.0.1 from Fedora 28, I'm getting warnings related to
+	-Wcast-function-type in a few places. Most of these could be solved
+	by adding an intermediate wrapper with the right number of args, but the
+	g_source_set_callback() warning cannot be solved this way as the
+	callback signature will vary depending on the source it's called on.
+
+	../../src/spice-session.c: In function 'spice_session_init':
+	../../src/spice-session.c:293:33: warning: cast between incompatible function types from 'pixman_bool_t (*)(pixman_image_t *)' {aka 'int (*)(union pixman_image *)'} to 'void (*)(void *)' [-Wcast-function-type]
+	     s->images = cache_image_new((GDestroyNotify)pixman_image_unref);
+	                                 ^
+	../../src/gio-coroutine.c: In function 'g_coroutine_socket_wait':
+	../../src/gio-coroutine.c:59:32: warning: cast between incompatible function types from 'gboolean (*)(GSocket *, GIOCondition,  void *)' {aka 'int (*)(struct _GSocket *, enum <anonymous>,  void *)'} to 'gboolean (*)(void *)' {aka 'int (*)(void *)'} [-Wcast-function-type]
+	     g_source_set_callback(src, (GSourceFunc)g_io_wait_helper, self, NULL);
+	                                ^
+	(and a few more like these)
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-04-25  Eduardo Lima (Etrunko)  <etrunko@redhat.com>
+
+	tests: Shut up warnings about unitialized struct fields
+	Build complains about lots of unitialized fields in TestCase definition,
+	for instance:
+
+	../tests/session.c:276:11: warning: missing initializer for field ‘message’ of ‘TestCase {aka const struct <anonymous>}’ [-Wmissing-field-initializers]
+	           "spice://[::192.9.5.5]:5910" },
+	           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	../tests/session.c:11:18: note: ‘message’ declared here
+	     const gchar *message;
+	                  ^~~~~~~
+	../tests/session.c:282:11: warning: missing initializer for field ‘unix_path’ of ‘TestCase {aka const struct <anonymous>}’ [-Wmissing-field-initializers]
+	           "password may be visible in process listings"},
+	           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-04-23  Victor Toso  <me@victortoso.com>
+
+	spice-widget: remove old warning
+	This log was introduced in 13f5ebbf07a3 to track the situation where
+	the GdkCursor pointer would be invalid/NULL. That was possible if the
+	caller passed a NULL for rgba pointer in cursor_set().
+
+	Code has changed a bit since then, it isn't necessary to log a warn in
+	the unlikely event of cursor_shape being NULL.
+
+	Reported-by: Frediano Ziglio <fziglio@redhat.com>
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-04-20  Victor Toso  <me@victortoso.com>
+
+	usb-device-widget: remove goto/label
+	The 'end' label is used only once and can be replaced by moving the
+	code into the existing 'if (!devices)'.
+
+	For convenience this patch also:
+	* Explicit check against NULL
+	* Added curly brackets to the moved 'for'
+	* Moved variable 'i' to inner scope
+
+	Reviewed-by: Eduardo Lima (Etrunko) <etrunko@redhat.com>
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-04-19  Frediano Ziglio  <fziglio@redhat.com>
+
+	spice-widget: Fix use after free
+	Before d567bfe65f010556f12c7ca5e95d0e480b2e4a70
+	("spice-widget: fix leak of boxed type cursor-shape") the cursor was
+	just leaked. Now is freed however mouse_pixbuf points to cursor
+	data so when the cursor is freed mouse_pixbuf points to a dangling
+	pointer. Retain the cursor as long as mouse_pixbuf is live.
+
+	Acked-by: Victor Toso <victortoso@redhat.com>
+
+2018-04-19  Victor Toso  <me@victortoso.com>
+
+	channel-display: always name GHashFunc and GEqualFunc
+	g_hash_table_new() allows to pass NULL for GHashFunc and GEqualFunc
+	which defaults to g_direct_hash() and g_direct_equal().
+
+	This is the only place in our code that uses NULL while in
+	channel-main and channel-smartcard and spice-file-transfer-task we
+	name it.
+
+	Changing for consistency and clarity.
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-04-17  Victor Toso  <me@victortoso.com>
+
+	channel-display-mjpeg: remove verbose logs
+	Those don't add any useful information.
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-04-17  Eduardo Lima (Etrunko)  <etrunko@redhat.com>
+
+	build: Remove check for pnp.ids path
+	This looks like a leftover from the following commit, which removed the
+	only reference for this file.
+
+	commit 30986505ba6041c293c38cb4b7f4b618a59f4716
+	Author: Marc-André Lureau <marcandre.lureau@redhat.com>
+	Date:   Fri May 10 17:05:49 2013 +0200
+
+	    Remove GnomeRR code
+
+	    Changing client resolution is a bad idea, and never took up.
+	    Remove some unmaintained experimental code.
+
+	Acked-by: Victor Toso <victortoso@redhat.com>
+
+2018-04-16  Frediano Ziglio  <fziglio@redhat.com>
+
+	channel-display-gst: Protect timer_id with queue_mutex
+	timer_id is supposed to be protected by this mutex, make sure this
+	is true in spice_gst_decoder_reschedule.
+
+	Acked-by: Snir Sheriber <ssheribe@redhat.com>
+
+	spice-channel: Make some conditional code more readable
+	Avoid confusing indentation.
+
+	Acked-by: Snir Sheriber <ssheribe@redhat.com>
+
+	channel-display-gst: Reduce contention on queues_mutex
+	We don't need to lock the entire queues to create a frame.
+
+	Acked-by: Snir Sheriber <ssheribe@redhat.com>
+
+	channel-display: Update debug message
+	The flags field in SpiceMsgSurfaceCreate does not only contains
+	the primary flag.
+
+	Acked-by: Christophe Fergeau <cfergeau@redhat.com>
+
+	gio-coroutine: Remove only assigned self field
+	Acked-by: Christophe Fergeau <cfergeau@redhat.com>
+
+	gio-coroutine: Make waitFuncs static
+	Acked-by: Christophe Fergeau <cfergeau@redhat.com>
+
+	gio-coroutine: Fix C inheritance
+	GConditionWaitSource should inherit from GSource so GSource
+	should be the first field.
+
+	GSource is
+	struct _GSource
+	{
+	  /*< private >*/
+	  gpointer callback_data;
+	  ...
+	};
+
+	With GSource being opaque, the only thing which could cause issues
+	was modifying GConditionWaitSource::self.
+	However, GConditionWaitSource::self is precisely what we use as
+	callback_data, and anyway the GSource probably sets callback_data after
+	spice-gtk set GConditiionWaitSource::self. So this ends up all working
+	even though this is wrong.
+
+	Acked-by: Christophe Fergeau <cfergeau@redhat.com>
+
+2018-04-05  Frediano Ziglio  <fziglio@redhat.com>
+
+	spice-channel: Disable TLS v1.0
+	TLS v1.0 is now considered insecure.
+	The protocol is already disabled on the server side (cfr commit commit
+	fac12737d "reds: Disable TLS 1.0").
+	To avoid downgrade attacks disable it even on the client.
+
+	Related: https://bugzilla.redhat.com/show_bug.cgi?id=1521053
+
+	Acked-by: Victor Toso <victortoso@redhat.com>
+
+2018-04-05  Victor Toso  <me@victortoso.com>
+
+	channel-display: remove unneeded function
+	The get_stream_id_by_stream() was introduced in 141c2d82 to debug
+	GStreamer's pipeline. But with previous patch, we are moving the ID to
+	the display_stream structure and can be accessible directly.
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+	channel-display: rename display_stream_destroy()
+	This patch renames destroy_display_stream() to
+	display_stream_destroy() to keep compatibility with
+	display_stream_create()
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+	channel-display: remove id parameter from helper function
+	Instead of passing the id parameter for destroy_display_stream() which
+	is only used for debug, let's store the id when creating the stream at
+	display_stream_create().
+
+	With the removal of Id parameter, we are using a gpointer for
+	display_stream struct to comply with GDestroyNotify type and use this,
+	for instance in g_clear_pointer() without warnings.
+
+	Benefits of this patch:
+	* We can drop a helper function in a follow up patch;
+	* Function is now a GDestroyNotify type;
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-04-04  Victor Toso  <me@victortoso.com>
+
+	spice-widget: fix leak of boxed type cursor-shape
+	No valgrind on this one but a leak similar to previous patch.
+	This one was introduced in e691954be459087
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+	spice-widget: fix leak of boxed type cursor-shape
+	Detected while testing valgrind on migration.
+
+	> malloc (vg_replace_malloc.c:299)
+	> g_malloc (in /usr/lib/libglib-2.0.so.0.5400.3)
+	> spice_cursor_shape_copy (channel-cursor.c:99)
+	> ??? (in /usr/lib/libgobject-2.0.so.0.5400.3)
+	> g_object_get_valist (in /usr/lib/libgobject-2.0.so.0.5400.3)
+	> g_object_get (in /usr/lib/libgobject-2.0.so.0.5400.3)
+	> cursor_set (spice-widget.c:2653)
+	> g_closure_invoke (in /usr/lib/libgobject-2.0.so.0.5400.3)
+	> ??? (in /usr/lib/libgobject-2.0.so.0.5400.3)
+	> g_signal_emit_valist (in /usr/lib/libgobject-2.0.so.0.5400.3)
+	> g_signal_emit (in /usr/lib/libgobject-2.0.so.0.5400.3)
+	> ??? (in /usr/lib/libgobject-2.0.so.0.5400.3)
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-03-16  Christophe Fergeau  <cfergeau@redhat.com>
+
+	build: Remove SPICE_GTK_LOCALEDIR
+	This became obsolete after 93b213e 'spicy-*: Remove translation support'
+
+2018-03-15  Olivier Fourdan  <ofourdan@redhat.com>
+
+	Use scancode instead of keycode names
+	When running on Xwayland, the keycode mapping property is not available,
+	which causes unknown keycode mapping errors and the keyboard doesn't
+	work.
+
+	Check for a known scancode (“XK_Page_Up”) which differs to distinguish
+	between “xfree86” and “evdev” when the there is no keycode name.
+
+	Reviewed-by: Daniel P. Berrangé <berrange@redhat.com>
+	Acked-by: Christophe Fergeau <cfergeau@redhat.com>
+
+2018-03-02  Marc-André Lureau  <marcandre.lureau@redhat.com>
+
+	tests: add spice+tls:// tests
+	They couldn't not be introduced before, because the test needs both
+	parsing and generation.
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+	uri: generate spice://host:port or spice+tls://host:port
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+	uri: learn to parse spice+tls:// form
+	spice:// has a weird scheme encoding, where it can accept both plain
+	and tls ports with URI query parameters. However, it's not very
+	convenient nor very common to use (who really want to mix plain & tls
+	channels?).
+
+	Instead, let's introduce the more readable form spice+tls://host:port
+	This form will not accept 'port' or 'tls-port' query string parameter.
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-03-02  Victor Toso  <me@victortoso.com>
+
+	Don't exceed one statement per line
+	Cosmetic change. One break was dropped on _default:_ label of switch
+
+	Acked-by: Marc-André Lureau <marcandre.lureau@redhat.com>
+
+2018-03-01  Victor Toso  <me@victortoso.com>
+
+	channel-usbredir: avoid calling memcpy() will NULL src
+	Code built with address sanitizer has runtime error:
+	 > channel-usbredir.c:642:5: runtime error: null pointer passed
+	 > as argument 2, which is declared to never be null
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-02-28  Victor Toso  <me@victortoso.com>
+
+	spice-widget: Avoid promoting signed 1 on shift
+	Address sanitizer runtime error:
+	 > spice-widget.c:1433:12: runtime error: left shift of
+	 > 1 by 31 places cannot be represented in type 'int'
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-02-16  Marc-AndrÃ© Lureau  <marcandre.lureau@redhat.com>
+
+	session: warn with the original URI
+	Before:
+	(lt-spicy:18372): GSpice-WARNING **: 10:57:21.246: Double set of 'port' in URI 'spice://foo'
+
+	After:
+	(lt-spicy:18654): GSpice-WARNING **: 10:57:21.246: Double set of 'port' in URI 'spice://foo:23?port=24'
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-02-13  Marc-André Lureau  <marcandre.lureau@redhat.com>
+
+	tests: add spice+unix:// URI checks
+	For some reason, the URIs test didn't include spice+unix:// checks,
+	probably because they came about the same time.
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-01-31  Frediano Ziglio  <fziglio@redhat.com>
+
+	build-sys: update spice-common submodule
+	Import some fixes.
+
+	Frediano Ziglio (2):
+	      canvas: Fix some semi transparent drawing
+	      canvas: Use SPICE_UNALIGNED_CAST to avoid -Wcast-align warnings
+
+	Acked-by: Victor Toso <victortoso@redhat.com>
+
+2018-01-30  Javier Celaya  <javier.celaya@flexvdi.com>
+
+	Fix setting appsrc properties in i686 arch
+	The "max-bytes" property of the appsrc GStreamer element expects a
+	64-bit value. Calling:
+	g_object_set(source, "max-bytes", 0, NULL);
+	in a 32-bit architecture ends up with a wrong value, it must be cast to
+	a gint64:
+	g_object_set(source, "max-bytes", G_GINT64_CONSTANT(0), NULL);
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-01-30  Frediano Ziglio  <fziglio@redhat.com>
+
+	channel-display: Removed only assigned dc field from _SpiceDisplayChannelPrivate
+	This was used by GDI canvas rendering which has been removed from
+	spice-common.
+
+	Acked-by: Christophe de Dinechin <dinechin@redhat.com>
+
+2018-01-24  Frediano Ziglio  <fziglio@redhat.com>
+
+	GDI canvas cleanup
+	GDI canvas support was removed from spice-common as not even
+	compiling for a long time.
+	This requires some changed to spice-gtk too.
+
+	Frediano Ziglio (14):
+	      canvas: Simplify code using spice_memdup
+	      canvas: Remove possible leak on LZ decompression failure
+	      lz: Avoid temporary variable
+	      lz: Simplify code
+	      lz: Remove unused encode_level and only assigned io_start
+	      canvas: Move PixmanData to C file
+	      canvas: Remove mutex field from PixmanData
+	      canvas: Remove Windows bitmap allocation
+	      canvas: Remove unused dc parameter from surface_create
+	      canvas: Remove dc parameter from SwCanvas::put_image
+	      canvas: Remove dc fields from CanvasBase and LzDecodeUsrData
+	      canvas: Unify __surface_create_stride and surface_create_stride
+	      canvas: Remove unused include header
+	      canvas: Prevent some error compiling spice-gtk
+
+	Pavel Grunt (1):
+	      Remove GDI canvas
+
+	Acked-by: Snir Sheriber <ssheribe@redhat.com>
+
+2018-01-23  Paweł Pękala  <pawelbsd@gmail.com>
+
+	Fix build with LibreSSL
+	Some FreeBSD configurations can use LibreSSL instead of OpenSSL.
+	The two libraries are really similar but need some minimal adjustment.
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2018-01-11  Frediano Ziglio  <fziglio@redhat.com>
+
+	build: Update spice-common
+	This includes a LZ fix for paletted images.
+
+	Frediano Ziglio (10):
+	      quic: avoid crash on specific images
+	      Make the compiler work out better way to write unaligned memory
+	      test-marshallers: Use unaligned structure
+	      test-marshallers: Test demarshalling
+	      ring: Remove __ring_remove function
+	      ring: Remove short living temporary variable
+	      canvas_base: Allow to specify constant operations
+	      proto: Add some documentation to stream_report message
+	      protocol: Allow to specify a surface will be streamed
+	      canvas-base: Fix width computation for palette images
+
+	Acked-by: Marc-André Lureau <marcandre.lureau@redhat.com>
+
+2018-01-08  Ting-Wei Lan  <lantw@src.gnome.org>
+
+	build-sys: Workaround missing openssl.pc for FreeBSD
+	FreeBSD has OpenSSL installed in base, but .pc files are not available.
+	We can still successfully build spice-gtk by setting SSL_CFLAGS and
+	SSL_LIBS variables manually, but openssl will still be recorded to
+	Requires.private field of spice-client-glib-2.0.pc, causing problems for
+	applications using spice-gtk. To workaround the issue, we do the check
+	again without using SSL_CFLAGS and SSL_LIBS variables and put SSL_LIBS
+	into Libs.private field when openssl.pc cannot be found.
+
+	https://bugs.freedesktop.org/show_bug.cgi?id=104524
+
+	build-sys: Enable ACL support on FreeBSD
+	sys/acl.h works on both FreeBSD and Linux, so we should use it instead
+	of acl/libacl.h, which only works on Linux.
+
+	FreeBSD puts ACL functions in libc, so we should check whether ACL
+	functions are available in libc before doing the check with -lacl.
+
+	https://bugs.freedesktop.org/show_bug.cgi?id=104525
+
+2018-01-04  Christophe Fergeau  <cfergeau@redhat.com>
+
+	Implement GObject::constructed rather than ::constructor
+	A few classes are implementing GObject::constructor, which is more
+	cumbersome to use than ::constructed. Other classes use ::constructed
+	rather than ::constructor. This commit removes the last uses of
+	::constructor.
+
+	Acked-by: Marc-André Lureau <marcandre.lureau@redhat.com>
+
+	session: Remove unused spice_gtk_session_get_read_only prototype
+	There is no such function implemented anywhere in the codebase.
+	This was mistakenly added in 222e25a029.
+
+	Acked-by: Marc-André Lureau <marcandre.lureau@redhat.com>
+
+2017-12-20  Victor Toso  <me@victortoso.com>
+
+	Fix clang's double-promotion warning
+	Casting to gdouble instead to float to avoid the warning and perhaps
+	increase the precision.
+
+	spice-widget-egl.c:573:28: error: implicit conversion increases
+	floating-point precision: 'float' to 'gdouble' (aka 'double')
+	    tx = ((float)d->area.x / (float)d->egl.scanout.width);
+	       ~  ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	spice-widget-egl.c:574:28: error: implicit conversion increases
+	floating-point precision: 'float' to 'gdouble' (aka 'double')
+	    ty = ((float)d->area.y / (float)d->egl.scanout.height);
+	       ~  ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	spice-widget-egl.c:575:32: error: implicit conversion increases
+	floating-point precision: 'float' to 'gdouble' (aka 'double')
+	    tw = ((float)d->area.width / (float)d->egl.scanout.width);
+	       ~  ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	spice-widget-egl.c:576:33: error: implicit conversion increases
+	floating-point precision: 'float' to 'gdouble' (aka 'double')
+	    th = ((float)d->area.height / (float)d->egl.scanout.height);
+	       ~  ~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+	Improve debug log for preferred video codec message
+	The gst_opts[] array was moved to the -priv.h header
+	inc96af50e2dd16b02b189e8 - Let's use it to improve debug messages.
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2017-12-12  Jonathon Jongsma  <jjongsma@redhat.com>
+
+	Inputs: fix documentation for spice_inputs_channel_motion()
+	This function is used in server mode, and
+	spice_inputs_channel_position() is used in client mode.
+
+	Acked-by: Marc-André Lureau <marcandre.lureau@redhat.com>
+	Acked-by: Victor Toso <victortoso@redhat.com>
+
+2017-12-11  Jonathon Jongsma  <jjongsma@redhat.com>
+
+	MainChannel: Fix incorrect deprecations
+	Both spice_main_set_display() and spice_main_set_display_enabled() were
+	deprecated in favor of the same functions with the spice_main_channel_
+	prefix. However, these new functions were never introduced. Since these
+	functions merely call spice_main_channel_update_display() with a
+	constant TRUE argument for the last parameter, this is probably a good
+	time to simply drop the _set_display* functions in favor of the
+	nearly-identical _update_display* functions (which have one additional
+	parameter which determines whether to send the update to the guest).
+
+	Acked-by: Victor Toso <victortoso@redhat.com>
+
+2017-10-20  Christophe de Dinechin  <dinechin@redhat.com>
+
+	spicy: Add call of gst_deinit at program exit
+	This is useful for some instrumentation, e.g. the leaks tracer,
+	that perform some of their operations within gst_deinit.
+
+	Without this patch, if you run spicy with
+		GST_DEBUG="GST_TRACER:7" GST_TRACERS="leaks" spicy ...
+	the leak tracer does not show any output, because it runs in gst_deinit.
+
+	Reviewed-by: Marc-André Lureau <marcandre.lureau@redhat.com>
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2017-10-03  Marie Stephanie Alesna  <istephielicious@gmail.com>
+
+	Add pyparsing requirement to README and autogen.sh
+	Also use --enable-python-checks in autogen.sh to check python2/3-pyparsing
+	requirement for rebuilds from GIT.
+
+	Acked-by: Christophe Fergeau <cfergeau@redhat.com>
+
+2017-09-25  Matthew Francis  <mjay.francis@gmail.com>
+
+	MainChannel: Fix introspection method bindings
+	Reviewed-by: Marc-André Lureau <marcandre.lureau@redhat.com>
+	Message-Id: <1505831641-28134-6-git-send-email-mjay.francis@gmail.com>
+
+	InputsChannel: Fix introspection method bindings
+	Reviewed-by: Marc-André Lureau <marcandre.lureau@redhat.com>
+	Message-Id: <1505831641-28134-5-git-send-email-mjay.francis@gmail.com>
+
+	RecordChannel: Fix introspection method bindings
+	Reviewed-by: Marc-André Lureau <marcandre.lureau@redhat.com>
+	Message-Id: <1505831641-28134-4-git-send-email-mjay.francis@gmail.com>
+
+	DisplayChannel: Fix introspection method bindings
+	Reviewed-by: Marc-André Lureau <marcandre.lureau@redhat.com>
+	Message-Id: <1505831641-28134-3-git-send-email-mjay.francis@gmail.com>
+
+	PortChannel: Fix introspection method bindings
+	Reviewed-by: Marc-André Lureau <marcandre.lureau@redhat.com>
+	Message-Id: <1505831641-28134-2-git-send-email-mjay.francis@gmail.com>
+
+2017-09-04  Marc-André Lureau  <marcandre.lureau@redhat.com>
+
+	webdav: remove the client if input stream is closed
+	Instead of printing a warning when trying to read from a closed
+	stream. It can happen that libsoup closes the pipe output stream while
+	the input stream had no pending operation, in which case the close is
+	successful and we shouldn't try to read from the stream anymore.
+
+	Acked-by: Victor Toso <victortoso@redhat.com>
+
+	tests/pipe: add write close/cancel tests
+	And a few cleanups.
+
+	Acked-by: Victor Toso <victortoso@redhat.com>
+
+	giopipe: output wake up on peer close
+	Similar to input is_readable(), return writable after a close, so an
+	error is reported to the async write.
+
+	Acked-by: Victor Toso <victortoso@redhat.com>
+
+	giopipe: input return 0 and no error when peer is already closed
+	The peer stream may be closed, but may have failed to close self,
+	because it has pending operations. In this case indicate EOS on read
+	rather than returning an error. self will be close eventually on
+	dispose.
+
+	Acked-by: Victor Toso <victortoso@redhat.com>
+
+	test-pipe: /pipe/readcancel is supposed to test cancel
+	Not to reproduce /pipe/readclose..
+
+	Acked-by: Victor Toso <victortoso@redhat.com>
+
+2017-08-23  Frediano Ziglio  <fziglio@redhat.com>
+
+	build: Update spice-common
+	This include some Quic changes, particularly a compile fix
+	if no optimizations (-O0) are used.
+
+	Christophe Fergeau (8):
+	      log: Define G_LOG_DOMAIN as early as possible
+	      canvas: Don't try to unref NULL pixman_image_t
+	      quic: Use DEFevol constant rather than evol variable
+	      quic: Use DEFwminext constant rather than wminext variable
+	      quic: Use DEFwmimax constant rather than wmimax variable
+	      quic: Use SPICE_VERIFY for static check
+	      quic: Fix "corelate" typo
+	      quic: Use i == 0 rather than !i
+
+	Frediano Ziglio (13):
+	      canvas-base: Do not attempt useless cast on stride adjustment
+	      quic: constantify some variable
+	      log: remove spice_static_assert macro
+	      quic: Fix typo in function names
+	      log: Forbid the usage of obsolete SPICE_LOG_DOMAIN
+	      log: Force format in log macro to be a string
+	      quic: fix typo corelate -> correlate
+	      quic: fix typo golomb_deoding -> golomb_decoding
+	      quic: remove only assigned num_channels field
+	      quic: remove only assigned CommonState::encoder
+	      quic: remove Channel::encoder
+	      quic: use 32 bit for bppmask
+	      quic: turn back some commented out checks as compile time
+
+	Acked-by: Victor Toso <victortoso@redhat.com>
+
+2017-08-17  Marc-André Lureau  <marcandre.lureau@redhat.com>
+
+	channel: don't call memcpy with NULL dest
+	If ncaps == 0, the array will be NULL after set_size().
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+	channel: pass the size to store_caps
+	Move g_array_set_size() there.
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2017-08-16  Marc-André Lureau  <marcandre.lureau@redhat.com>
+
+	channel: return "unknown" in spice_channel_type_to_string()
+	This fixes the following gcc warning:
+
+	spice-channel.c: In function ‘spice_channel_constructed’:
+	spice-channel.c:144:41: error: ‘%s’ directive output may be truncated writing likely 20 or more bytes into a region of size 16 [-Werror=format-truncation=]
+	     snprintf(c->name, sizeof(c->name), "%s-%d:%d",
+	                                         ^~
+	spice-channel.c:144:40: note: assuming directive output of 20 bytes
+	     snprintf(c->name, sizeof(c->name), "%s-%d:%d",
+
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2017-08-10  Marc-André Lureau  <marcandre.lureau@redhat.com>
+
+	Prefer g_new() over spice_new()
+	spice_new() should probably be replaced by g_new() in all spice code
+	that depend on glib.
+
+	Acked-by: Victor Toso <victortoso@redhat.com>
+
+	Use g_free() appropriately
+	g_free() should be used in pair with g_malloc/new().
+
+	There is only free() calls remaining for usbredir rules now.
+
+	Acked-by: Victor Toso <victortoso@redhat.com>
+
+	Remove wocky HTTP proxy
+	That HTTP proxy code has been added to glib 2.43.92.
+
+	Acked-by: Victor Toso <victortoso@redhat.com>
+
+2017-08-10  Pavel Grunt  <pavelgrunt@gmail.com>
+
+	widget: Ignore deprecation warnings for gdk_event_get_scancode
+	It is available since Gtk+ 3.22
+	Acked-by: Frediano Ziglio <fziglio@redhat.com>
+
+2017-08-10  Marc-André Lureau  <marcandre.lureau@redhat.com>
+
+	Remove vapi/spice-client-gtk-2.0.deps
+	Left-over from v0.31-6-g0917002
+
+	Acked-by: Christophe Fergeau <cfergeau@redhat.com>
+
+2017-08-01  Victor Toso  <me@victortoso.com>
+
+	build-sys: bump glib requirement 2.36 -> 2.46
+	At the moment:
+	- Fedora 26 has 2.52
+	- Fedora 25 has 2.50
+	- Fedora 24 has 2.48
+	- CentOS 7 has 2.46
+	- Debian 9 has 2.50
+
+	Acked-by: Marc-André Lureau <marcandre.lureau@redhat.com>
+
+2017-08-01  Marc-André Lureau  <marcandre.lureau@redhat.com>
+
+	build-sys: remove the spice-controller library
+	The spice-controller was a small library to let NPAPI browser plugins
+	communicate with the spice client. Due to usage of vala, the library
+	could not promise ABI stability, and was also considerer a pretty
+	poor implementation.
+
+	Furthermore, major browser vendors began to phase out NPAPI support in
+	2013, and some would like to see it gone by the end of this
+	year (realistically, it may not happen though).
+
+	As an alternative, remote-viewer (the first class Spice client)
+	learned to connect with a file of mime type application/x-virt-viewer,
+	as early as February 2013 with v0.5.5. I also proposed a DBus
+	controller, and a simpler way to pass connection details via stdin.
+
+	Acked-by: Victor Toso <victortoso@redhat.com>
+
 2017-07-31  Victor Toso  <me@victortoso.com>
 
 	display-gst: Improve h264 elements filtering

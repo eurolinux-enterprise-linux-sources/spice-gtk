@@ -3,21 +3,16 @@
 #define _version_suffix
 
 Name:           spice-gtk
-Version:        0.34
-Release:        3%{?dist}.2
+Version:        0.35
+Release:        2%{?dist}
 Summary:        A GTK+ widget for SPICE clients
 
 Group:          System Environment/Libraries
 License:        LGPLv2+
 URL:            https://www.spice-space.org/
-#VCS:           git:git://anongit.freedesktop.org/spice/spice-gtk
 Source0:        https://www.spice-space.org/download/gtk/%{name}-%{version}%{?_version_suffix}.tar.bz2
 
-Patch0001:      0001-canvas-base-Fix-width-computation-for-palette-images.patch
-Patch0002:      0002-Revert-channel-usbredir-Fix-crash-on-channel-up.patch
-Patch0003:      0003-channel-usbredir-Fix-crash-on-channel-up.patch
-Patch0004:      0004-Fix-flexible-array-buffer-overflow.patch
-Patch1000:      1000-gtk-Makefile.am-add-PIE-flags-to-libspice-client-gli.patch
+Patch0001:      0001-Fix-flexible-array-buffer-overflow.patch
 
 BuildRequires: intltool
 BuildRequires: usbredir-devel >= 0.6-8
@@ -120,15 +115,10 @@ spicy-screenshot is a tool to capture screen-shots of a SPICE desktop.
 %setup -q -n spice-gtk-%{version}%{?_version_suffix}
 
 %patch0001 -p1
-%patch0002 -p1
-%patch0003 -p1
-%patch0004 -p1
-%patch1000 -p1
-find . -name '*.stamp' | xargs touch
-
 
 %build
 %configure \
+    --enable-celt051 \
     --with-gtk=3.0 \
     --enable-vala \
     --with-usb-acl-helper-dir=%{_libexecdir}/spice-gtk-%{_arch}/ \
@@ -158,7 +148,6 @@ rm -f %{buildroot}%{_libdir}/*.la
 
 %files -n spice-glib -f %{name}.lang
 %{_libdir}/libspice-client-glib-2.0.so.*
-%{_libdir}/libspice-controller.so.*
 %{_libdir}/girepository-1.0/SpiceClientGLib-2.0.typelib
 %dir %{_libexecdir}/spice-gtk-%{_arch}/
 %attr(4755, root, root) %{_libexecdir}/spice-gtk-%{_arch}/spice-client-glib-usb-acl-helper
@@ -166,13 +155,9 @@ rm -f %{buildroot}%{_libdir}/*.la
 
 %files -n spice-glib-devel
 %{_libdir}/libspice-client-glib-2.0.so
-%{_libdir}/libspice-controller.so
 %{_includedir}/spice-client-glib-2.0
-%{_includedir}/spice-controller
 %{_libdir}/pkgconfig/spice-client-glib-2.0.pc
-%{_libdir}/pkgconfig/spice-controller.pc
 %{_datadir}/gir-1.0/SpiceClientGLib-2.0.gir
-%{_datadir}/vala/vapi/spice-protocol.vapi
 %doc %{_datadir}/gtk-doc/html/*
 
 %files -n spice-gtk3
@@ -202,13 +187,13 @@ rm -f %{buildroot}%{_libdir}/*.la
 %{_bindir}/spicy-stats
 
 %changelog
-* Thu Aug 09 2018 Frediano Ziglio <fziglio@redhat.com> - 0.34-3.2
+* Fri Aug 10 2018 Frediano Ziglio <fziglio@redhat.com> - 0.35-2
 - Fix flexible array buffer overflow
   Resolves: rhbz#1596008
 
-* Wed Jun 13 2018 Victor Toso <victortoso@redhat.com> - 0.34-3.1
-- Fix migration failure when USB is enabled
-  Resolves: rhbz#1590412
+* Mon Jun 11 2018 Victor Toso <victortoso@redhat.com> - 0.35-1
+- Rebase to 0.35
+  Resolves: rhbz#1562126
 
 * Thu Dec 21 2017 Frediano Ziglio <fziglio@redhat.com> - 0.34-3
 - Fix stride misalignment

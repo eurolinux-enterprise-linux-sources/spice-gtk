@@ -23,6 +23,19 @@ AC_DEFUN([SPICE_PRINT_MESSAGES],[
 ])
 
 
+# SPICE_EXTRA_CHECKS()
+# --------------------
+# Check for --enable-extra-checks option
+# --------------------
+AC_DEFUN([SPICE_EXTRA_CHECKS],[
+AC_ARG_ENABLE([extra-checks],
+               AS_HELP_STRING([--enable-extra-checks=@<:@yes/no@:>@],
+                              [Enable expensive checks @<:@default=no@:>@]))
+AM_CONDITIONAL(ENABLE_EXTRA_CHECKS, test "x$enable_extra_checks" = "xyes")
+AM_COND_IF([ENABLE_EXTRA_CHECKS], AC_DEFINE([ENABLE_EXTRA_CHECKS], 1, [Enable extra checks on code]))
+])
+
+
 # SPICE_CHECK_SYSDEPS()
 # ---------------------
 # Checks for header files and library functions needed by spice-common.
@@ -49,7 +62,10 @@ AC_DEFUN([SPICE_CHECK_SYSDEPS], [
     # do not check malloc or realloc, since that cannot be cross-compiled checked
     AC_FUNC_ERROR_AT_LINE
     AC_FUNC_FORK
-    AC_CHECK_FUNCS([dup2 floor inet_ntoa memmove memset pow sqrt])
+    AC_CHECK_FUNCS([dup2 floor memmove memset])
+    AC_SEARCH_LIBS([hypot], [m], [], [
+        AC_MSG_ERROR([unable to find the hypot() function])
+    ])
 ])
 
 
@@ -90,7 +106,7 @@ AC_DEFUN([SPICE_CHECK_SMARTCARD], [
 
 # SPICE_CHECK_CELT051
 # -------------------
-# Adds a --disable-celt051 switch in order to enable/disable CELT 0.5.1
+# Adds a --enable-celt051 switch in order to enable/disable CELT 0.5.1
 # support, and checks if the needed libraries are available. If found, it will
 # return the flags to use in the CELT051_CFLAGS and CELT051_LIBS variables, and
 # it will define a HAVE_CELT051 preprocessor symbol as well as a HAVE_CELT051
@@ -98,11 +114,24 @@ AC_DEFUN([SPICE_CHECK_SMARTCARD], [
 #--------------------
 AC_DEFUN([SPICE_CHECK_CELT051], [
     AC_ARG_ENABLE([celt051],
-        [  --disable-celt051       Disable celt051 audio codec (enabled by default)],,
-        [enable_celt051="yes"])
+        [  --enable-celt051       Enable celt051 audio codec (disabled by default)],,
+        [enable_celt051="auto"])
 
-    if test "x$enable_celt051" = "xyes"; then
+    if test "x$enable_celt051" != "xno"; then
         PKG_CHECK_MODULES([CELT051], [celt051 >= 0.5.1.1], [have_celt051=yes], [have_celt051=no])
+        if test "x$enable_celt051" = "xauto"; then
+            if test "x$have_celt051" = "xyes"; then
+                AC_MSG_ERROR(m4_normalize([
+                                CELT 0.5.1.x has been detected, \
+                                but CELT support is no longer automatically enabled by default. \
+                                Please explicitly use --enable-celt051 or --disable-celt051
+                             ]))
+            fi
+            # have_celt051 is "no" here, so celt is disabled by default
+        fi
+        if test "x$enable_celt051" = "xyes" && test "x$have_celt051" != "xyes"; then
+            AC_MSG_ERROR(["--enable-celt051 has been specified, but CELT 0.5.1 is missing"])
+        fi
     else
         have_celt051=no
     fi
@@ -119,12 +148,21 @@ AC_DEFUN([SPICE_CHECK_CELT051], [
 # HAVE_OPUS preprocessor symbol as well as a HAVE_OPUS Makefile conditional.
 # ----------------
 AC_DEFUN([SPICE_CHECK_OPUS], [
-    PKG_CHECK_MODULES([OPUS], [opus >= 0.9.14], [have_opus=yes], [have_opus=no])
+    AC_ARG_ENABLE([opus],
+        [  --disable-opus       Disable Opus audio codec (enabled by default)],,
+        [enable_opus="auto"])
+    if test "x$enable_opus" != "xno"; then
+        PKG_CHECK_MODULES([OPUS], [opus >= 0.9.14], [have_opus=yes], [have_opus=no])
+        if test "x$enable_opus" = "xauto" && test "x$have_opus" = "xno"; then
+            AC_MSG_ERROR([Opus could not be detected, explicitly use --disable-opus if that's intentional])
+        fi
+        if test "x$enable_opus" = "xyes" && test "x$have_opus" != "xyes"; then
+            AC_MSG_ERROR([--enable-opus has been specified, but Opus is missing])
+        fi
+    fi
 
     AM_CONDITIONAL([HAVE_OPUS], [test "x$have_opus" = "xyes"])
-    if test "x$have_opus" = "xyes" ; then
-      AC_DEFINE([HAVE_OPUS], [1], [Define if we have OPUS])
-    fi
+    AM_COND_IF([HAVE_OPUS], AC_DEFINE([HAVE_OPUS], [1], [Define if we have OPUS]))
 ])
 
 
@@ -144,7 +182,20 @@ AC_DEFUN([SPICE_CHECK_PIXMAN], [
 # use in the GLIB2_CFLAGS and GLIB2_LIBS variables.
 #------------------
 AC_DEFUN([SPICE_CHECK_GLIB2], [
-    PKG_CHECK_MODULES(GLIB2, glib-2.0 >= 2.22 gio-2.0 >= 2.22 gthread-2.0 >= 2.22)
+    PKG_CHECK_MODULES(GLIB2, glib-2.0 >= 2.38 gio-2.0 >= 2.38 gthread-2.0 >= 2.38)
+])
+
+# SPICE_CHECK_GDK_PIXBUF
+# ----------------------
+# Check for the availability of gdk-pixbuf. If found, it will return the flags to use
+# in the GDK_PIXBUF_CFLAGS and GDK_PIXBUF_LIBS variables, and it will define a
+# HAVE_GDK_PIXBUF preprocessor symbol as well as a HAVE_GDK_PIXBUF Makefile conditional.
+# ----------------
+AC_DEFUN([SPICE_CHECK_GDK_PIXBUF], [
+    PKG_CHECK_MODULES([GDK_PIXBUF], [gdk-pixbuf-2.0 >= 2.26], [have_gdk_pixbuf=yes], [have_gdk_pixbuf=no])
+
+    AM_CONDITIONAL([HAVE_GDK_PIXBUF], [test "x$have_gdk_pixbuf" = "xyes"])
+    AM_COND_IF([HAVE_GDK_PIXBUF], AC_DEFINE([HAVE_GDK_PIXBUF], [1], [Define if gdk-pixbuf was found]))
 ])
 
 # SPICE_CHECK_PYTHON_MODULES()

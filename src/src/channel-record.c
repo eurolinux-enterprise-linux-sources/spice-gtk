@@ -47,9 +47,6 @@
  * record audio channels for your application.
  */
 
-#define SPICE_RECORD_CHANNEL_GET_PRIVATE(obj)                                  \
-    (G_TYPE_INSTANCE_GET_PRIVATE((obj), SPICE_TYPE_RECORD_CHANNEL, SpiceRecordChannelPrivate))
-
 struct _SpiceRecordChannelPrivate {
     int                         mode;
     gboolean                    started;
@@ -62,7 +59,7 @@ struct _SpiceRecordChannelPrivate {
     guint8                      mute;
 };
 
-G_DEFINE_TYPE(SpiceRecordChannel, spice_record_channel, SPICE_TYPE_CHANNEL)
+G_DEFINE_TYPE_WITH_PRIVATE(SpiceRecordChannel, spice_record_channel, SPICE_TYPE_CHANNEL)
 
 /* Properties */
 enum {
@@ -99,7 +96,7 @@ static void spice_record_channel_reset_capabilities(SpiceChannel *channel)
 
 static void spice_record_channel_init(SpiceRecordChannel *channel)
 {
-    channel->priv = SPICE_RECORD_CHANNEL_GET_PRIVATE(channel);
+    channel->priv = spice_record_channel_get_instance_private(channel);
 
     spice_record_channel_reset_capabilities(SPICE_CHANNEL(channel));
 }
@@ -247,7 +244,6 @@ static void spice_record_channel_class_init(SpiceRecordChannelClass *klass)
                      G_TYPE_NONE,
                      0);
 
-    g_type_class_add_private(klass, sizeof(SpiceRecordChannelPrivate));
     channel_set_handlers(SPICE_CHANNEL_CLASS(klass));
 }
 
@@ -312,9 +308,28 @@ static void spice_record_start_mark(SpiceRecordChannel *channel, uint32_t time)
  * @time: stream timestamp
  *
  * Send recorded PCM data to the guest.
+ *
+ * Deprecated: 0.35: use spice_record_channel_send_data() instead.
  **/
 void spice_record_send_data(SpiceRecordChannel *channel, gpointer data,
                             gsize bytes, uint32_t time)
+{
+    spice_record_channel_send_data(channel, data, bytes, time);
+}
+
+/**
+ * spice_record_channel_send_data:
+ * @channel: a #SpiceRecordChannel
+ * @data: PCM data
+ * @bytes: size of @data
+ * @time: stream timestamp
+ *
+ * Send recorded PCM data to the guest.
+ *
+ * Since: 0.35
+ **/
+void spice_record_channel_send_data(SpiceRecordChannel *channel, gpointer data,
+                                    gsize bytes, uint32_t time)
 {
     SpiceRecordChannelPrivate *rc;
     SpiceMsgcRecordPacket p = {0, };

@@ -1,8 +1,13 @@
 channel TestChannel {
    message {
+      uint8 dummy_byte; // so structure is not aligned
       uint32 data_size;
       uint64 *data[data_size] @marshall;
    } ShortDataSubMarshall;
+
+   message {
+      int8 name[];
+   } ArrayMessage;
 };
 
 protocol Spice {

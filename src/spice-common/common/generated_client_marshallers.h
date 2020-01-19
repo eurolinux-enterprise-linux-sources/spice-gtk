@@ -61,11 +61,7 @@ typedef struct {
     void (*msgc_tunnel_socket_data)(SpiceMarshaller *m, SpiceMsgcTunnelSocketData *msg);
     void (*msgc_tunnel_socket_token)(SpiceMarshaller *m, SpiceMsgcTunnelSocketTokens *msg);
 #ifdef USE_SMARTCARD
-    void (*msgc_smartcard_data)(SpiceMarshaller *m, SpiceMsgcSmartcard *msg, SpiceMarshaller **reader_name_out);
     void (*msgc_smartcard_header)(SpiceMarshaller *m, VSCMsgHeader *msg);
-    void (*msgc_smartcard_error)(SpiceMarshaller *m, VSCMsgError *msg);
-    void (*msgc_smartcard_atr)(SpiceMarshaller *m, VSCMsgATR *msg);
-    void (*msgc_smartcard_reader_add)(SpiceMarshaller *m, VSCMsgReaderAdd *msg);
 #endif /* USE_SMARTCARD */
     void (*msg_SpiceMsgCompressedData)(SpiceMarshaller *m, SpiceMsgCompressedData *msg);
     void (*msgc_port_event)(SpiceMarshaller *m, SpiceMsgcPortEvent *msg);

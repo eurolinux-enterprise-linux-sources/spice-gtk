@@ -46,7 +46,7 @@
  * Spice-Gtk minor version component (e.g. 2 if version is 1.2.3)
  * Since: 0.24
  */
-#define SPICE_GTK_MINOR_VERSION              (34)
+#define SPICE_GTK_MINOR_VERSION              (35)
 
 /**
  * SPICE_GTK_MICRO_VERSION:

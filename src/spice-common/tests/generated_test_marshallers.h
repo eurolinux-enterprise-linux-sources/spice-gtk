@@ -26,6 +26,7 @@
 SPICE_BEGIN_DECLS
 
 void spice_marshall_msg_main_ShortDataSubMarshall(SpiceMarshaller *m, SpiceMsgMainShortDataSubMarshall *msg);
+void spice_marshall_msg_main_ArrayMessage(SpiceMarshaller *m, SpiceMsgMainArrayMessage *msg);
 
 SPICE_END_DECLS
 

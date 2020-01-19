@@ -8,7 +8,7 @@
 <link rel="up" href="application-support.html" title="Application Support, from spice-client-glib">
 <link rel="prev" href="application-support.html" title="Application Support, from spice-client-glib">
 <link rel="next" href="SpiceSmartcardManager.html" title="Spice Smartcard Manager">
-<meta name="generator" content="GTK-Doc V1.25 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.28 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -81,7 +81,7 @@ justifications.
 <tbody>
 <tr>
 <td class="property_type">
-<a href="/usr/share/gtk-doc/html/glibglib-The-Main-Event-Loop.html#GMainContext"><span class="type">GMainContext</span></a> *</td>
+<a href="/usr/share/gtk-doc/html/glib/glib-The-Main-Event-Loop.html#GMainContext"><span class="type">GMainContext</span></a> *</td>
 <td class="property_name"><a class="link" href="SpiceAudio.html#SpiceAudio--main-context" title="The “main-context” property">main-context</a></td>
 <td class="property_flags">Read / Write / Construct Only</td>
 </tr>
@@ -115,7 +115,7 @@ justifications.
 </div>
 <div class="refsect1">
 <a name="SpiceAudio.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    <a href="/usr/share/gtk-doc/html/gobjectgobject-The-Base-Object-Type.html#GObject-struct">GObject</a>
+<pre class="screen">    <a href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject-struct">GObject</a>
     <span class="lineart">╰──</span> SpiceAudio
 </pre>
 </div>
@@ -135,7 +135,7 @@ application, and connect them to the default sound system.</p>
 <a name="spice-audio-get"></a><h3>spice_audio_get ()</h3>
 <pre class="programlisting"><a class="link" href="SpiceAudio.html" title="Spice Audio"><span class="returnvalue">SpiceAudio</span></a> *
 spice_audio_get (<em class="parameter"><code><a class="link" href="SpiceSession.html" title="Spice Session"><span class="type">SpiceSession</span></a> *session</code></em>,
-                 <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-The-Main-Event-Loop.html#GMainContext"><span class="type">GMainContext</span></a> *context</code></em>);</pre>
+                 <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-The-Main-Event-Loop.html#GMainContext"><span class="type">GMainContext</span></a> *context</code></em>);</pre>
 <p>Gets the <a class="link" href="SpiceAudio.html" title="Spice Audio"><span class="type">SpiceAudio</span></a> associated with the passed in <a class="link" href="SpiceSession.html" title="Spice Session"><span class="type">SpiceSession</span></a>.
 A new <a class="link" href="SpiceAudio.html" title="Spice Audio"><span class="type">SpiceAudio</span></a> instance will be created the first time this
 function is called for a certain <a class="link" href="SpiceSession.html" title="Spice Session"><span class="type">SpiceSession</span></a>.</p>
@@ -157,7 +157,7 @@ after the <a class="link" href="SpiceSession.html" title="Spice Session"><span c
 </tr>
 <tr>
 <td class="parameter_name"><p>context</p></td>
-<td class="parameter_description"><p> a <a href="/usr/share/gtk-doc/html/glibglib-The-Main-Event-Loop.html#GMainContext"><span class="type">GMainContext</span></a> to attach to (or <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> for default). </p></td>
+<td class="parameter_description"><p>a <a href="/usr/share/gtk-doc/html/glib/glib-The-Main-Event-Loop.html#GMainContext"><span class="type">GMainContext</span></a> to attach to (or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> for default). </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 </tbody>
@@ -165,8 +165,8 @@ after the <a class="link" href="SpiceSession.html" title="Spice Session"><span c
 </div>
 <div class="refsect3">
 <a name="spice-audio-get.returns"></a><h4>Returns</h4>
-<p> a weak reference to a <a class="link" href="SpiceAudio.html" title="Spice Audio"><span class="type">SpiceAudio</span></a>
-instance or <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if failed. </p>
+<p>a weak reference to a <a class="link" href="SpiceAudio.html" title="Spice Audio"><span class="type">SpiceAudio</span></a>
+instance or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if failed. </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
 </div>
 </div>
@@ -175,7 +175,7 @@ instance or <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:
 <a name="spice-audio-new"></a><h3>spice_audio_new ()</h3>
 <pre class="programlisting"><a class="link" href="SpiceAudio.html" title="Spice Audio"><span class="returnvalue">SpiceAudio</span></a> *
 spice_audio_new (<em class="parameter"><code><a class="link" href="SpiceSession.html" title="Spice Session"><span class="type">SpiceSession</span></a> *session</code></em>,
-                 <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-The-Main-Event-Loop.html#GMainContext"><span class="type">GMainContext</span></a> *context</code></em>,
+                 <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-The-Main-Event-Loop.html#GMainContext"><span class="type">GMainContext</span></a> *context</code></em>,
                  <em class="parameter"><code>const <span class="type">char</span> *name</code></em>);</pre>
 <div class="warning">
 <p><code class="literal">spice_audio_new</code> has been deprecated since version 0.8 and should not be used in newly-written code.</p>
@@ -199,13 +199,13 @@ channels to stream to your local audio system.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>context</p></td>
-<td class="parameter_description"><p> a <a href="/usr/share/gtk-doc/html/glibglib-The-Main-Event-Loop.html#GMainContext"><span class="type">GMainContext</span></a> to attach to (or <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> for
+<td class="parameter_description"><p>a <a href="/usr/share/gtk-doc/html/glib/glib-The-Main-Event-Loop.html#GMainContext"><span class="type">GMainContext</span></a> to attach to (or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> for
 default). </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>name</p></td>
-<td class="parameter_description"><p> a name for the audio channels (or <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> for
+<td class="parameter_description"><p>a name for the audio channels (or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> for
 application name). </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
@@ -214,7 +214,7 @@ application name). </p></td>
 </div>
 <div class="refsect3">
 <a name="spice-audio-new.returns"></a><h4>Returns</h4>
-<p> a new <a class="link" href="SpiceAudio.html" title="Spice Audio"><span class="type">SpiceAudio</span></a> instance or <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if no backend or failed.</p>
+<p> a new <a class="link" href="SpiceAudio.html" title="Spice Audio"><span class="type">SpiceAudio</span></a> instance or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if no backend or failed.</p>
 </div>
 </div>
 </div>
@@ -250,7 +250,7 @@ application name). </p></td>
 <a name="SpiceAudio.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
 <a name="SpiceAudio--main-context"></a><h3>The <code class="literal">“main-context”</code> property</h3>
-<pre class="programlisting">  “main-context”             <a href="/usr/share/gtk-doc/html/glibglib-The-Main-Event-Loop.html#GMainContext"><span class="type">GMainContext</span></a> *</pre>
+<pre class="programlisting">  “main-context”             <a href="/usr/share/gtk-doc/html/glib/glib-The-Main-Event-Loop.html#GMainContext"><span class="type">GMainContext</span></a> *</pre>
 <p>GMainContext to use for the event source.</p>
 <p>Flags: Read / Write / Construct Only</p>
 </div>
@@ -268,6 +268,6 @@ application name). </p></td>
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.25</div>
+<hr>Generated by GTK-Doc V1.28</div>
 </body>
 </html>

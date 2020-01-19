@@ -8,7 +8,7 @@
 <link rel="up" href="ch02.html" title="Session and Channels Objects, from spice-client-glib">
 <link rel="prev" href="SpicePlaybackChannel.html" title="Playback Channel">
 <link rel="next" href="SpiceSmartcardChannel.html" title="Smartcard Channel">
-<meta name="generator" content="GTK-Doc V1.25 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.28 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -51,14 +51,24 @@ justifications.
 <col width="150px" class="functions_return">
 <col class="functions_name">
 </colgroup>
-<tbody><tr>
+<tbody>
+<tr>
 <td class="function_type">
 <span class="returnvalue">void</span>
 </td>
 <td class="function_name">
 <a class="link" href="SpiceRecordChannel.html#spice-record-send-data" title="spice_record_send_data ()">spice_record_send_data</a> <span class="c_punctuation">()</span>
 </td>
-</tr></tbody>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="SpiceRecordChannel.html#spice-record-channel-send-data" title="spice_record_channel_send_data ()">spice_record_channel_send_data</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
 </table></div>
 </div>
 <div class="refsect1">
@@ -71,17 +81,17 @@ justifications.
 </colgroup>
 <tbody>
 <tr>
-<td class="property_type"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_type"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
 <td class="property_name"><a class="link" href="SpiceRecordChannel.html#SpiceRecordChannel--mute" title="The “mute” property">mute</a></td>
 <td class="property_flags">Read / Write</td>
 </tr>
 <tr>
-<td class="property_type"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_type"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
 <td class="property_name"><a class="link" href="SpiceRecordChannel.html#SpiceRecordChannel--nchannels" title="The “nchannels” property">nchannels</a></td>
 <td class="property_flags">Read / Write</td>
 </tr>
 <tr>
-<td class="property_type"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a></td>
+<td class="property_type"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a></td>
 <td class="property_name"><a class="link" href="SpiceRecordChannel.html#SpiceRecordChannel--volume" title="The “volume” property">volume</a></td>
 <td class="property_flags">Read / Write</td>
 </tr>
@@ -100,12 +110,12 @@ justifications.
 <tr>
 <td class="signal_type"><span class="returnvalue">void</span></td>
 <td class="signal_name"><a class="link" href="SpiceRecordChannel.html#SpiceRecordChannel-record-start" title="The “record-start” signal">record-start</a></td>
-<td class="signal_flags"><a href="/usr/share/gtk-doc/html/gobjectgobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></td>
+<td class="signal_flags"><a href="/usr/share/gtk-doc/html/gobject/gobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></td>
 </tr>
 <tr>
 <td class="signal_type"><span class="returnvalue">void</span></td>
 <td class="signal_name"><a class="link" href="SpiceRecordChannel.html#SpiceRecordChannel-record-stop" title="The “record-stop” signal">record-stop</a></td>
-<td class="signal_flags"><a href="/usr/share/gtk-doc/html/gobjectgobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></td>
+<td class="signal_flags"><a href="/usr/share/gtk-doc/html/gobject/gobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></td>
 </tr>
 </tbody>
 </table></div>
@@ -131,7 +141,7 @@ justifications.
 </div>
 <div class="refsect1">
 <a name="SpiceRecordChannel.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    <a href="/usr/share/gtk-doc/html/gobjectgobject-The-Base-Object-Type.html#GObject-struct">GObject</a>
+<pre class="screen">    <a href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject-struct">GObject</a>
     <span class="lineart">╰──</span> <a class="link" href="SpiceChannel.html" title="Spice Channel">SpiceChannel</a>
         <span class="lineart">╰──</span> SpiceRecordChannel
 </pre>
@@ -158,9 +168,13 @@ record audio channels for your application.</p>
 <a name="spice-record-send-data"></a><h3>spice_record_send_data ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
 spice_record_send_data (<em class="parameter"><code><a class="link" href="SpiceRecordChannel.html" title="Record Channel"><span class="type">SpiceRecordChannel</span></a> *channel</code></em>,
-                        <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>,
-                        <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gsize"><span class="type">gsize</span></a> bytes</code></em>,
-                        <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint32"><span class="type">guint32</span></a> time</code></em>);</pre>
+                        <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>,
+                        <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> bytes</code></em>,
+                        <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"><span class="type">guint32</span></a> time</code></em>);</pre>
+<div class="warning">
+<p><code class="literal">spice_record_send_data</code> has been deprecated since version 0.35 and should not be used in newly-written code.</p>
+<p>use <a class="link" href="SpiceRecordChannel.html#spice-record-channel-send-data" title="spice_record_channel_send_data ()"><code class="function">spice_record_channel_send_data()</code></a> instead.</p>
+</div>
 <p>Send recorded PCM data to the guest.</p>
 <div class="refsect3">
 <a name="spice-record-send-data.parameters"></a><h4>Parameters</h4>
@@ -195,6 +209,50 @@ spice_record_send_data (<em class="parameter"><code><a class="link" href="SpiceR
 </tbody>
 </table></div>
 </div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="spice-record-channel-send-data"></a><h3>spice_record_channel_send_data ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+spice_record_channel_send_data (<em class="parameter"><code><a class="link" href="SpiceRecordChannel.html" title="Record Channel"><span class="type">SpiceRecordChannel</span></a> *channel</code></em>,
+                                <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>,
+                                <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> bytes</code></em>,
+                                <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"><span class="type">guint32</span></a> time</code></em>);</pre>
+<p>Send recorded PCM data to the guest.</p>
+<div class="refsect3">
+<a name="spice-record-channel-send-data.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>channel</p></td>
+<td class="parameter_description"><p>a <a class="link" href="SpiceRecordChannel.html" title="Record Channel"><span class="type">SpiceRecordChannel</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>PCM data</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>bytes</p></td>
+<td class="parameter_description"><p>size of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>time</p></td>
+<td class="parameter_description"><p>stream timestamp</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 0.35</p>
 </div>
 </div>
 <div class="refsect1">
@@ -251,7 +309,7 @@ spice_record_send_data (<em class="parameter"><code><a class="link" href="SpiceR
 <a name="SpiceRecordChannel.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
 <a name="SpiceRecordChannel--mute"></a><h3>The <code class="literal">“mute”</code> property</h3>
-<pre class="programlisting">  “mute”                     <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<pre class="programlisting">  “mute”                     <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Mute.</p>
 <p>Flags: Read / Write</p>
 <p>Default value: FALSE</p>
@@ -259,7 +317,7 @@ spice_record_send_data (<em class="parameter"><code><a class="link" href="SpiceR
 <hr>
 <div class="refsect2">
 <a name="SpiceRecordChannel--nchannels"></a><h3>The <code class="literal">“nchannels”</code> property</h3>
-<pre class="programlisting">  “nchannels”                <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<pre class="programlisting">  “nchannels”                <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
 <p>Number of Channels.</p>
 <p>Flags: Read / Write</p>
 <p>Allowed values: &lt;= 255</p>
@@ -268,7 +326,7 @@ spice_record_send_data (<em class="parameter"><code><a class="link" href="SpiceR
 <hr>
 <div class="refsect2">
 <a name="SpiceRecordChannel--volume"></a><h3>The <code class="literal">“volume”</code> property</h3>
-<pre class="programlisting">  “volume”                   <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a></pre>
+<pre class="programlisting">  “volume”                   <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a></pre>
 <p>Record volume.</p>
 <p>Flags: Read / Write</p>
 </div>
@@ -279,10 +337,10 @@ spice_record_send_data (<em class="parameter"><code><a class="link" href="SpiceR
 <a name="SpiceRecordChannel-record-start"></a><h3>The <code class="literal">“record-start”</code> signal</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
 user_function (<a class="link" href="SpiceRecordChannel.html" title="Record Channel"><span class="type">SpiceRecordChannel</span></a> *channel,
-               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a>                format,
-               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a>                channels,
-               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint"><span class="type">gint</span></a>                rate,
-               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            user_data)</pre>
+               <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                format,
+               <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                channels,
+               <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                rate,
+               <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            user_data)</pre>
 <p>Notify when the recording should start, and provide audio format
 characteristics.</p>
 <div class="refsect3">
@@ -322,14 +380,14 @@ characteristics.</p>
 </tbody>
 </table></div>
 </div>
-<p>Flags: <a href="/usr/share/gtk-doc/html/gobjectgobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></p>
+<p>Flags: <a href="/usr/share/gtk-doc/html/gobject/gobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="SpiceRecordChannel-record-stop"></a><h3>The <code class="literal">“record-stop”</code> signal</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
 user_function (<a class="link" href="SpiceRecordChannel.html" title="Record Channel"><span class="type">SpiceRecordChannel</span></a> *channel,
-               <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            user_data)</pre>
+               <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            user_data)</pre>
 <p>Notify when the recording should stop.</p>
 <div class="refsect3">
 <a name="SpiceRecordChannel-record-stop.parameters"></a><h4>Parameters</h4>
@@ -353,7 +411,7 @@ user_function (<a class="link" href="SpiceRecordChannel.html" title="Record Chan
 </tbody>
 </table></div>
 </div>
-<p>Flags: <a href="/usr/share/gtk-doc/html/gobjectgobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></p>
+<p>Flags: <a href="/usr/share/gtk-doc/html/gobject/gobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></p>
 </div>
 </div>
 <div class="refsect1">
@@ -362,6 +420,6 @@ user_function (<a class="link" href="SpiceRecordChannel.html" title="Record Chan
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.25</div>
+<hr>Generated by GTK-Doc V1.28</div>
 </body>
 </html>

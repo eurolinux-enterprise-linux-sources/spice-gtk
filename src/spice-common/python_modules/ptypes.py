@@ -83,6 +83,8 @@ valid_attributes=set([
     'nomarshal',
     # ??? not used by python code
     'zero_terminated',
+    # force generating marshaller code, applies to pointers which by
+    # default are not marshalled (submarshallers are generated)
     'marshall',
     # this pointer member cannot be null
     'nonnull',
@@ -97,6 +99,8 @@ valid_attributes=set([
     # the argument specifies the preprocessor define to check
     'ifdef',
     # write this member as zero on network
+    # when marshalling, a zero field is written to the network
+    # when demarshalling, the field is read from the network and discarded
     'zero',
     # specify minor version required for these members
     'minor',
@@ -124,7 +128,7 @@ attributes_with_arguments=set([
 def fix_attributes(attribute_list):
     attrs = {}
     for attr in attribute_list:
-        name = attr[0][1:]
+        name = attr[0][1:] # [1:] strips the leading '@' from the name
         lst = attr[1:]
         if not name in valid_attributes:
             raise Exception("Attribute %s not recognized" % name)
@@ -144,9 +148,6 @@ class Type:
 
     def has_name(self):
         return self.name != None
-
-    def get_type(self, recursive=False):
-        return self
 
     def is_primitive(self):
         return False
@@ -255,12 +256,6 @@ class TypeAlias(Type):
         self.name = name
         self.the_type = the_type
         self.attributes = fix_attributes(attribute_list)
-
-    def get_type(self, recursive=False):
-        if recursive:
-            return self.the_type.get_type(True)
-        else:
-            return self.the_type
 
     def primitive_type(self):
         return self.the_type.primitive_type()
@@ -504,7 +499,7 @@ class ArrayType(Type):
         element_count = self.element_type.get_num_pointers()
         if element_count  == 0:
             return 0
-        if self.is_constant_length(self):
+        if self.is_constant_length():
             return element_count * self.size
         raise Exception("Pointers in dynamic arrays not supported")
 
@@ -1026,56 +1021,56 @@ class ChannelType(Type):
         return self.server_messages_byname[name]
 
     def resolve(self):
-        if self.base != None:
+        class MessagesInfo:
+            def __init__(self, is_server, messages=[], messages_byname={}):
+                self.is_server = is_server
+                self.messages = messages[:]
+                self.messages_byname = messages_byname.copy()
+                self.count = 1
+
+                self.messages_byvalue = {}
+                for m in self.messages:
+                    self.messages_byvalue[m.value] = m
+
+        if self.base is None:
+            server_info = MessagesInfo(True)
+            client_info = MessagesInfo(False)
+        else:
             self.base = self.base.resolve()
 
-            server_messages = self.base.server_messages[:]
-            server_messages_byname = self.base.server_messages_byname.copy()
-            client_messages = self.base.client_messages[:]
-            client_messages_byname = self.base.client_messages_byname.copy()
+            server_info = MessagesInfo(True, self.base.server_messages,
+                                       self.base.server_messages_byname)
+            client_info = MessagesInfo(False, self.base.client_messages,
+                                       self.base.client_messages_byname)
 
             # Set default member_name, FooChannel -> foo
             self.member_name = self.name[:-7].lower()
-        else:
-            server_messages = []
-            server_messages_byname = {}
-            client_messages = []
-            client_messages_byname = {}
 
-        server_count = 1
-        client_count = 1
-
-        server = True
+        info = server_info
         for m in self.members:
             if m == "server":
-                server = True
+                info = server_info
             elif m == "client":
-                server = False
-            elif server:
-                m.is_server = True
-                m = m.resolve(self)
-                if m.value:
-                    server_count = m.value + 1
-                else:
-                    m.value = server_count
-                    server_count = server_count + 1
-                server_messages.append(m)
-                server_messages_byname[m.name] = m
+                info = client_info
             else:
-                m.is_server = False
+                m.is_server = info.is_server
                 m = m.resolve(self)
-                if m.value:
-                    client_count = m.value + 1
-                else:
-                    m.value = client_count
-                    client_count = client_count + 1
-                client_messages.append(m)
-                client_messages_byname[m.name] = m
+                if not m.value:
+                    m.value = info.count
+                info.count = m.value + 1
+                info.messages.append(m)
+                if m.name in info.messages_byname:
+                    raise Exception("Duplicated message name '%s' in channel '%s'" % (m.name, self.name))
+                info.messages_byname[m.name] = m
+                if m.value in info.messages_byvalue:
+                    raise Exception("Duplicated message value %d between '%s' and '%s' in channel '%s'" % (
+                        m.value, info.messages_byvalue[m.value].name, m.name, self.name))
+                info.messages_byvalue[m.value] = m
 
-        self.server_messages = server_messages
-        self.server_messages_byname = server_messages_byname
-        self.client_messages = client_messages
-        self.client_messages_byname = client_messages_byname
+        self.server_messages = server_info.messages
+        self.server_messages_byname = server_info.messages_byname
+        self.client_messages = client_info.messages
+        self.client_messages_byname = client_info.messages_byname
 
         return self
 

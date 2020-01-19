@@ -191,7 +191,6 @@ static gboolean mjpeg_decoder_decode_frame(gpointer video_decoder)
 
 static void mjpeg_decoder_schedule(MJpegDecoder *decoder)
 {
-    SPICE_DEBUG("%s", __FUNCTION__);
     if (decoder->timer_id) {
         return;
     }
@@ -247,8 +246,6 @@ static gboolean mjpeg_decoder_queue_frame(VideoDecoder *video_decoder,
     MJpegDecoder *decoder = (MJpegDecoder*)video_decoder;
     SpiceFrame *last_frame;
 
-    SPICE_DEBUG("%s", __FUNCTION__);
-
     last_frame = g_queue_peek_tail(decoder->msgq);
     if (last_frame) {
         if (spice_mmtime_diff(frame->mm_time, last_frame->mm_time) < 0) {
@@ -265,6 +262,7 @@ static gboolean mjpeg_decoder_queue_frame(VideoDecoder *video_decoder,
      * So drop late frames as early as possible to save on processing time.
      */
     if (latency < 0) {
+        frame->free(frame);
         return TRUE;
     }
 
@@ -294,7 +292,7 @@ static void mjpeg_decoder_destroy(VideoDecoder* video_decoder)
     g_queue_free(decoder->msgq);
     jpeg_destroy_decompress(&decoder->mjpeg_cinfo);
     g_free(decoder->out_frame);
-    free(decoder);
+    g_free(decoder);
 }
 
 G_GNUC_INTERNAL
@@ -302,7 +300,7 @@ VideoDecoder* create_mjpeg_decoder(int codec_type, display_stream *stream)
 {
     g_return_val_if_fail(codec_type == SPICE_VIDEO_CODEC_TYPE_MJPEG, NULL);
 
-    MJpegDecoder *decoder = spice_new0(MJpegDecoder, 1);
+    MJpegDecoder *decoder = g_new0(MJpegDecoder, 1);
 
     decoder->base.destroy = mjpeg_decoder_destroy;
     decoder->base.reschedule = mjpeg_decoder_reschedule;
@@ -322,7 +320,7 @@ VideoDecoder* create_mjpeg_decoder(int codec_type, display_stream *stream)
     decoder->mjpeg_src.term_source         = mjpeg_src_term;
     decoder->mjpeg_cinfo.src               = &decoder->mjpeg_src;
 
-    /* All the other fields are initialized to zero by spice_new0(). */
+    /* All the other fields are initialized to zero by g_new0(). */
 
     return (VideoDecoder*)decoder;
 }

@@ -28,24 +28,49 @@
 #include <unistd.h>
 #include <stdio.h>
 
+#include <spice/start-packed.h>
+typedef struct SPICE_ATTR_PACKED {
+    int16_t val;
+} int16_unaligned_t;
+
+typedef struct SPICE_ATTR_PACKED {
+    uint16_t val;
+} uint16_unaligned_t;
+
+typedef struct SPICE_ATTR_PACKED {
+    int32_t val;
+} int32_unaligned_t;
+
+typedef struct SPICE_ATTR_PACKED {
+    uint32_t val;
+} uint32_unaligned_t;
+
+typedef struct SPICE_ATTR_PACKED {
+    int64_t val;
+} int64_unaligned_t;
+
+typedef struct SPICE_ATTR_PACKED {
+    uint64_t val;
+} uint64_unaligned_t;
+#include <spice/end-packed.h>
+
+#define write_int8(ptr,v) (*(int8_t *)(ptr) = v)
+#define write_uint8(ptr,v) (*(uint8_t *)(ptr) = v)
+
 #ifdef WORDS_BIGENDIAN
-#define write_int8(ptr,v) (*((int8_t *)(ptr)) = v)
-#define write_uint8(ptr,v) (*((uint8_t *)(ptr)) = v)
-#define write_int16(ptr,v) (*((int16_t *)(ptr)) = SPICE_BYTESWAP16((uint16_t)(v)))
-#define write_uint16(ptr,v) (*((uint16_t *)(ptr)) = SPICE_BYTESWAP16((uint16_t)(v)))
-#define write_int32(ptr,v) (*((int32_t *)(ptr)) = SPICE_BYTESWAP32((uint32_t)(v)))
-#define write_uint32(ptr,v) (*((uint32_t *)(ptr)) = SPICE_BYTESWAP32((uint32_t)(v)))
-#define write_int64(ptr,v) (*((int64_t *)(ptr)) = SPICE_BYTESWAP64((uint64_t)(v)))
-#define write_uint64(ptr,v) (*((uint64_t *)(ptr)) = SPICE_BYTESWAP64((uint64_t)(v)))
+#define write_int16(ptr,v) (((uint16_unaligned_t *)(ptr))->val = SPICE_BYTESWAP16((uint16_t)(v)))
+#define write_uint16(ptr,v) (((uint16_unaligned_t *)(ptr))->val = SPICE_BYTESWAP16((uint16_t)(v)))
+#define write_int32(ptr,v) (((uint32_unaligned_t *)(ptr))->val = SPICE_BYTESWAP32((uint32_t)(v)))
+#define write_uint32(ptr,v) (((uint32_unaligned_t *)(ptr))->val = SPICE_BYTESWAP32((uint32_t)(v)))
+#define write_int64(ptr,v) (((uint64_unaligned_t *)(ptr))->val = SPICE_BYTESWAP64((uint64_t)(v)))
+#define write_uint64(ptr,v) (((uint64_unaligned_t *)(ptr))->val = SPICE_BYTESWAP64((uint64_t)(v)))
 #else
-#define write_int8(ptr,v) (*((int8_t *)(ptr)) = v)
-#define write_uint8(ptr,v) (*((uint8_t *)(ptr)) = v)
-#define write_int16(ptr,v) (*((int16_t *)(ptr)) = v)
-#define write_uint16(ptr,v) (*((uint16_t *)(ptr)) = v)
-#define write_int32(ptr,v) (*((int32_t *)(ptr)) = v)
-#define write_uint32(ptr,v) (*((uint32_t *)(ptr)) = v)
-#define write_int64(ptr,v) (*((int64_t *)(ptr)) = v)
-#define write_uint64(ptr,v) (*((uint64_t *)(ptr)) = v)
+#define write_int16(ptr,v) (((int16_unaligned_t *)(ptr))->val = v)
+#define write_uint16(ptr,v) (((uint16_unaligned_t *)(ptr))->val = v)
+#define write_int32(ptr,v) (((int32_unaligned_t *)(ptr))->val = v)
+#define write_uint32(ptr,v) (((uint32_unaligned_t *)(ptr))->val = v)
+#define write_int64(ptr,v) (((int64_unaligned_t *)(ptr))->val = v)
+#define write_uint64(ptr,v) (((uint64_unaligned_t *)(ptr))->val = v)
 #endif
 
 typedef struct {
@@ -245,6 +270,11 @@ static size_t remaining_buffer_size(SpiceMarshallerData *d)
     return MARSHALLER_BUFFER_SIZE - d->current_buffer_position;
 }
 
+static void reserve_space_free_data(uint8_t *data, SPICE_GNUC_UNUSED void *opaque)
+{
+    free(data);
+}
+
 uint8_t *spice_marshaller_reserve_space(SpiceMarshaller *m, size_t size)
 {
     MarshallerItem *item;
@@ -283,7 +313,7 @@ uint8_t *spice_marshaller_reserve_space(SpiceMarshaller *m, size_t size)
         /* Large item, allocate by itself */
         item->data = (uint8_t *)spice_malloc(size);
         item->len = size;
-        item->free_data = (spice_marshaller_item_free_func)free;
+        item->free_data = reserve_space_free_data;
         item->opaque = NULL;
     } else {
         /* Use next buffer */

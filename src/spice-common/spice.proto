@@ -4,6 +4,11 @@
 
 typedef fixed28_4 int32 @ctype(SPICE_FIXED28_4);
 
+/* IDs of the video stream messages.
+ * These IDs are in the interval [0, SPICE_MAX_NUM_STREAMS)
+ */
+typedef stream_id_t uint32;
+
 struct Point {
     int32 x;
     int32 y;
@@ -465,8 +470,17 @@ flags8 string_flags {
 
 flags32 surface_flags {
     /* Adding flags requires some caps check, since old clients only
-       treat the value as an enum and not as a flag (flag == PRIMARY) */
-    PRIMARY
+       treat the value as an enum and not as a flag (flag == PRIMARY).
+       Considering this was fixed by commit
+       5b6e3d1c16457c926322ce28d341af2e8d39efb5 in Aug 21 2013 is safe
+       to assume that if capabilities include SPICE_DISPLAY_CAP_MULTI_CODEC
+       we can use any flags */
+    PRIMARY,
+    /* The surface will be streamed entirely. This means that only
+       stream commands will be received and the stream will cover the
+       entire surface. This flag can be safely ignored and is intended
+       as an hint for the client */
+    STREAMING_MODE,
 };
 
 enum32 surface_fmt {
@@ -689,7 +703,7 @@ struct String {
 };
 
 struct StreamDataHeader {
-	uint32 id;
+	stream_id_t id;
 	uint32 multi_media_time;
 };
 
@@ -727,6 +741,13 @@ channel DisplayChannel : BaseChannel {
 	ResourceID resources[count] @end;
     } @ctype(SpiceResourceList) inval_list;
 
+    /* This message is used to invalidate the complete image cache
+     * on the client.
+     * Due to synchronization for GLZ images we must make sure
+     * that messages related to cached images on other channels
+     * are processed so we send a list of channels with respective
+     * message serials to wait for.
+     */
     message {
 	uint8 wait_count;
 	WaitForChannel wait_list[wait_count] @end;
@@ -740,7 +761,7 @@ channel DisplayChannel : BaseChannel {
 
     message {
 	uint32 surface_id;
-	uint32 id;
+	stream_id_t id;
 	stream_flags flags;
 	video_codec_type codec_type;
 	uint64 stamp;
@@ -759,12 +780,12 @@ channel DisplayChannel : BaseChannel {
     } stream_data;
 
     message {
-	uint32 id;
+	stream_id_t id;
 	Clip clip;
     } stream_clip;
 
     message {
-	uint32 id;
+	stream_id_t id;
     } stream_destroy;
 
     Empty stream_destroy_all;
@@ -938,7 +959,7 @@ channel DisplayChannel : BaseChannel {
     } draw_composite;
 
     message {
-        uint32 stream_id;
+        stream_id_t stream_id;
         uint32 unique_id;
         uint32 max_window_size;
         uint32 timeout_ms;
@@ -970,13 +991,26 @@ channel DisplayChannel : BaseChannel {
     } init = 101;
 
     message {
-        uint32 stream_id;
+        stream_id_t stream_id;
         uint32 unique_id;
+        // the mm_time of the first frame included in the report
         uint32 start_frame_mm_time;
+        // the mm_time of the last frame included in the report
         uint32 end_frame_mm_time;
+        // the number of frames that reached the client during the time the
+        // report is referring to
+        // A special case is when num_frames == 0 and num_drops ==
+        // 0xffffffffu, this is used in the client to communicate that
+        // the stream is not supported or that the client was not able
+        // to decode it
         uint32 num_frames;
+        // the part of the above frames that were dropped by the client due
+        // to late arrival time
         uint32 num_drops;
+        // end_frame_mm_time - client_mm_time
         int32 last_frame_delay;
+        // the latency of the audio playback
+        // If there is no audio playback, set it to 0xffffffffu
         uint32 audio_delay;
     } stream_report;
 
@@ -1349,11 +1383,11 @@ struct VscMessageAPDU {
 } @ctype(VSCMsgAPDU);
 
 struct VscMessageATR {
-    uint8 data[];
+    uint8 atr[];
 } @ctype(VSCMsgATR);
 
 struct VscMessageReaderAdd {
-    int8 *reader_name[] @zero_terminated @nonnull @end @nomarshal;
+    int8 *name[] @zero_terminated @nonnull @end @nomarshal;
 } @ctype(VSCMsgReaderAdd);
 
 channel SmartcardChannel : BaseChannel {
@@ -1366,6 +1400,12 @@ channel SmartcardChannel : BaseChannel {
     } @ctype(SpiceMsgSmartcard) data = 101;
 
  client:
+/* Some of the following messages are duplicated, the protocol
+ * definition was broken. Messages, as you can see have same ID.
+ * Also code was not used and didn't compile correctly.
+ * Keeping in the hope could be useful in the future.
+ */
+/*
     message {
 	VscMessageHeader header;
 	switch (header.type) {
@@ -1378,13 +1418,14 @@ channel SmartcardChannel : BaseChannel {
 	    VscMessageError error;
 	} u @anon;
     } @ctype(SpiceMsgcSmartcard) data = 101;
-
+*/
     message {
 	vsc_message_type type;
 	uint32 reader_id;
 	uint32 length;
     } @ctype(VSCMsgHeader) header = 101;
-
+/* See comment on client data message above */
+/*
     message {
 	uint32 code;
     } @ctype(VSCMsgError) error = 101;
@@ -1394,8 +1435,9 @@ channel SmartcardChannel : BaseChannel {
     } @ctype(VSCMsgATR) atr = 101;
 
     message {
-	int8 reader_name[] @zero_terminated @nonnull;
+	int8 name[] @zero_terminated @nonnull;
     } @ctype(VSCMsgReaderAdd) reader_add = 101;
+*/
 } @ifdef(USE_SMARTCARD);
 
 channel SpicevmcChannel : BaseChannel {

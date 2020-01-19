@@ -1427,7 +1427,7 @@ void spice_marshall_String(SpiceMarshaller *m, SpiceString *ptr)
             spice_marshaller_add_uint16(m, src2->width);
             spice_marshaller_add_uint16(m, src2->height);
             data__element = src2->data;
-            for (j = 0; j < (unsigned) (((src2->width + 7) / 8 ) * src2->height); j++) {
+            for (j = 0; j < ((((uint64_t) src2->width + 7U) / 8U ) * src2->height); j++) {
                 spice_marshaller_add_uint8(m, *data__element);
                 data__element++;
             }
@@ -1451,7 +1451,7 @@ void spice_marshall_String(SpiceMarshaller *m, SpiceString *ptr)
             spice_marshaller_add_uint16(m, src2->width);
             spice_marshaller_add_uint16(m, src2->height);
             data__element = src2->data;
-            for (j = 0; j < (unsigned) (((4 * src2->width + 7) / 8 ) * src2->height); j++) {
+            for (j = 0; j < ((((uint64_t) 4 * src2->width + 7U) / 8U ) * src2->height); j++) {
                 spice_marshaller_add_uint8(m, *data__element);
                 data__element++;
             }
@@ -1475,7 +1475,7 @@ void spice_marshall_String(SpiceMarshaller *m, SpiceString *ptr)
             spice_marshaller_add_uint16(m, src2->width);
             spice_marshaller_add_uint16(m, src2->height);
             data__element = src2->data;
-            for (j = 0; j < (unsigned) (src2->width * src2->height); j++) {
+            for (j = 0; j < ((uint64_t) src2->width * src2->height); j++) {
                 spice_marshaller_add_uint8(m, *data__element);
                 data__element++;
             }
